@@ -8,6 +8,7 @@ const registerUserRequestSchema = z.object({
   lastName: lastNameSchema,
   email: emailSchema,
   password: passwordSchema,
+  emailVerified: z.boolean().optional(),
 });
 
 export async function POST(req: NextRequest) {
