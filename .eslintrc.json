@@ -1,0 +1,49 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "next/core-web-vitals"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react",
+            "importNames": [
+              "useState",
+              "useEffect",
+              "useContext",
+              "useReducer",
+              "useRef",
+              "useMemo",
+              "useCallback",
+              "useLayoutEffect",
+              "useImperativeHandle"
+            ],
+            "message": "Use React.<hook> instead of directly using <hook>."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "VariableDeclarator[id.type='Identifier'][init.type='ArrowFunctionExpression']",
+        "message": "Use a function or async function declaration instead of const for named functions."
+      }
+    ],
+    "prefer-arrow-callback": [
+      "error",
+      {
+        "allowNamedFunctions": true,
+        "allowUnboundThis": true
+      }
+    ]
+  },
+  "root": true
+}
