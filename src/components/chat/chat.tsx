@@ -1,6 +1,8 @@
 'use client';
 
+import { deleteLastMessageForReload } from '@/app/(app)/(chat)/c/[chatId]/actions';
 import { cw } from '@/utils/tailwind';
+import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import React from 'react';
 
@@ -28,6 +30,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
       experimental_throttle: 100,
       maxSteps: 2,
       body: { id, modelId: 'gpt-4o' },
+      generateId: generateUUID,
     },
   );
 
@@ -71,6 +74,11 @@ export default function Chat({ id, initialMessages }: ChatProps) {
     }, 1000);
   }
 
+  async function handleReload() {
+    await deleteLastMessageForReload({ messageId: messages[messages.length - 1]?.id });
+    reload();
+  }
+
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
       <div className="flex flex-col flex-1 justify-between items-center w-full overflow-hidden">
@@ -82,67 +90,69 @@ export default function Chat({ id, initialMessages }: ChatProps) {
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">MY LOGO HERE</div>
           ) : (
-            <div className="flex flex-col gap-4 px-4">
-              {messages.map((message, index) => {
-                const isLastNonUser = index === messages.length - 1 && message.role !== 'user';
+            <>
+              <div className="flex flex-col gap-4 px-4">
+                {messages.map((message, index) => {
+                  const isLastNonUser = index === messages.length - 1 && message.role !== 'user';
 
-                return (
-                  <div
-                    key={index}
-                    className={cw(
-                      'w-fit text-secondary-foreground',
-                      message.role === 'user' &&
-                        'p-4 rounded-2xl rounded-br-none self-end bg-primary text-primary-foreground max-w-[70%] break-words',
-                    )}
-                  >
-                    <div className="">
-                      <MarkdownDisplay maxWidth={600}>{message.content}</MarkdownDisplay>
-
-                      {status === 'submitted' && <span>Loading...</span>}
-                      {isLastNonUser && !waitingForResponse && (
-                        <div className="flex items-center gap-1">
-                          <button
-                            title="Copy message"
-                            type="button"
-                            onClick={() => handleCopy(message.content)}
-                            className="rounded-full hover:text-primary mt-1"
-                            aria-label="Copy"
-                          >
-                            {isCopied ? (
-                              <div className="p-2 rounded-enterprise-sm hover:bg-secondary/20">
-                                <CheckIcon className="text-primary w-3.5 h-3.5" />
-                              </div>
-                            ) : (
-                              <div className="p-2 rounded-enterprise-sm hover:bg-vidis-hover-green/20">
-                                <ClipboardIcon className="text-primary w-3.5 h-3.5" />
-                              </div>
-                            )}
-                          </button>
-                          <button
-                            title="Reload last message"
-                            type="button"
-                            onClick={() => reload()}
-                            className="mt-1"
-                            aria-label="Reload"
-                          >
-                            <div className="p-1.5 rounded-enterprise-sm hover:bg-vidis-hover-green/20">
-                              <ReloadIcon className="text-primary w-5 h-5" />
-                            </div>
-                          </button>
-                        </div>
+                  return (
+                    <div
+                      key={index}
+                      className={cw(
+                        'w-fit text-secondary-foreground',
+                        message.role === 'user' &&
+                          'p-4 rounded-2xl rounded-br-none self-end bg-primary text-primary-foreground max-w-[70%] break-words',
                       )}
+                    >
+                      <div className="">
+                        <MarkdownDisplay maxWidth={600}>{message.content}</MarkdownDisplay>
+
+                        {isLastNonUser && !waitingForResponse && (
+                          <div className="flex items-center gap-1">
+                            <button
+                              title="Copy message"
+                              type="button"
+                              onClick={() => handleCopy(message.content)}
+                              className="rounded-full hover:text-primary mt-1"
+                              aria-label="Copy"
+                            >
+                              {isCopied ? (
+                                <div className="p-2 rounded-enterprise-sm hover:bg-primary/20 rounded-md">
+                                  <CheckIcon className="text-primary w-3.5 h-3.5" />
+                                </div>
+                              ) : (
+                                <div className="p-2 rounded-enterprise-sm hover:bg-primary/20 rounded-md">
+                                  <ClipboardIcon className="text-primary w-3.5 h-3.5" />
+                                </div>
+                              )}
+                            </button>
+                            <button
+                              title="Reload last message"
+                              type="button"
+                              onClick={handleReload}
+                              className="mt-1"
+                              aria-label="Reload"
+                            >
+                              <div className="p-2 rounded-enterprise-sm hover:bg-primary/20 rounded-md">
+                                <ReloadIcon className="text-primary w-3.5 h-3.5" />
+                              </div>
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+              {status === 'submitted' && <span>Loading...</span>}
+            </>
           )}
           {error && (
             <div className="mx-4 p-4 gap-2 text-sm rounded-2xl bg-red-100 text-red-500 border border-red-500 text-right mt-8">
               <div className="flex justify-between items-center px-2">
                 {error.message || 'Etawas ist schiefgelaufen'}
                 <button
-                  onClick={() => reload()}
+                  onClick={handleReload}
                   type="button"
                   className="hover:bg-red-200 p-2 rounded-lg"
                 >
