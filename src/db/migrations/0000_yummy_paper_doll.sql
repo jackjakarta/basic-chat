@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+
 DO $$ BEGIN
  CREATE TYPE "public"."conversation_role" AS ENUM('user', 'assistant', 'system');
 EXCEPTION
