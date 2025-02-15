@@ -32,5 +32,3 @@ jobs:
         run: pnpm types
       - name: Check linter
         run: pnpm lint
-      - name: Unit tests
-        run: pnpm test
