@@ -60,12 +60,8 @@
           "name": "conversation_message_conversation_id_conversation_id_fk",
           "tableFrom": "conversation_message",
           "tableTo": "conversation",
-          "columnsFrom": [
-            "conversation_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["conversation_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -73,12 +69,8 @@
           "name": "conversation_message_user_id_user_id_fk",
           "tableFrom": "conversation_message",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -123,12 +115,8 @@
           "name": "conversation_user_id_user_id_fk",
           "tableFrom": "conversation",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -181,10 +169,7 @@
         "action_token_email_action_unique": {
           "name": "action_token_email_action_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email",
-            "action"
-          ]
+          "columns": ["email", "action"]
         }
       }
     },
@@ -245,9 +230,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       }
     }
@@ -256,19 +239,12 @@
     "public.conversation_role": {
       "name": "conversation_role",
       "schema": "public",
-      "values": [
-        "user",
-        "assistant",
-        "system"
-      ]
+      "values": ["user", "assistant", "system"]
     },
     "public.token_action": {
       "name": "token_action",
       "schema": "public",
-      "values": [
-        "verify-email",
-        "reset-password"
-      ]
+      "values": ["verify-email", "reset-password"]
     }
   },
   "schemas": {},
