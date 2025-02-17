@@ -75,7 +75,13 @@ export async function dbGetConversationById({ conversationId }: { conversationId
   )[0];
 }
 
-export async function dbUpdateConversationTitle(conversationId: string, name: string) {
+export async function dbUpdateConversationTitle({
+  conversationId,
+  name,
+}: {
+  conversationId: string;
+  name: string;
+}) {
   return (
     await db.update(conversationTable).set({ name }).where(eq(conversationTable.id, conversationId))
   )[0];

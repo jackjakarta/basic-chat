@@ -203,7 +203,8 @@ export default function Chat({ id, initialMessages }: ChatProps) {
               </div>
             </form>
             <span className="text-xs mt-2 font-normal text-main-900 flex self-center">
-              Press <kbd>Enter</kbd> to send message
+              Press <kbd className="mx-2 text-xs bg-gray-100 rounded-md p-0.5">Enter</kbd> to send
+              message
             </span>
           </div>
         </div>

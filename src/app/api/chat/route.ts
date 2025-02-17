@@ -10,6 +10,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { DEFAULT_CHAT_MODEL, myProvider } from './models';
 
+const systemPrompt = 'You are chatting with an AI assistant.';
+
 export async function POST(request: NextRequest) {
   const user = await getUser();
 
@@ -24,8 +26,6 @@ export async function POST(request: NextRequest) {
   if (conversation === undefined) {
     return NextResponse.json({ error: 'Could not get or create conversation' }, { status: 500 });
   }
-
-  const systemPrompt = 'You are chatting with an AI assistant.';
 
   const definedModel = modelId ?? DEFAULT_CHAT_MODEL;
   console.debug({ definedModel });
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     model: myProvider.languageModel(definedModel),
     system: systemPrompt,
     messages,
-    experimental_transform: smoothStream({ chunking: 'word' }),
+    experimental_transform: smoothStream(),
     async onFinish(assistantMessage) {
       await dbInsertChatContent({
         content: assistantMessage.text,
@@ -54,11 +54,14 @@ export async function POST(request: NextRequest) {
 
       if (messages.length === 1 || messages.length === 2 || conversation.name === null) {
         const conversationTitle = await summarizeConversationTitle({
-          userContent: assistantMessage.text,
+          content: assistantMessage.text,
         });
 
         if (conversationTitle !== undefined && conversationTitle !== null) {
-          await dbUpdateConversationTitle(conversation.id, conversationTitle);
+          await dbUpdateConversationTitle({
+            conversationId: conversation.id,
+            name: conversationTitle,
+          });
         }
       }
     },
