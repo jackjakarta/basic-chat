@@ -69,9 +69,18 @@ export async function dbGetConversations(userId: string) {
     .orderBy(desc(conversationTable.createdAt));
 }
 
-export async function dbGetConversationById({ conversationId }: { conversationId: string }) {
+export async function dbGetConversationById({
+  conversationId,
+  userId,
+}: {
+  conversationId: string;
+  userId: string;
+}) {
   return (
-    await db.select().from(conversationTable).where(eq(conversationTable.id, conversationId))
+    await db
+      .select()
+      .from(conversationTable)
+      .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
   )[0];
 }
 

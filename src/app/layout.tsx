@@ -10,8 +10,8 @@ const barlow = Barlow({
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Next.js template',
-    description: 'A template for Next.js projects',
+    title: 'Chat Template',
+    description: 'A template for AI chat bot projects',
     icons: { icon: '/favicon.ico' },
   };
 }

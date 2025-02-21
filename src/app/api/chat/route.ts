@@ -9,8 +9,7 @@ import { smoothStream, streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { DEFAULT_CHAT_MODEL, myProvider } from './models';
-
-const systemPrompt = 'You are chatting with an AI assistant.';
+import { constructSystemPrompt } from './system-prompt';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -38,11 +37,17 @@ export async function POST(request: NextRequest) {
     orderNumber: messages.length,
   });
 
+  const systemPrompt = constructSystemPrompt({
+    firstName: user.firstName,
+    lastName: user.lastName,
+  });
+  console.debug({ systemPrompt });
+
   const result = streamText({
     model: myProvider.languageModel(definedModel),
     system: systemPrompt,
     messages,
-    experimental_transform: smoothStream(),
+    experimental_transform: smoothStream({ chunking: 'word' }),
     async onFinish(assistantMessage) {
       await dbInsertChatContent({
         content: assistantMessage.text,

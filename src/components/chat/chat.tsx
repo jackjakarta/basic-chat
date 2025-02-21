@@ -7,6 +7,7 @@ import { useChat, type Message } from '@ai-sdk/react';
 import React from 'react';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
+import { useLlmModel } from '../hooks/use-llm-model';
 import ArrowRightIcon from '../icons/arrow-right';
 import CheckIcon from '../icons/check';
 import ClipboardIcon from '../icons/clipboard';
@@ -21,6 +22,7 @@ type ChatProps = {
 
 export default function Chat({ id, initialMessages }: ChatProps) {
   const [isCopied, setIsCopied] = React.useState(false);
+  const { model } = useLlmModel();
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
@@ -29,12 +31,13 @@ export default function Chat({ id, initialMessages }: ChatProps) {
       api: '/api/chat',
       experimental_throttle: 100,
       maxSteps: 2,
-      body: { id, modelId: 'gpt-4o' },
+      body: { id, modelId: model },
       generateId: generateUUID,
     },
   );
 
   const waitingForResponse = status === 'submitted' || status === 'streaming';
+  const assitantError = status === 'error';
 
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -48,11 +51,11 @@ export default function Chat({ id, initialMessages }: ChatProps) {
     e.preventDefault();
 
     try {
-      handleSubmit(e, {});
+      handleSubmit(e);
 
       window.history.replaceState({}, '', `/c/${id}`);
     } catch (error) {
-      console.error(error);
+      console.error({ error });
     }
   }
 
@@ -147,10 +150,10 @@ export default function Chat({ id, initialMessages }: ChatProps) {
               {status === 'submitted' && <span>Loading...</span>}
             </>
           )}
-          {error && (
+          {assitantError && (
             <div className="mx-4 p-4 gap-2 text-sm rounded-2xl bg-red-100 text-red-500 border border-red-500 text-right mt-8">
               <div className="flex justify-between items-center px-2">
-                {error.message || 'Etawas ist schiefgelaufen'}
+                {error?.message || 'Etawas ist schiefgelaufen'}
                 <button
                   onClick={handleReload}
                   type="button"
