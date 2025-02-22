@@ -29,10 +29,10 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
-  const rawChatMessages = await dbGetCoversationMessages({
+  const chatMessages = await dbGetCoversationMessages({
     conversationId: chat.id,
     userId: user.id,
   });
 
-  return <Chat key={chat.id} id={chat.id} initialMessages={rawChatMessages} />;
+  return <Chat key={chat.id} id={chat.id} initialMessages={chatMessages} />;
 }
