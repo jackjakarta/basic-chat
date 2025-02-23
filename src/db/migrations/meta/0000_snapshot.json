@@ -1,12 +1,12 @@
 {
-  "id": "38e509bd-886c-4c9e-84b6-cba0784117e4",
+  "id": "75d7b419-8483-4c3d-8e4f-9c0d70572e08",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.conversation_message": {
+    "app.conversation_message": {
       "name": "conversation_message",
-      "schema": "",
+      "schema": "app",
       "columns": {
         "id": {
           "name": "id",
@@ -36,7 +36,7 @@
         "role": {
           "name": "role",
           "type": "conversation_role",
-          "typeSchema": "public",
+          "typeSchema": "app",
           "primaryKey": false,
           "notNull": true
         },
@@ -60,15 +60,17 @@
           "name": "conversation_message_conversation_id_conversation_id_fk",
           "tableFrom": "conversation_message",
           "tableTo": "conversation",
+          "schemaTo": "app",
           "columnsFrom": ["conversation_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "conversation_message_user_id_user_id_fk": {
-          "name": "conversation_message_user_id_user_id_fk",
+        "conversation_message_user_id_user_entity_id_fk": {
+          "name": "conversation_message_user_id_user_entity_id_fk",
           "tableFrom": "conversation_message",
-          "tableTo": "user",
+          "tableTo": "user_entity",
+          "schemaTo": "app",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -78,9 +80,9 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.conversation": {
+    "app.conversation": {
       "name": "conversation",
-      "schema": "",
+      "schema": "app",
       "columns": {
         "id": {
           "name": "id",
@@ -111,10 +113,11 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "conversation_user_id_user_id_fk": {
-          "name": "conversation_user_id_user_id_fk",
+        "conversation_user_id_user_entity_id_fk": {
+          "name": "conversation_user_id_user_entity_id_fk",
           "tableFrom": "conversation",
-          "tableTo": "user",
+          "tableTo": "user_entity",
+          "schemaTo": "app",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -124,9 +127,9 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.action_token": {
+    "app.action_token": {
       "name": "action_token",
-      "schema": "",
+      "schema": "app",
       "columns": {
         "id": {
           "name": "id",
@@ -138,7 +141,7 @@
         "action": {
           "name": "action",
           "type": "token_action",
-          "typeSchema": "public",
+          "typeSchema": "app",
           "primaryKey": false,
           "notNull": true
         },
@@ -173,9 +176,9 @@
         }
       }
     },
-    "public.user": {
-      "name": "user",
-      "schema": "",
+    "app.user_entity": {
+      "name": "user_entity",
+      "schema": "app",
       "columns": {
         "id": {
           "name": "id",
@@ -227,8 +230,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "user_email_unique": {
-          "name": "user_email_unique",
+        "user_entity_email_unique": {
+          "name": "user_entity_email_unique",
           "nullsNotDistinct": false,
           "columns": ["email"]
         }
@@ -236,18 +239,20 @@
     }
   },
   "enums": {
-    "public.conversation_role": {
+    "app.conversation_role": {
       "name": "conversation_role",
-      "schema": "public",
+      "schema": "app",
       "values": ["user", "assistant", "system"]
     },
-    "public.token_action": {
+    "app.token_action": {
       "name": "token_action",
-      "schema": "public",
+      "schema": "app",
       "values": ["verify-email", "reset-password"]
     }
   },
-  "schemas": {},
+  "schemas": {
+    "app": "app"
+  },
   "sequences": {},
   "_meta": {
     "columns": {},
