@@ -7,6 +7,7 @@ export const env = createEnv({
     nextAuthUrl: z.string().min(1),
     nextAuthSecret: z.string().min(1),
     openaiApiKey: z.string().min(1),
+    braveApiKey: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_baseUrl: z.string().min(1),
@@ -17,6 +18,7 @@ export const env = createEnv({
     nextAuthUrl: process.env.NEXTAUTH_URL,
     nextAuthSecret: process.env.NEXTAUTH_SECRET,
     openaiApiKey: process.env.OPENAI_API_KEY,
+    braveApiKey: process.env.BRAVE_API_KEY,
     NEXT_PUBLIC_baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },

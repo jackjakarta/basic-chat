@@ -14,7 +14,6 @@ const pageContextSchema = z.object({
 
 export default async function Page(context: unknown) {
   const user = await getUser();
-
   const parsedParams = pageContextSchema.safeParse(context);
 
   if (!parsedParams.success) {
@@ -22,17 +21,29 @@ export default async function Page(context: unknown) {
   }
 
   const chatId = parsedParams.data.params.chatId;
-
   const chat = await dbGetConversationById({ conversationId: chatId, userId: user.id });
 
   if (chat === undefined) {
     return notFound();
   }
 
-  const rawChatMessages = await dbGetCoversationMessages({
+  const chatMessages = await dbGetCoversationMessages({
     conversationId: chat.id,
     userId: user.id,
   });
 
-  return <Chat key={chat.id} id={chat.id} initialMessages={rawChatMessages} />;
+  const filteredMessages = Array.from(
+    chatMessages
+      .filter((message) => message.content !== '')
+      .reduce((map, message) => {
+        const existingMessage = map.get(message.orderNumber);
+        if (!existingMessage || existingMessage.createdAt < message.createdAt) {
+          map.set(message.orderNumber, message);
+        }
+        return map;
+      }, new Map<number, (typeof chatMessages)[0]>())
+      .values(),
+  );
+
+  return <Chat key={chat.id} id={chat.id} initialMessages={filteredMessages} />;
 }

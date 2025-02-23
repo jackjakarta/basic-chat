@@ -61,7 +61,7 @@ export async function dbInsertChatContent(chatContent: InsertConversationMessage
   return (await db.insert(conversationMessageTable).values(chatContent).returning())[0];
 }
 
-export async function dbGetConversations(userId: string) {
+export async function dbGetConversations({ userId }: { userId: string }) {
   return db
     .select()
     .from(conversationTable)

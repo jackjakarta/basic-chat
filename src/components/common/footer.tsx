@@ -31,7 +31,7 @@ const footerLinks = [
   },
 ];
 
-const Footer04Page = () => {
+export default function Footer04Page() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="grow bg-muted" />
@@ -108,6 +108,4 @@ const Footer04Page = () => {
       </footer>
     </div>
   );
-};
-
-export default Footer04Page;
+}
