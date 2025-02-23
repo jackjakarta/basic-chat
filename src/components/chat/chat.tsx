@@ -1,6 +1,5 @@
 'use client';
 
-import { deleteLastMessageForReload } from '@/app/(app)/(chat)/c/[chatId]/actions';
 import { cw } from '@/utils/tailwind';
 import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
@@ -8,6 +7,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
+import { useChatOptions } from '../hooks/use-chat-options';
 import { useLlmModel } from '../hooks/use-llm-model';
 import ArrowRightIcon from '../icons/arrow-right';
 import CheckIcon from '../icons/check';
@@ -15,7 +15,6 @@ import ClipboardIcon from '../icons/clipboard';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import MarkdownDisplay from './markdown-display/markdown-display';
-import { useChatOptions } from './use-chat-options';
 
 type ChatProps = {
   id: string;
@@ -44,7 +43,6 @@ export default function Chat({ id, initialMessages }: ChatProps) {
 
     try {
       handleSubmit(e);
-
       window.history.replaceState({}, '', `/c/${id}`);
     } catch (error) {
       console.error({ error });
@@ -55,15 +53,11 @@ export default function Chat({ id, initialMessages }: ChatProps) {
   async function handleSubmitOnEnter(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !waitingForResponse && !e.shiftKey) {
       e.preventDefault();
+
       if (e.currentTarget.value.trim().length > 0) {
         await customHandleSubmit(e);
       }
     }
-  }
-
-  async function handleReload() {
-    await deleteLastMessageForReload({ messageId: messages[messages.length - 1]?.id });
-    reload();
   }
 
   const waitingForResponse = status === 'submitted' || status === 'streaming';
@@ -117,7 +111,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
                             <button
                               title="Reload last message"
                               type="button"
-                              onClick={handleReload}
+                              onClick={() => reload()}
                               className="mt-1"
                               aria-label="Reload"
                             >
@@ -140,7 +134,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
               <div className="flex justify-between items-center px-2">
                 {error?.message ?? 'Something went wrong'}
                 <button
-                  onClick={handleReload}
+                  onClick={() => reload()}
                   type="button"
                   className="hover:bg-red-200 p-2 rounded-lg"
                 >
