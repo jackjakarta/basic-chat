@@ -8,6 +8,20 @@
       "when": 1740328178704,
       "tag": "0000_known_the_fallen",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1740337825150,
+      "tag": "0001_nervous_loa",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740337968313,
+      "tag": "0002_third_zaran",
+      "breakpoints": true
     }
   ]
 }

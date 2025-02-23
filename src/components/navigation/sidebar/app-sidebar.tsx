@@ -62,7 +62,6 @@ export function AppSidebar({ conversations, user, ...props }: SidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain conversations={conversations} />
-        {/* <NavProjects projects={data.projects} /> */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

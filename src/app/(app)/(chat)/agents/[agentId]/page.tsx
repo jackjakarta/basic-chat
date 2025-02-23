@@ -17,12 +17,12 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
+  const agentId = parsedParams.data.params.agentId;
+
   return (
     <PageContainer className="mx-auto">
       <div className="flex flex-col">
-        <h1>
-          Your email has been verified. You can now log in to the app using your email and password.
-        </h1>
+        <h1>Agents Page - {agentId}</h1>
       </div>
     </PageContainer>
   );

@@ -20,10 +20,12 @@ import MarkdownDisplay from './markdown-display/markdown-display';
 type ChatProps = {
   id: string;
   initialMessages: Message[];
+  agentId?: string;
 };
 
-export default function Chat({ id, initialMessages }: ChatProps) {
+export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   const { model } = useLlmModel();
+  const chatPath = agentId !== undefined ? `/agents/${agentId}/${id}` : `/c/${id}`;
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
@@ -32,7 +34,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
       api: '/api/chat',
       experimental_throttle: 100,
       maxSteps: 2,
-      body: { id, modelId: model, isPersonal: true },
+      body: { id, modelId: model, agentId },
       generateId: generateUUID,
     },
   );
@@ -44,7 +46,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
 
     try {
       handleSubmit(e);
-      window.history.replaceState({}, '', `/c/${id}`);
+      window.history.replaceState({}, '', chatPath);
     } catch (error) {
       console.error({ error });
       toast.error("Couldn't send message");
