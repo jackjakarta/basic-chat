@@ -9,7 +9,7 @@ import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { DEFAULT_CHAT_MODEL, myProvider } from './models';
+import { modelsSchema, myProvider, type AIModel } from './models';
 import { constructSystemPrompt } from './system-prompt';
 import { braveSearch } from './tools/web-search';
 
@@ -24,9 +24,18 @@ export async function POST(request: NextRequest) {
   }: {
     id: string;
     messages: Message[];
-    modelId?: string;
+    modelId: AIModel;
     isPersonal?: boolean;
   } = await request.json();
+
+  const parsedModelId = modelsSchema.safeParse(modelId);
+
+  if (!parsedModelId.success) {
+    return NextResponse.json(
+      { error: 'Invalid model ID provided. Please provide a valid model ID.' },
+      { status: 400 },
+    );
+  }
 
   const conversation = await dbGetOrCreateConversation({
     conversationId: id,
@@ -37,9 +46,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Could not get or create conversation' }, { status: 500 });
   }
 
-  const definedModel = modelId ?? DEFAULT_CHAT_MODEL;
-  console.debug({ definedModel });
-
   await dbInsertChatContent({
     conversationId: conversation.id,
     content: messages[messages.length - 1]?.content ?? '',
@@ -48,14 +54,15 @@ export async function POST(request: NextRequest) {
     orderNumber: messages.length,
   });
 
+  const definedModel = parsedModelId.data;
+  console.debug({ definedModel });
+
   const systemPrompt = isPersonal
     ? constructSystemPrompt({
         firstName: user.firstName,
         lastName: user.lastName,
       })
     : constructSystemPrompt({});
-
-  console.debug({ systemPrompt });
 
   const result = streamText({
     model: myProvider.languageModel(definedModel),

@@ -8,11 +8,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { usePathname } from 'next/navigation';
 
 import { useLlmModel } from '../hooks/use-llm-model';
 
 export default function SelectLlmModel() {
   const { model, setModel } = useLlmModel();
+  const pathname = usePathname();
+  const isChatRoute = pathname === '/' || pathname.startsWith('/c/');
+
+  if (!isChatRoute) {
+    return null;
+  }
 
   return (
     <Select value={model} onValueChange={(value) => setModel(value as AIModel)}>
