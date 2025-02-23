@@ -16,12 +16,16 @@ export default function SelectLlmModel() {
 
   return (
     <Select value={model} onValueChange={(value) => setModel(value as AIModel)}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="mt-2 w-auto h-[32px] border-none shadow-none focus:ring-0 focus:ring-transparent">
         <SelectValue placeholder="Select a model" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+        <SelectItem value="gpt-4o" className="me-4">
+          <span className="me-2">GPT-4o</span>
+        </SelectItem>
+        <SelectItem value="gpt-4o-mini">
+          <span className="me-2">GPT-4o Mini</span>
+        </SelectItem>
       </SelectContent>
     </Select>
   );

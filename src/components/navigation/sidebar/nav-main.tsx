@@ -3,7 +3,6 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
@@ -12,61 +11,53 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { ChevronRight, type LucideIcon } from 'lucide-react';
+import { type ConversationRow } from '@/db/schema';
+import { ChevronRight, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
-  }[];
-}) {
+export function NavMain({ conversations }: { conversations: ConversationRow[] }) {
+  const router = useRouter();
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+        <SidebarMenuItem>
+          <SidebarMenuButton className="cursor-pointer" onClick={() => router.push('/')} asChild>
+            <div className="flex items-center gap-2">
+              <Plus />
+              <span>New Chat</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        {conversations.length > 0 ? (
+          <Collapsible asChild defaultOpen={true}>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
+              <SidebarMenuButton asChild>
+                <span>Chats</span>
               </SidebarMenuButton>
-              {item.items?.length ? (
-                <>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuAction className="data-[state=open]:rotate-90">
-                      <ChevronRight />
-                      <span className="sr-only">Toggle</span>
-                    </SidebarMenuAction>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </>
-              ) : null}
+              <CollapsibleTrigger asChild>
+                <SidebarMenuAction className="data-[state=open]:rotate-90">
+                  <ChevronRight />
+                  <span className="sr-only">Toggle</span>
+                </SidebarMenuAction>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {conversations.map((conversation) => (
+                    <SidebarMenuSubItem key={conversation.id}>
+                      <SidebarMenuSubButton asChild>
+                        <Link href={`/c/${conversation.id}`}>
+                          <span>{conversation.name}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>
-        ))}
+        ) : null}
       </SidebarMenu>
     </SidebarGroup>
   );

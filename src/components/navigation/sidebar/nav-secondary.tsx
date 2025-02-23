@@ -6,7 +6,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { type LucideIcon } from 'lucide-react';
-import * as React from 'react';
+import React from 'react';
 
 export function NavSecondary({
   items,

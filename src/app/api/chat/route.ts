@@ -5,7 +5,7 @@ import {
 } from '@/db/functions/chat';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
-import { smoothStream, streamText, type Message } from 'ai';
+import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -16,8 +16,17 @@ import { braveSearch } from './tools/web-search';
 export async function POST(request: NextRequest) {
   const user = await getUser();
 
-  const { id, messages, modelId }: { id: string; messages: Message[]; modelId?: string } =
-    await request.json();
+  const {
+    id,
+    messages,
+    modelId,
+    isPersonal,
+  }: {
+    id: string;
+    messages: Message[];
+    modelId?: string;
+    isPersonal?: boolean;
+  } = await request.json();
 
   const conversation = await dbGetOrCreateConversation({
     conversationId: id,
@@ -39,17 +48,19 @@ export async function POST(request: NextRequest) {
     orderNumber: messages.length,
   });
 
-  const systemPrompt = constructSystemPrompt({
-    firstName: user.firstName,
-    lastName: user.lastName,
-  });
+  const systemPrompt = isPersonal
+    ? constructSystemPrompt({
+        firstName: user.firstName,
+        lastName: user.lastName,
+      })
+    : constructSystemPrompt({});
+
   console.debug({ systemPrompt });
 
   const result = streamText({
     model: myProvider.languageModel(definedModel),
     system: systemPrompt,
     messages,
-    // experimental_transform: smoothStream({ chunking: 'word' }),
     tools: {
       searchTheWeb: {
         description:

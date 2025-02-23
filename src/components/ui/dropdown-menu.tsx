@@ -3,7 +3,7 @@
 import { cw } from '@/utils/tailwind';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { Check, ChevronRight, Circle } from 'lucide-react';
-import * as React from 'react';
+import React from 'react';
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -161,11 +161,11 @@ const DropdownMenuSeparator = React.forwardRef<
 ));
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 
-const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
+function DropdownMenuShortcut({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
     <span className={cw('ml-auto text-xs tracking-widest opacity-60', className)} {...props} />
   );
-};
+}
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut';
 
 export {

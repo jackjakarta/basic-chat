@@ -4,7 +4,7 @@ import { cw } from '@/utils/tailwind';
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { X } from 'lucide-react';
-import * as React from 'react';
+import React from 'react';
 
 const Sheet = SheetPrimitive.Root;
 
@@ -69,17 +69,21 @@ const SheetContent = React.forwardRef<
 ));
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
-const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cw('flex flex-col space-y-2 text-center sm:text-left', className)} {...props} />
-);
+function SheetHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cw('flex flex-col space-y-2 text-center sm:text-left', className)} {...props} />
+  );
+}
 SheetHeader.displayName = 'SheetHeader';
 
-const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cw('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
-    {...props}
-  />
-);
+function SheetFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cw('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+      {...props}
+    />
+  );
+}
 SheetFooter.displayName = 'SheetFooter';
 
 const SheetTitle = React.forwardRef<

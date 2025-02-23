@@ -5,6 +5,7 @@ import { cw } from '@/utils/tailwind';
 import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import React from 'react';
+import toast from 'react-hot-toast';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
 import { useLlmModel } from '../hooks/use-llm-model';
@@ -14,6 +15,7 @@ import ClipboardIcon from '../icons/clipboard';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import MarkdownDisplay from './markdown-display/markdown-display';
+import { useChatOptions } from './use-chat-options';
 
 type ChatProps = {
   id: string;
@@ -21,7 +23,6 @@ type ChatProps = {
 };
 
 export default function Chat({ id, initialMessages }: ChatProps) {
-  const [isCopied, setIsCopied] = React.useState(false);
   const { model } = useLlmModel();
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
@@ -31,21 +32,12 @@ export default function Chat({ id, initialMessages }: ChatProps) {
       api: '/api/chat',
       experimental_throttle: 100,
       maxSteps: 2,
-      body: { id, modelId: model },
+      body: { id, modelId: model, isPersonal: true },
       generateId: generateUUID,
     },
   );
 
-  const waitingForResponse = status === 'submitted' || status === 'streaming';
-  const assitantError = status === 'error';
-
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-    }
-  }, [messages]);
+  const { scrollRef, isCopied, handleCopy } = useChatOptions({ messages });
 
   async function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,6 +48,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
       window.history.replaceState({}, '', `/c/${id}`);
     } catch (error) {
       console.error({ error });
+      toast.error("Couldn't send message");
     }
   }
 
@@ -68,19 +61,13 @@ export default function Chat({ id, initialMessages }: ChatProps) {
     }
   }
 
-  function handleCopy(text: string) {
-    navigator.clipboard.writeText(text);
-    setIsCopied(true);
-
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 1000);
-  }
-
   async function handleReload() {
     await deleteLastMessageForReload({ messageId: messages[messages.length - 1]?.id });
     reload();
   }
+
+  const waitingForResponse = status === 'submitted' || status === 'streaming';
+  const assitantError = status === 'error';
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
@@ -107,7 +94,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
                           'p-4 rounded-2xl rounded-br-none self-end bg-primary text-primary-foreground max-w-[70%] break-words',
                       )}
                     >
-                      <div className="">
+                      <div>
                         <MarkdownDisplay maxWidth={600}>{message.content}</MarkdownDisplay>
 
                         {isLastNonUser && !waitingForResponse && (
@@ -119,15 +106,13 @@ export default function Chat({ id, initialMessages }: ChatProps) {
                               className="rounded-full hover:text-primary mt-1"
                               aria-label="Copy"
                             >
-                              {isCopied ? (
-                                <div className="p-2 rounded-enterprise-sm hover:bg-primary/20 rounded-md">
-                                  <CheckIcon className="text-primary w-3.5 h-3.5" />
-                                </div>
-                              ) : (
-                                <div className="p-2 rounded-enterprise-sm hover:bg-primary/20 rounded-md">
-                                  <ClipboardIcon className="text-primary w-3.5 h-3.5" />
-                                </div>
-                              )}
+                              <div className="p-2 rounded-md hover:bg-secondary/65 text-primary">
+                                {isCopied ? (
+                                  <CheckIcon className="w-3.5 h-3.5" />
+                                ) : (
+                                  <ClipboardIcon className="w-3.5 h-3.5" />
+                                )}
+                              </div>
                             </button>
                             <button
                               title="Reload last message"
@@ -136,8 +121,8 @@ export default function Chat({ id, initialMessages }: ChatProps) {
                               className="mt-1"
                               aria-label="Reload"
                             >
-                              <div className="p-2 rounded-enterprise-sm hover:bg-primary/20 rounded-md">
-                                <ReloadIcon className="text-primary w-3.5 h-3.5" />
+                              <div className="p-2 rounded-md hover:bg-secondary/65 text-primary">
+                                <ReloadIcon className="w-3.5 h-3.5" />
                               </div>
                             </button>
                           </div>
@@ -153,7 +138,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
           {assitantError && (
             <div className="mx-4 p-4 gap-2 text-sm rounded-2xl bg-red-100 text-red-500 border border-red-500 text-right mt-8">
               <div className="flex justify-between items-center px-2">
-                {error?.message || 'Etawas ist schiefgelaufen'}
+                {error?.message ?? 'Something went wrong'}
                 <button
                   onClick={handleReload}
                   type="button"
