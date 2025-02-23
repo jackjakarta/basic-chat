@@ -7,6 +7,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
+import TTSButton from '../common/tts-button';
 import { useChatOptions } from '../hooks/use-chat-options';
 import { useLlmModel } from '../hooks/use-llm-model';
 import ArrowRightIcon from '../icons/arrow-right';
@@ -108,6 +109,11 @@ export default function Chat({ id, initialMessages }: ChatProps) {
                                 )}
                               </div>
                             </button>
+                            <TTSButton
+                              text={message.content}
+                              className="mt-1 p-2 rounded-md hover:bg-secondary/65 text-primary"
+                              spinnerClassName="w-3.5 h-3.5"
+                            />
                             <button
                               title="Reload last message"
                               type="button"
