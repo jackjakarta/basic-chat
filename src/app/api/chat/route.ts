@@ -1,3 +1,4 @@
+import { dbGetAgentById } from '@/db/functions/agent';
 import {
   dbGetOrCreateConversation,
   dbInsertChatContent,
@@ -20,12 +21,12 @@ export async function POST(request: NextRequest) {
     id,
     messages,
     modelId,
-    isPersonal,
+    agentId,
   }: {
     id: string;
     messages: Message[];
     modelId: AIModel;
-    isPersonal?: boolean;
+    agentId?: string;
   } = await request.json();
 
   const parsedModelId = modelsSchema.safeParse(modelId);
@@ -37,9 +38,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const maybeAgent =
+    agentId !== undefined ? await dbGetAgentById({ agentId, userId: user.id }) : undefined;
+
   const conversation = await dbGetOrCreateConversation({
     conversationId: id,
     userId: user.id,
+    agentId: maybeAgent?.id,
   });
 
   if (conversation === undefined) {
@@ -57,12 +62,9 @@ export async function POST(request: NextRequest) {
   const definedModel = parsedModelId.data;
   console.debug({ definedModel });
 
-  const systemPrompt = isPersonal
-    ? constructSystemPrompt({
-        firstName: user.firstName,
-        lastName: user.lastName,
-      })
-    : constructSystemPrompt({});
+  const agentInstructions = maybeAgent !== undefined ? maybeAgent.instructions : undefined;
+  const systemPrompt = agentInstructions ?? constructSystemPrompt({});
+  console.debug({ systemPrompt });
 
   const result = streamText({
     model: myProvider.languageModel(definedModel),
@@ -102,12 +104,10 @@ export async function POST(request: NextRequest) {
           content: assistantMessage.text,
         });
 
-        if (conversationTitle !== undefined && conversationTitle !== null) {
-          await dbUpdateConversationTitle({
-            conversationId: conversation.id,
-            name: conversationTitle,
-          });
-        }
+        await dbUpdateConversationTitle({
+          conversationId: conversation.id,
+          name: conversationTitle ?? conversation.id,
+        });
       }
     },
   });

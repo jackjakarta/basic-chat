@@ -5,24 +5,24 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { type LucideIcon } from 'lucide-react';
-import React from 'react';
+import { GithubIcon } from 'lucide-react';
 
-export function NavSecondary({
-  items,
-  ...props
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+const data = {
+  navSecondary: [
+    {
+      title: 'GitHub',
+      url: 'https://github.com/jackjakarta/basic-chat',
+      icon: GithubIcon,
+    },
+  ],
+};
+
+export function NavSecondary({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
+          {data.navSecondary.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">
                 <a href={item.url}>

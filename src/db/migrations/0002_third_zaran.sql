@@ -1,0 +1,1 @@
+ALTER TABLE "app"."agent" ADD COLUMN "picture_url" text;

@@ -10,28 +10,13 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { UserRow, type ConversationRow } from '@/db/schema';
-import { LifeBuoy, Send, User2 } from 'lucide-react';
+import { User2 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
 import { NavMain } from './nav-main';
 import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
-
-const data = {
-  navSecondary: [
-    {
-      title: 'Support',
-      url: '#',
-      icon: LifeBuoy,
-    },
-    {
-      title: 'Feedback',
-      url: '#',
-      icon: Send,
-    },
-  ],
-};
 
 type SidebarProps = React.ComponentProps<typeof Sidebar> & {
   conversations: ConversationRow[];
@@ -40,7 +25,7 @@ type SidebarProps = React.ComponentProps<typeof Sidebar> & {
 
 export function AppSidebar({ conversations, user, ...props }: SidebarProps) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -62,8 +47,7 @@ export function AppSidebar({ conversations, user, ...props }: SidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain conversations={conversations} />
-        {/* <NavProjects projects={data.projects} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

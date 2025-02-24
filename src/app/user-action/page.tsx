@@ -1,23 +1,25 @@
 import { dbDeleteActionToken, dbValidateToken } from '@/db/functions/token';
 import { notFound, redirect } from 'next/navigation';
+import { z } from 'zod';
 
 import EmailVerifySuccess from './email-verify-success';
 import TokenVerifyFail from './token-verify-fail';
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: {
-    token?: string;
-  };
-}) {
-  const token = searchParams?.token;
+const pageContextSchema = z.object({
+  searchParams: z.object({
+    token: z.string(),
+  }),
+});
 
-  if (token === undefined) {
+export default async function Page(context: unknown) {
+  const result = pageContextSchema.safeParse(context);
+
+  if (!result.success) {
     return notFound();
   }
 
-  const userActionToken = await dbValidateToken(token);
+  const parsedToken = result.data.searchParams.token;
+  const userActionToken = await dbValidateToken(parsedToken);
 
   if (userActionToken === undefined) {
     return <TokenVerifyFail />;
@@ -28,10 +30,8 @@ export default async function Page({
   }
 
   if (userActionToken.action === 'verify-email') {
-    await dbDeleteActionToken({ token });
+    await dbDeleteActionToken({ token: parsedToken });
 
     return <EmailVerifySuccess />;
   }
-
-  return notFound();
 }
