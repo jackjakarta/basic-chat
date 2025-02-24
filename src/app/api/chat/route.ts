@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
   const conversation = await dbGetOrCreateConversation({
     conversationId: id,
     userId: user.id,
+    agentId: maybeAgent?.id,
   });
 
   if (conversation === undefined) {

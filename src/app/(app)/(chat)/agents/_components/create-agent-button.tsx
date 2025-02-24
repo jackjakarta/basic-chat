@@ -52,7 +52,7 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
       setIsModalOpen(false);
       toast.remove();
       toast.success('Agent created successfully');
-      router.push(`/agents/${newAgent?.id}`);
+      router.push(`/agents/${newAgent.id}`);
     } catch (error) {
       console.error({ error });
       toast.remove();
@@ -62,11 +62,11 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
 
   return (
     <>
-      <button onClick={() => setIsModalOpen(true)} className={className}>
+      <Button onClick={() => setIsModalOpen(true)} className={className}>
         <div className="flex items-center gap-2">
           <span className="text-sm">Create Agent</span>
         </div>
-      </button>
+      </Button>
 
       <DialogWindow open={isModalOpen} onOpenChange={setIsModalOpen}>
         <form onSubmit={handleSubmit(onSubmit)}>

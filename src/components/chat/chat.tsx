@@ -25,7 +25,7 @@ type ChatProps = {
 
 export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   const { model } = useLlmModel();
-  const chatPath = agentId !== undefined ? `/agents/${agentId}/${id}` : `/c/${id}`;
+  const chatPath = agentId !== undefined ? `/agents/${agentId}/c/${id}` : `/c/${id}`;
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
@@ -134,7 +134,11 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                   );
                 })}
               </div>
-              {status === 'submitted' && <span>Loading...</span>}
+              {status === 'submitted' && (
+                <span className="w-fit text-secondary-foreground px-4 animate-pulse">
+                  Loading...
+                </span>
+              )}
             </>
           )}
           {assitantError && (
@@ -157,7 +161,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
           <div className="flex flex-col">
             <form
               onSubmit={customHandleSubmit}
-              className="bg-white w-full p-1 border focus-within:border-primary rounded-xl"
+              className="bg-sidebar w-full p-1 border focus-within:border-primary rounded-xl"
             >
               <div className="flex items-center">
                 <AutoResizeTextarea
@@ -187,7 +191,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                     className="flex items-center justify-center group disabled:cursor-not-allowed rounded-enterprise-sm hover:bg-secondary/20 me-2"
                     aria-label="Send Message"
                   >
-                    <ArrowRightIcon className="w-9 h-9 text-dark-gray group-disabled:bg-gray-200 group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
+                    <ArrowRightIcon className="w-7 h-7 text-dark-gray group-disabled:bg-primary rounded-lg group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
                   </button>
                 )}
               </div>

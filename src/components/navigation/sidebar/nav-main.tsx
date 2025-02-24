@@ -53,7 +53,13 @@ export function NavMain({ conversations }: { conversations: ConversationRow[] })
                   {conversations.map((conversation) => (
                     <SidebarMenuSubItem key={conversation.id}>
                       <SidebarMenuSubButton asChild>
-                        <Link href={`/c/${conversation.id}`}>
+                        <Link
+                          href={
+                            conversation.agentId !== null
+                              ? `/agents/${conversation.agentId}/c/${conversation.id}`
+                              : `/c/${conversation.id}`
+                          }
+                        >
                           <span>{conversation.name}</span>
                         </Link>
                       </SidebarMenuSubButton>
