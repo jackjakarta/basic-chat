@@ -7,6 +7,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
+import LoadingText from '../common/loading-text';
 import TTSButton from '../common/tts-button';
 import { useChatOptions } from '../hooks/use-chat-options';
 import { useLlmModel } from '../hooks/use-llm-model';
@@ -92,7 +93,15 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                       )}
                     >
                       <div>
-                        <MarkdownDisplay maxWidth={600}>{message.content}</MarkdownDisplay>
+                        {message.content.length > 0 ? (
+                          <MarkdownDisplay maxWidth={450}>{message.content}</MarkdownDisplay>
+                        ) : (
+                          <LoadingText
+                            text={
+                              toolNameMap(message?.toolInvocations?.[0]?.toolName) ?? 'Loading...'
+                            }
+                          />
+                        )}
 
                         {isLastNonUser && !waitingForResponse && (
                           <div className="flex items-center gap-1">
@@ -205,4 +214,17 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       </div>
     </div>
   );
+}
+
+function toolNameMap(inputString: string | undefined): string | undefined {
+  if (inputString === undefined) {
+    return undefined;
+  }
+
+  const mapping: Record<string, string> = {
+    searchTheWeb: 'Searching the web...',
+    generateImage: 'Generating image...',
+  };
+
+  return mapping[inputString] ?? inputString;
 }

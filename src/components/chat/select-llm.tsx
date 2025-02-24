@@ -15,7 +15,7 @@ import { useLlmModel } from '../hooks/use-llm-model';
 export default function SelectLlmModel() {
   const { model, setModel } = useLlmModel();
   const pathname = usePathname();
-  const isChatRoute = pathname === '/' || pathname.startsWith('/c/');
+  const isChatRoute = pathname === '/' || pathname.includes('/c');
 
   if (!isChatRoute) {
     return null;
