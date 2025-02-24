@@ -1,5 +1,6 @@
 'use client';
 
+import Spinner from '@/components/icons/spinner';
 import {
   Sidebar,
   SidebarContent,
@@ -9,21 +10,31 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { UserRow, type ConversationRow } from '@/db/schema';
+import { type ConversationRow } from '@/db/schema';
+import { fetcher } from '@/utils/fetcher';
+import { type ObscuredUser } from '@/utils/user';
 import { User2 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
+import useSWR from 'swr';
 
+import { NavChats } from './nav-chats';
 import { NavMain } from './nav-main';
 import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
 
 type SidebarProps = React.ComponentProps<typeof Sidebar> & {
-  conversations: ConversationRow[];
-  user: UserRow;
+  // conversations: ConversationRow[];
+  user: ObscuredUser;
 };
 
-export function AppSidebar({ conversations, user, ...props }: SidebarProps) {
+export function AppSidebar({ user, ...props }: SidebarProps) {
+  const { data, error, isLoading } = useSWR<{ conversations: ConversationRow[] }>(
+    '/api/conversations',
+    fetcher,
+    { refreshInterval: 5000 },
+  );
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -46,11 +57,21 @@ export function AppSidebar({ conversations, user, ...props }: SidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain conversations={conversations} />
+        <NavMain />
+        {isLoading && (
+          <span className="py-2 px-4 animate-pulse self-center">
+            <div className="flex flex-col items-center gap-4">
+              <Spinner className="w-20 h-20" />
+              Loading chats...
+            </div>
+          </span>
+        )}
+        {error && <span className="py-2 px-4">Failed to load conversations.</span>}
+        {data && <NavChats conversations={data.conversations} />}
         <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser {...user} />
       </SidebarFooter>
     </Sidebar>
   );

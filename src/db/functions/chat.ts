@@ -7,16 +7,6 @@ import {
   InsertConversationMessageRow,
 } from '../schema';
 
-export async function dbCreateConversation({
-  conversationId,
-  userId,
-}: {
-  conversationId: string;
-  userId: string;
-}) {
-  return (await db.insert(conversationTable).values({ id: conversationId, userId }).returning())[0];
-}
-
 export async function dbGetOrCreateConversation({
   conversationId,
   userId,
@@ -29,7 +19,7 @@ export async function dbGetOrCreateConversation({
   return (
     await db
       .insert(conversationTable)
-      .values({ id: conversationId, userId, agentId })
+      .values({ id: conversationId, name: 'New Chat', userId, agentId })
       .onConflictDoUpdate({
         target: conversationTable.id,
         set: { id: conversationId },

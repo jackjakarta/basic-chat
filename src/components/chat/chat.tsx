@@ -5,6 +5,7 @@ import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import React from 'react';
 import toast from 'react-hot-toast';
+import { mutate } from 'swr';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
 import LoadingText from '../common/loading-text';
@@ -37,6 +38,11 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       maxSteps: 2,
       body: { id, modelId: model, agentId },
       generateId: generateUUID,
+      onFinish: () => {
+        if (messages.length === 1 || messages.length === 2) {
+          mutate('/api/conversations');
+        }
+      },
     },
   );
 

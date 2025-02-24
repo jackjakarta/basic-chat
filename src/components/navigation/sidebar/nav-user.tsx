@@ -16,11 +16,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { type UserRow } from '@/db/schema';
+import { type ObscuredUser } from '@/utils/user';
 import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
-export function NavUser({ user }: { user: UserRow }) {
+export function NavUser({ firstName, lastName, email }: ObscuredUser) {
   const { isMobile } = useSidebar();
 
   return (
@@ -38,9 +38,9 @@ export function NavUser({ user }: { user: UserRow }) {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {user.firstName} {user.lastName}
+                  {firstName} {lastName}
                 </span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -59,9 +59,9 @@ export function NavUser({ user }: { user: UserRow }) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {user.firstName} {user.lastName}
+                    {firstName} {lastName}
                   </span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
