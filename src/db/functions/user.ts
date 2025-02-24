@@ -12,10 +12,10 @@ export async function dbCreateNewUser({
   password,
 }: Omit<InsertUserRow, 'passwordHash'> & { password: string }) {
   try {
-    const maybeUser = await db.select().from(userTable).where(eq(userTable.email, email));
+    const maybeUser = (await db.select().from(userTable).where(eq(userTable.email, email)))[0];
 
-    if (maybeUser.length > 0) {
-      throw Error('This email already exists');
+    if (maybeUser === undefined) {
+      throw new Error('This email already exists');
     }
 
     const user = (
@@ -31,7 +31,7 @@ export async function dbCreateNewUser({
     )[0];
 
     if (user === undefined) {
-      throw Error();
+      throw new Error("Couldn't create user");
     }
 
     return user;
