@@ -1,6 +1,5 @@
-import { randomBytes } from 'crypto';
-
 import { eq } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
 
 import { db } from '..';
 import { tokenTable, userTable, type TokenAction, type TokenRow } from '../schema';
@@ -13,8 +12,6 @@ export async function dbValidateToken(token: string): Promise<TokenRow | undefin
       .update(userTable)
       .set({ emailVerified: true })
       .where(eq(userTable.email, tokenModel.email));
-
-    return tokenModel;
   }
 
   return tokenModel;
@@ -28,19 +25,21 @@ export async function dbInsertOrUpdateActionToken({
   action: TokenAction;
 }): Promise<TokenRow | undefined> {
   try {
-    const token = randomBytes(20).toString('hex');
+    const token = action === 'verify-email' ? nanoid(6).toUpperCase() : nanoid(32);
     const createdAt = new Date();
 
-    const result = await db
-      .insert(tokenTable)
-      .values({ email, token, action, createdAt })
-      .onConflictDoUpdate({
-        target: [tokenTable.email, tokenTable.action],
-        set: { token, createdAt },
-      })
-      .returning();
+    const result = (
+      await db
+        .insert(tokenTable)
+        .values({ email, token, action, createdAt })
+        .onConflictDoUpdate({
+          target: [tokenTable.email, tokenTable.action],
+          set: { token, createdAt },
+        })
+        .returning()
+    )[0];
 
-    return result[0];
+    return result;
   } catch (error) {
     console.error(error);
     return undefined;
