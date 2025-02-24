@@ -12,6 +12,7 @@ import { z } from 'zod';
 
 import { modelsSchema, myProvider, type AIModel } from './models';
 import { constructSystemPrompt } from './system-prompt';
+import { generateImageFromText } from './tools/generate-image';
 import { braveSearch } from './tools/web-search';
 
 export async function POST(request: NextRequest) {
@@ -83,6 +84,24 @@ export async function POST(request: NextRequest) {
 
           if (toolResults.length === 0) {
             return `I could not find any relevant information about '${searchQuery}'.`;
+          }
+
+          console.debug({ toolResults });
+          return toolResults;
+        },
+      },
+      generateImage: {
+        description: 'Generate an image based on the description provided by the user.',
+        parameters: z.object({
+          imageDescription: z
+            .string()
+            .describe('The description of the image provided by the user.'),
+        }),
+        execute: async ({ imageDescription }) => {
+          const toolResults = await generateImageFromText({ imageDescription });
+
+          if (toolResults === undefined) {
+            return 'I could not generate the image at this time.';
           }
 
           console.debug({ toolResults });
