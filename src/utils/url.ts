@@ -1,7 +1,7 @@
-import { env } from '@/env';
+import { getBaseUrlByHeaders } from './host';
 
 export function buildRouteUrl({ route }: { route: string }) {
-  return `${env.NEXT_PUBLIC_baseUrl}/${route}`;
+  return `${getBaseUrlByHeaders()}/${route}`;
 }
 
 export function buildUserActionUrl({ searchParams }: { searchParams: URLSearchParams }) {

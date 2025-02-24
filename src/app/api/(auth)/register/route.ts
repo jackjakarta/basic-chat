@@ -15,14 +15,18 @@ const registerUserRequestSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const json = await req.json();
-    const registerUserRequestBody = registerUserRequestSchema.parse(json);
+    const registerUserRequestBody = registerUserRequestSchema.safeParse(json);
+
+    if (!registerUserRequestBody.success) {
+      return NextResponse.json({ success: false, error: 'Invalid request body' }, { status: 400 });
+    }
 
     const maybeUser = await dbCreateNewUser({
-      ...registerUserRequestBody,
+      ...registerUserRequestBody.data,
     });
 
     if (maybeUser === undefined) {
-      return NextResponse.json({ success: false, error: 'User does not exist' }, { status: 404 });
+      return NextResponse.json({ success: false, error: 'Failed to create user' }, { status: 500 });
     }
 
     if (!isDevMode) {
@@ -34,7 +38,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
-    console.error('Failed to register:', { error });
+    console.error({ endpoint: '/api/register', error });
     let errorMessage = 'An unexpected error occurred';
 
     if (error instanceof Error) {
