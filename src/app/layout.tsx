@@ -25,14 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={barlow.className}>
-        <Toaster
-          toastOptions={{
-            className: 'border border-[1px] rounded-none border-main-900',
-            style: {
-              borderRadius: 0,
-            },
-          }}
-        />
+        <Toaster />
         {children}
       </body>
     </html>

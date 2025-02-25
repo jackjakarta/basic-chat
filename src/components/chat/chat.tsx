@@ -38,10 +38,19 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       maxSteps: 2,
       body: { id, modelId: model, agentId },
       generateId: generateUUID,
-      onFinish: () => {
-        if (messages.length === 1 || messages.length === 2) {
-          mutate('/api/conversations');
+      onResponse: () => {
+        if (messages.length > 1) {
+          return;
         }
+
+        mutate('/api/conversations');
+      },
+      onFinish: () => {
+        if (messages.length > 1) {
+          return;
+        }
+
+        mutate('/api/conversations');
       },
     },
   );
@@ -102,11 +111,9 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                         {message.content.length > 0 ? (
                           <MarkdownDisplay maxWidth={450}>{message.content}</MarkdownDisplay>
                         ) : (
-                          <LoadingText
-                            text={
-                              toolNameMap(message?.toolInvocations?.[0]?.toolName) ?? 'Loading...'
-                            }
-                          />
+                          <LoadingText>
+                            {toolNameMap(message?.toolInvocations?.[0]?.toolName) ?? 'Loading...'}
+                          </LoadingText>
                         )}
 
                         {isLastNonUser && !waitingForResponse && (

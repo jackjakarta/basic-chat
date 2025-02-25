@@ -1,6 +1,7 @@
 'use client';
 
-import Spinner from '@/components/icons/spinner';
+import LoadingText from '@/components/common/loading-text';
+import BouncingBallsLoading from '@/components/icons/animated/bouncing-balls';
 import {
   Sidebar,
   SidebarContent,
@@ -24,15 +25,13 @@ import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
 
 type SidebarProps = React.ComponentProps<typeof Sidebar> & {
-  // conversations: ConversationRow[];
   user: ObscuredUser;
 };
 
-export function AppSidebar({ user, ...props }: SidebarProps) {
+export default function AppSidebar({ user, ...props }: SidebarProps) {
   const { data, error, isLoading } = useSWR<{ conversations: ConversationRow[] }>(
     '/api/conversations',
     fetcher,
-    { refreshInterval: 5000 },
   );
 
   return (
@@ -59,12 +58,10 @@ export function AppSidebar({ user, ...props }: SidebarProps) {
       <SidebarContent>
         <NavMain />
         {isLoading && (
-          <span className="py-2 px-4 animate-pulse self-center">
-            <div className="flex flex-col items-center gap-4">
-              <Spinner className="w-20 h-20" />
-              Loading chats...
-            </div>
-          </span>
+          <div className="flex flex-col items-center gap-2 py-2 px-4 self-center">
+            <BouncingBallsLoading className="text-primary w-12 h-12 animate-pulse" />
+            <LoadingText className="text-primary text-sm ">Loading chats...</LoadingText>
+          </div>
         )}
         {error && <span className="py-2 px-4">Failed to load conversations.</span>}
         {data && <NavChats conversations={data.conversations} />}
