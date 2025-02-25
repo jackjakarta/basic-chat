@@ -1,8 +1,7 @@
-import { dbDeleteActionToken, dbValidateToken } from '@/db/functions/token';
+import { dbValidateToken } from '@/db/functions/token';
 import { notFound, redirect } from 'next/navigation';
 import { z } from 'zod';
 
-import EmailVerifySuccess from './email-verify-success';
 import TokenVerifyFail from './token-verify-fail';
 
 const pageContextSchema = z.object({
@@ -29,9 +28,5 @@ export default async function Page(context: unknown) {
     redirect(`/reset-password?token=${userActionToken.token}`);
   }
 
-  if (userActionToken.action === 'verify-email') {
-    await dbDeleteActionToken({ token: parsedToken });
-
-    return <EmailVerifySuccess />;
-  }
+  return notFound();
 }
