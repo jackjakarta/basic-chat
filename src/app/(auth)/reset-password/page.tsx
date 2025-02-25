@@ -18,11 +18,15 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
-  const maybeToken = parsedParams.data.searchParams.token;
+  const {
+    searchParams: { token },
+  } = parsedParams.data;
+
+  const maybeToken = token;
   const userActionRow = maybeToken !== undefined ? await dbValidateToken(maybeToken) : undefined;
 
   return (
-    <main className="flex justify-center items-center px-8 min-h-screen">
+    <main className="flex justify-center items-center px-8 min-h-screen bg-secondary">
       {userActionRow !== undefined ? (
         <ResetPasswordForm {...userActionRow} />
       ) : (

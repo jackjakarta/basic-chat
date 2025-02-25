@@ -1,6 +1,10 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { emailSchema } from '@/utils/schemas';
+import { cw } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -15,7 +19,9 @@ const loginFormSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginFormSchema>;
 
-export default function LoginForm() {
+export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -24,7 +30,6 @@ export default function LoginForm() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
   });
-  const router = useRouter();
 
   async function onSubmit(data: LoginFormData) {
     const { email: _email, password } = data;
@@ -47,54 +52,69 @@ export default function LoginForm() {
   }
 
   return (
-    <main className="w-full flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 max-w-[750px] flex flex-col items-start justify-center shadow-lg w-full sm:w-5/6 md:w-3/4 lg:w-1/2 bg-white rounded-lg">
-        <h1 className="text-2xl font-bold text-gray-900">Login</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 flex flex-col gap-6 w-full">
-          <div className="flex flex-col gap-2 w-full">
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              id="email"
-              type="text"
-              {...register('email')}
-              className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>}
-          </div>
-          <div className="flex flex-col gap-2 w-full">
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              {...register('password')}
-              className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            <div className="flex justify-between items-center">
-              <Link href="/reset-password" className="text-sm text-indigo-600 hover:underline mt-2">
-                Forgot password ?
-              </Link>
-              <Link href="/register" className="text-sm text-indigo-600 hover:underline mt-2">
-                Sign up
-              </Link>
-            </div>
-            {errors.password && (
-              <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
-            )}
-          </div>
-          <div className="flex gap-3 justify-center mt-2 items-center">
-            <button
-              type="submit"
-              className="w-full py-3 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Login
-            </button>
-          </div>
-        </form>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={cw('flex flex-col gap-6', className)}
+      {...props}
+    >
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-2xl font-bold">Login to your account</h1>
+        <p className="text-balance text-sm text-muted-foreground">
+          Enter your email below to login to your account
+        </p>
       </div>
-    </main>
+      <div className="grid gap-6">
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="text"
+            {...register('email')}
+            placeholder="m@example.com"
+            className={cw(errors.email && 'border-red-500')}
+          />
+        </div>
+        <div className="grid gap-2">
+          <div className="flex items-center">
+            <Label htmlFor="password">Password</Label>
+            <Link
+              href="/reset-password"
+              className="ml-auto text-sm underline-offset-4 hover:underline"
+            >
+              Forgot your password?
+            </Link>
+          </div>
+          <Input
+            id="password"
+            type="password"
+            {...register('password')}
+            className={cw(errors.email && 'border-red-500')}
+          />
+        </div>
+        <Button type="submit" className="w-full">
+          Login
+        </Button>
+        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+          <span className="relative z-10 bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+        <Button variant="outline" className="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+              fill="currentColor"
+            />
+          </svg>
+          Login with GitHub
+        </Button>
+      </div>
+      <div className="text-center text-sm">
+        Don&apos;t have an account?{' '}
+        <Link href="/register" className="underline underline-offset-4">
+          Sign up
+        </Link>
+      </div>
+    </form>
   );
 }

@@ -2,6 +2,7 @@
 
 import { dbDeleteActionToken, dbValidateToken } from '@/db/functions/token';
 import { dbGetUserByEmail, dbUpdateUserPassword } from '@/db/functions/user';
+import { sendUserActionEmail } from '@/email/send';
 
 export async function updateUserPassword({
   email,
@@ -32,4 +33,8 @@ export async function getUserByEmail({ email }: { email: string }) {
   const user = await dbGetUserByEmail({ email });
 
   return { email: user?.email };
+}
+
+export async function sendPasswordResetEmail({ email }: { email: string }) {
+  return await sendUserActionEmail({ to: email, action: 'reset-password' });
 }
