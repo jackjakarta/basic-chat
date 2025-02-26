@@ -12,11 +12,15 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { type ConversationRow } from '@/db/schema';
+import { cw } from '@/utils/tailwind';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 
 export function NavChats({ conversations }: { conversations: ConversationRow[] }) {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -36,7 +40,10 @@ export function NavChats({ conversations }: { conversations: ConversationRow[] }
                 <SidebarMenuSub>
                   {conversations.map((conversation) => (
                     <SidebarMenuSubItem key={conversation.id}>
-                      <SidebarMenuSubButton asChild>
+                      <SidebarMenuSubButton
+                        className={cw(pathname.includes(conversation.id) && 'bg-sidebar-accent')}
+                        asChild
+                      >
                         <Link
                           href={
                             conversation.agentId !== null
