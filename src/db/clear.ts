@@ -10,7 +10,7 @@ async function clearDb({ skip }: { skip: boolean }) {
   });
 }
 
-clearDb({ skip: true })
+clearDb({ skip: false })
   .then(() => {
     console.info('Database cleared');
     process.exit(0);

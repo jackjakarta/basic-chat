@@ -96,12 +96,18 @@ export async function dbGetConversationById({
 export async function dbUpdateConversationTitle({
   conversationId,
   name,
+  userId,
 }: {
   conversationId: string;
   name: string;
+  userId: string;
 }) {
   return (
-    await db.update(conversationTable).set({ name }).where(eq(conversationTable.id, conversationId))
+    await db
+      .update(conversationTable)
+      .set({ name })
+      .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
+      .returning()
   )[0];
 }
 
