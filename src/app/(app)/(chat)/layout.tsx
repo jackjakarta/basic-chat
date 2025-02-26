@@ -12,7 +12,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <SidebarProvider>
       <LlmModelProvider>
-        <AppSidebar variant="sidebar" className="border-none shadow-2xl z-20" user={user} />
+        <AppSidebar variant="sidebar" className="border-accent" user={user} />
         <SidebarInset>
           <div className="flex items-center gap-2">
             <SidebarTrigger className="ml-2 mt-2 p-4" />
