@@ -109,7 +109,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                     >
                       <div>
                         {message.content.length > 0 ? (
-                          <MarkdownDisplay maxWidth={450}>{message.content}</MarkdownDisplay>
+                          <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
                         ) : (
                           <LoadingText>
                             {toolNameMap(message?.toolInvocations?.[0]?.toolName) ?? 'Loading...'}

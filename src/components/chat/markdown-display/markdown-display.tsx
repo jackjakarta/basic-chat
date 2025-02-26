@@ -8,6 +8,8 @@ import RehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import RemarkMathPlugin from 'remark-math';
 
+import ClipboardButton from './clipboard-button';
+
 import 'katex/dist/katex.min.css';
 
 type MarkdownDisplayProps = {
@@ -140,7 +142,8 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
                   <span className="text-primary-foreground">{language}</span>
                 )}
                 <div className="flex-grow" />
-                Copy placeholder
+
+                <ClipboardButton text={sanitizedText} />
               </div>
               <SyntaxHighlighter
                 // @ts-expect-error for somer reason those styles are not compatible with the library definitions
