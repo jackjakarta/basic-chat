@@ -1,9 +1,19 @@
-import { type UserRow } from '@/db/schema';
+const defaultSystemPrompt = 'You are a helpful assistant.';
 
-export function constructSystemPrompt({ firstName, lastName }: Partial<UserRow>) {
-  if (firstName && lastName) {
-    return `Always refer to the user by their full name, using both firstName and lastName in your greetings, responses, and interactions. Ensure the tone is polite and professional, but maintain a friendly and approachable style. For example, instead of saying 'How can I help?', say 'How may I assist you today, ${firstName} ${lastName}?' Always ensure you use the user's full name when directly addressing them.`;
+export function constructSystemPrompt({
+  agentInstructions,
+}: {
+  agentInstructions?: string | null;
+}) {
+  if (agentInstructions) {
+    return `Your task is to help the user with special kind of tasks based on 
+    the instructions that are provided below. You will assume the role the the 
+    user provided in the instructions. 
+    
+    These are the instructions provided by the user: 
+    
+    ${agentInstructions}`;
   }
 
-  return 'You are chatting with an AI assistant.';
+  return defaultSystemPrompt;
 }

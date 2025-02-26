@@ -52,9 +52,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Could not get or create conversation' }, { status: 500 });
   }
 
+  const userMessage = messages[messages.length - 1]?.content;
+
   await dbInsertChatContent({
     conversationId: conversation.id,
-    content: messages[messages.length - 1]?.content ?? '',
+    content: userMessage ?? '',
     role: 'user',
     userId: user.id,
     orderNumber: messages.length,
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
   console.debug({ definedModel });
 
   const agentInstructions = maybeAgent !== undefined ? maybeAgent.instructions : undefined;
-  const systemPrompt = agentInstructions ?? constructSystemPrompt({});
+  const systemPrompt = constructSystemPrompt({ agentInstructions });
   console.debug({ systemPrompt });
 
   const result = streamText({
@@ -79,15 +81,27 @@ export async function POST(request: NextRequest) {
           searchQuery: z.string().describe('The search query provided by the user.'),
         }),
         execute: async ({ searchQuery }) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const toolResults: any = await braveSearch(searchQuery);
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const toolResults: any = await braveSearch(searchQuery);
 
-          if (toolResults.length === 0) {
-            return `I could not find any relevant information about '${searchQuery}'.`;
+            if (!toolResults) {
+              return `I could not find any relevant information about '${searchQuery}'.`;
+            }
+
+            console.debug({ toolResults });
+            return toolResults;
+          } catch (error) {
+            const errorMessage = `An error occurred while searching the web. We are sorry.`;
+
+            if (error instanceof Error) {
+              console.error({ error: error.message });
+              throw new Error(errorMessage);
+            }
+
+            console.error({ error });
+            throw new Error(errorMessage);
           }
-
-          console.debug({ toolResults });
-          return toolResults;
         },
       },
       generateImage: {
@@ -101,7 +115,7 @@ export async function POST(request: NextRequest) {
           const toolResults = await generateImageFromText({ imageDescription });
 
           if (toolResults === undefined) {
-            return 'I could not generate the image at this time.';
+            throw new Error('An error occurred while generating the image.');
           }
 
           console.debug({ toolResults });
@@ -120,12 +134,14 @@ export async function POST(request: NextRequest) {
 
       if (messages.length === 1 || messages.length === 2 || conversation.name === null) {
         const conversationTitle = await summarizeConversationTitle({
-          content: assistantMessage.text,
+          userMessage: userMessage ?? '',
+          assistantMessage: assistantMessage.text,
         });
 
         await dbUpdateConversationTitle({
           conversationId: conversation.id,
           name: conversationTitle ?? conversation.id,
+          userId: user.id,
         });
       }
     },
