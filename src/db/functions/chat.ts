@@ -120,3 +120,26 @@ export async function dbUpdateConversationMessageContent(
     .set({ content: conversationMessageContent })
     .where(eq(conversationMessageTable.id, conversationMessageId));
 }
+
+export async function dbDeleteConversationById({
+  conversationId,
+  userId,
+}: {
+  conversationId: string;
+  userId: string;
+}) {
+  await db.transaction(async (trx) => {
+    await trx
+      .delete(conversationMessageTable)
+      .where(
+        and(
+          eq(conversationMessageTable.conversationId, conversationId),
+          eq(conversationMessageTable.userId, userId),
+        ),
+      );
+
+    await trx
+      .delete(conversationTable)
+      .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)));
+  });
+}

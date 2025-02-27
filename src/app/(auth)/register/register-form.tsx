@@ -1,11 +1,19 @@
 'use client';
 
+import { useToast } from '@/components/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
+import { cw } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import { registerNewUserAction } from './actions';
 
 const registrationSchema = z
   .object({
@@ -22,155 +30,135 @@ const registrationSchema = z
 
 type RegistrationFormData = z.infer<typeof registrationSchema>;
 
-type RegistrationProps = {
-  error?: string;
-};
+type RegistrationProps = React.ComponentPropsWithoutRef<'form'>;
 
-export default function RegisterForm({ error }: RegistrationProps) {
-  const [successMessage, setSuccessMessage] = React.useState('');
+export default function RegisterForm({ className, ...props }: RegistrationProps) {
+  const router = useRouter();
+  const { toastSuccess, toastError } = useToast();
 
   const {
     register,
     handleSubmit,
-    setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
   });
 
   async function onSubmit(data: RegistrationFormData) {
     try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          password: data.password,
-        }),
+      await registerNewUserAction({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        authProvider: 'credentials',
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to register');
-      }
-
-      setSuccessMessage('Registration successful! Please check your email to verify your account.');
+      toastSuccess('Account created successfully');
+      router.push('/login');
     } catch (error) {
-      if (error instanceof Error) {
-        setError('email', { type: 'manual', message: error.message });
-      } else {
-        setError('email', { type: 'manual', message: 'An unexpected error occurred' });
-      }
+      console.error({ error });
+      toastError('An error occurred while creating your account');
     }
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="grid w-full max-w-md p-10 bg-white rounded-xl drop-shadow-overlay">
-        <form className="grid grid-cols-1 gap-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <label htmlFor="registration">
-            <span className="text-2xl font-medium">Registration</span>
-          </label>
-
-          <div className="input input-registration border rounded-lg p-2">
-            <input
-              type="text"
-              {...register('firstName')}
-              className="text-md h-full w-full text-clip bg-transparent outline-none"
-              placeholder="First name"
-            />
-            {errors.firstName && (
-              <p className="text-red-500" role="alert">
-                {errors.firstName.message}
-              </p>
-            )}
-          </div>
-
-          <div className="input input-registration border rounded-lg p-2">
-            <input
-              type="text"
-              {...register('lastName')}
-              className="text-md h-full w-full text-clip bg-transparent outline-none"
-              placeholder="Last Name"
-            />
-            {errors.lastName && (
-              <p className="text-red-500" role="alert">
-                {errors.lastName.message}
-              </p>
-            )}
-          </div>
-
-          <div className="input input-registration border rounded-lg p-2">
-            <input
-              type="email"
-              {...register('email')}
-              className="text-md h-full w-full text-clip bg-transparent outline-none"
-              placeholder="Email"
-            />
-            {errors.email && (
-              <p className="text-red-500" role="alert">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="input input-registration border rounded-lg p-2">
-            <input
-              type="password"
-              {...register('password')}
-              className="text-md h-full w-full text-clip bg-transparent outline-none"
-              placeholder="Password"
-            />
-            {errors.password && (
-              <p className="text-red-500" role="alert">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          <div className="input input-registration border rounded-lg p-2">
-            <input
-              type="password"
-              {...register('confirmPassword')}
-              className="text-md h-full w-full text-clip bg-transparent outline-none"
-              placeholder="Confirm Password"
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500" role="alert">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-
-          {successMessage && (
-            <p className="text-green-500" role="success">
-              {successMessage}
-            </p>
-          )}
-          {error && (
-            <p className="text-red-500" role="alert">
-              {error}
-            </p>
-          )}
-
-          <button className="btn btn-primary w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Register
-          </button>
-
-          <p className="text-gray-600 text-sm">
-            Already have an account?{' '}
-            <Link
-              href="/login"
-              className="text-grey-600 font-bold underline py-2 rounded focus:outline-none focus:shadow-outline"
-            >
-              Log In
-            </Link>
-          </p>
-        </form>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={cw('flex flex-col gap-6', className)}
+      {...props}
+    >
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-2xl font-bold">Register</h1>
+        <p className="text-balance text-sm text-muted-foreground">
+          Enter your information below to create an account
+        </p>
       </div>
-    </div>
+      <div className="grid gap-6">
+        <div className="grid gap-2">
+          <Label htmlFor="firstName">First Name</Label>
+          <Input
+            id="firstName"
+            type="text"
+            {...register('firstName')}
+            placeholder="Jane"
+            className={cw(errors.firstName && 'border-red-500')}
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="lastName">Last Name</Label>
+          <Input
+            id="lastName"
+            type="text"
+            {...register('lastName')}
+            placeholder="Doe"
+            className={cw(errors.lastName && 'border-red-500')}
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="text"
+            {...register('email')}
+            placeholder="m@example.com"
+            className={cw(errors.email && 'border-red-500')}
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="********"
+            {...register('password')}
+            className={cw(errors.password && 'border-red-500')}
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="confirmPassword">Password confirmation</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="********"
+            {...register('confirmPassword')}
+            className={cw(errors.password && 'border-red-500')}
+          />
+        </div>
+
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? 'Loading...' : 'Register'}
+        </Button>
+        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+          <span className="relative z-10 bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full disabled:cursor-not-allowed"
+          disabled
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+              fill="currentColor"
+            />
+          </svg>
+          Continue with GitHub
+        </Button>
+      </div>
+      <div className="flex justify-center items-center gap-2 text-sm">
+        Alredy have an account?{' '}
+        <Link href="/login" className="underline underline-offset-4">
+          Login
+        </Link>
+      </div>
+    </form>
   );
 }

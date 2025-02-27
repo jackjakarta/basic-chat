@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import { z } from 'zod';
 
-import { updateConversationTitle } from './actions';
+import { deleteConversationAction, updateConversationTitle } from './actions';
 
 const renameSchema = z.object({
   name: z.string().min(1),
@@ -63,13 +63,18 @@ export default function ConversationItem({ conversation }: { conversation: Conve
   }
 
   async function handleDeleteConversation(conversationId: string) {
+    toastLoading('Deleting conversation');
+
     try {
-      console.debug({ conversationId });
-      // mutate('/api/conversations');
+      await deleteConversationAction({ conversationId });
+      removeToast();
       toastSuccess('Deleted conversation');
     } catch (error) {
       console.error({ error });
+      removeToast();
       toastError('Failed to delete conversation');
+    } finally {
+      mutate('/api/conversations');
     }
   }
 

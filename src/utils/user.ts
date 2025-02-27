@@ -9,6 +9,7 @@ export function obscureUser(user: UserRow): ObscuredUser {
     lastName: user.lastName,
     email: user.email,
     emailVerified: user.emailVerified,
+    authProvider: user.authProvider,
     createdAt: user.createdAt,
   };
 }

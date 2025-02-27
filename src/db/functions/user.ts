@@ -10,11 +10,13 @@ export async function dbCreateNewUser({
   firstName,
   lastName,
   password,
+  authProvider,
+  emailVerified,
 }: Omit<InsertUserRow, 'passwordHash'> & { password: string }) {
   try {
     const maybeUser = (await db.select().from(userTable).where(eq(userTable.email, email)))[0];
 
-    if (maybeUser === undefined) {
+    if (maybeUser !== undefined) {
       throw new Error('This email already exists');
     }
 
@@ -26,6 +28,8 @@ export async function dbCreateNewUser({
           passwordHash: await hashPassword(password),
           firstName,
           lastName,
+          emailVerified,
+          authProvider,
         })
         .returning()
     )[0];
