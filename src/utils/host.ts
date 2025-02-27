@@ -19,10 +19,8 @@ export function getBaseUrlByHeaders() {
   return baseUrl;
 }
 
-function checkIsLocalhost() {
+export function checkIsLocalhost() {
   const host = getHostByHeaders();
 
   return host === 'localhost:3000' || host === '127.0.0.1:3000';
 }
-
-export const isLocalhost = checkIsLocalhost();
