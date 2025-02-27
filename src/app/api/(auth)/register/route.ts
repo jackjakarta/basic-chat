@@ -1,4 +1,5 @@
 import { dbCreateNewUser } from '@/db/functions/user';
+import { authProviderSchema } from '@/db/schema';
 import { sendUserActionEmail } from '@/email/send';
 import { isDevMode } from '@/utils/dev-mode';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
@@ -10,11 +11,12 @@ const registerUserRequestSchema = z.object({
   lastName: lastNameSchema,
   email: emailSchema,
   password: passwordSchema,
+  authProvider: authProviderSchema,
 });
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const json = await req.json();
+    const json = await request.json();
     const registerUserRequestBody = registerUserRequestSchema.safeParse(json);
 
     if (!registerUserRequestBody.success) {

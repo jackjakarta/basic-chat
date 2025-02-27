@@ -22,6 +22,13 @@
       "when": 1740337968313,
       "tag": "0002_third_zaran",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1740614999181,
+      "tag": "0003_solid_hairball",
+      "breakpoints": true
     }
   ]
 }

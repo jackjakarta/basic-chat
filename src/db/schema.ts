@@ -3,12 +3,17 @@ import { z } from 'zod';
 
 export const appSchema = pgSchema('app');
 
+export const authProviderSchema = z.enum(['credentials', 'github']);
+export const authProviderPgEnum = appSchema.enum('auth_provider', authProviderSchema.options);
+export type AuthProvider = z.infer<typeof authProviderSchema>;
+
 export const userTable = appSchema.table('user_entity', {
   id: uuid('id').defaultRandom().primaryKey(),
   email: text('email').notNull().unique(),
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),
   passwordHash: text('password_hash').notNull(),
+  authProvider: authProviderPgEnum('auth_provider').notNull(),
   emailVerified: boolean('email_verified').notNull().default(false),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 });

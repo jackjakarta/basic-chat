@@ -11,6 +11,8 @@ export const env = createEnv({
     braveApiKey: z.string().min(1),
     mailjetApiKey: z.string().min(1),
     mailjetApiSecret: z.string().min(1),
+    githubClientId: z.string().min(1),
+    githubClientSecret: z.string().min(1),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
@@ -26,6 +28,8 @@ export const env = createEnv({
     braveApiKey: process.env.BRAVE_API_KEY,
     mailjetApiKey: process.env.MAILJET_API_KEY,
     mailjetApiSecret: process.env.MAILJET_API_SECRET,
+    githubClientId: process.env.GITHUB_CLIENT_ID,
+    githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
     devMode: process.env.DEV_MODE,
 
     // Client

@@ -1,6 +1,6 @@
 'use server';
 
-import { dbUpdateConversationTitle } from '@/db/functions/chat';
+import { dbDeleteConversationById, dbUpdateConversationTitle } from '@/db/functions/chat';
 import { getUser } from '@/utils/auth';
 
 export async function updateConversationTitle({
@@ -22,4 +22,9 @@ export async function updateConversationTitle({
   }
 
   return updatedConversation;
+}
+
+export async function deleteConversationAction({ conversationId }: { conversationId: string }) {
+  const user = await getUser();
+  await dbDeleteConversationById({ conversationId, userId: user.id });
 }

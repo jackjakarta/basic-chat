@@ -2,7 +2,8 @@
 
 import { dbDeleteActionToken, dbValidateToken } from '@/db/functions/token';
 import { dbGetUserByEmail, dbUpdateUserPassword } from '@/db/functions/user';
-import { sendUserActionEmail } from '@/email/send';
+import { sendUserActionEmail, sendUserActionInformationEmail } from '@/email/send';
+import { isDevMode } from '@/utils/dev-mode';
 
 export async function updateUserPassword({
   email,
@@ -24,7 +25,19 @@ export async function updateUserPassword({
   }
 
   const updatedUser = await dbUpdateUserPassword({ email, password });
+
+  if (updatedUser === undefined) {
+    throw new Error('Failed to update user password');
+  }
+
   await dbDeleteActionToken({ token });
+
+  if (!isDevMode) {
+    await sendUserActionInformationEmail({
+      to: updatedUser?.email,
+      information: { type: 'reset-password-success' },
+    });
+  }
 
   return updatedUser;
 }

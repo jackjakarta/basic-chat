@@ -75,10 +75,13 @@ export async function sendUserActionEmail({
  * This email shall not contain any forwarding or proceed actions inside the mail and serves
  * for information purposes only
  * */
-export async function sendUserActionInformationEmail(
-  to: string,
-  information: InformationEmailMetadata,
-) {
+export async function sendUserActionInformationEmail({
+  to,
+  information,
+}: {
+  to: string;
+  information: InformationEmailMetadata;
+}) {
   const mailTemplate = await createInformationMailTemplate(information, to);
 
   if (mailTemplate === undefined) {

@@ -26,12 +26,12 @@ export default async function Page(context: unknown) {
   const userActionRow = maybeToken !== undefined ? await dbValidateToken(maybeToken) : undefined;
 
   return (
-    <main className="flex justify-center items-center px-8 min-h-screen bg-secondary">
+    <>
       {userActionRow !== undefined ? (
         <ResetPasswordForm {...userActionRow} />
       ) : (
         <InitiatePasswordResetForm />
       )}
-    </main>
+    </>
   );
 }
