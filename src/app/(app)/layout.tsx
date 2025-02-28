@@ -1,5 +1,5 @@
-import { LlmModelProvider } from '@/components/hooks/use-llm-model';
-import SessionProvider from '@/components/session-provider';
+import { LlmModelProvider } from '@/components/providers/llm-model';
+import SessionProvider from '@/components/providers/session';
 import { getMaybeUserSession } from '@/utils/auth';
 
 export default async function Layout({ children }: { children: React.ReactNode }) {

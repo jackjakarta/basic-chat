@@ -11,12 +11,12 @@ import AutoResizeTextarea from '../common/auto-resize-textarea';
 import LoadingText from '../common/loading-text';
 import TTSButton from '../common/tts-button';
 import { useChatOptions } from '../hooks/use-chat-options';
-import { useLlmModel } from '../hooks/use-llm-model';
 import ArrowRightIcon from '../icons/arrow-right';
 import CheckIcon from '../icons/check';
 import ClipboardIcon from '../icons/clipboard';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
+import { useLlmModel } from '../providers/llm-model';
 import MarkdownDisplay from './markdown-display/markdown-display';
 
 type ChatProps = {
@@ -27,7 +27,6 @@ type ChatProps = {
 
 export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   const { model } = useLlmModel();
-  const chatPath = agentId !== undefined ? `/agents/${agentId}/c/${id}` : `/c/${id}`;
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
@@ -57,6 +56,10 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
 
   const { scrollRef, isCopied, handleCopy } = useChatOptions({ messages });
 
+  const chatPath = agentId !== undefined ? `/agents/${agentId}/c/${id}` : `/c/${id}`;
+  const waitingForResponse = status === 'submitted' || status === 'streaming';
+  const assitantError = status === 'error';
+
   async function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -78,9 +81,6 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       }
     }
   }
-
-  const waitingForResponse = status === 'submitted' || status === 'streaming';
-  const assitantError = status === 'error';
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">

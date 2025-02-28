@@ -6,7 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { Bot, Plus, User } from 'lucide-react';
+import { Bot, Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 

@@ -7,7 +7,9 @@ export default async function Page() {
   return (
     <PageContainer className="mx-auto">
       <div className="flex flex-col gap-4 w-full">
-        <h1 className="text-2xl font-semibold">Agents</h1>
+        <h1 className="text-2xl font-semibold">
+          {user.firstName} {user.lastName}
+        </h1>
         <p>
           "Agents" are custom AI assistants designed with a specific set of instructions tailored to
           perform particular tasks or solve particular problems.

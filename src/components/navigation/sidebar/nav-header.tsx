@@ -1,3 +1,4 @@
+import { ModeToggle } from '@/components/common/dark-mode-toggle';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
 import { User2 } from 'lucide-react';
@@ -7,7 +8,7 @@ export function NavHeader({ firstName, lastName, email }: ObscuredUser) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" asChild>
+        <SidebarMenuButton className="hover:bg-transparent cursor-default" size="lg" asChild>
           <Link href="#">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
               <User2 className="size-4" />
@@ -17,6 +18,9 @@ export function NavHeader({ firstName, lastName, email }: ObscuredUser) {
                 {firstName} {lastName}
               </span>
               <span className="truncate text-xs">{email}</span>
+            </div>
+            <div className="flex items-center justify-center">
+              <ModeToggle />
             </div>
           </Link>
         </SidebarMenuButton>
