@@ -1,8 +1,8 @@
-import { headers } from 'next/headers';
+import { headers as nextHeaders } from 'next/headers';
 
 export function getHostByHeaders() {
-  const hostHeaders = headers();
-  const host = hostHeaders.get('host');
+  const headers = nextHeaders();
+  const host = headers.get('host');
 
   if (host === null) {
     throw new Error('Host header not found');

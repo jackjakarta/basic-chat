@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@/components/providers/theme';
 import { type Metadata } from 'next';
 import { Barlow } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
@@ -25,8 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={barlow.className}>
-        <Toaster />
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Toaster />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

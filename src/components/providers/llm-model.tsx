@@ -20,7 +20,7 @@ export function useLlmModel() {
   const context = React.useContext(ModelContext);
 
   if (context === undefined) {
-    throw new Error('useModel must be used within a ModelProvider');
+    throw new Error('useModel must be used within a LlmModelProvider');
   }
 
   return context;

@@ -22,6 +22,7 @@ export function NavMain() {
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
+
         <SidebarMenuItem>
           <SidebarMenuButton className="cursor-pointer" asChild>
             <Link href="/agents" className="flex items-center gap-2">
