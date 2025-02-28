@@ -6,7 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { Bot, Plus } from 'lucide-react';
+import { Bot, Plus, User } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -22,6 +22,7 @@ export function NavMain() {
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
+
         <SidebarMenuItem>
           <SidebarMenuButton className="cursor-pointer" asChild>
             <Link href="/agents" className="flex items-center gap-2">

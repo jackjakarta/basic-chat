@@ -42,6 +42,7 @@
     "nanoid": "5.1.2",
     "next": "14.2.21",
     "next-auth": "4.24.8",
+    "nextjs-toploader": "3.7.15",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.6",
     "openai": "4.85.1",
