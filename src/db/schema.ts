@@ -33,6 +33,7 @@ export const tokenTable = appSchema.table(
     token: text('token').notNull(),
     email: text('email'),
     createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+    expiresAt: timestamp('expires_at', { mode: 'date', withTimezone: true }),
   },
   (table) => {
     return {

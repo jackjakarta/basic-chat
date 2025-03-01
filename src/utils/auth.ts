@@ -25,5 +25,25 @@ export async function getUser() {
     redirect('/login');
   }
 
+  if (!user.emailVerified) {
+    redirect('/verify-email');
+  }
+
+  return user;
+}
+
+export async function getMaybeUser() {
+  const session = await getMaybeUserSession();
+
+  if (session === null) {
+    return undefined;
+  }
+
+  const user = await dbGetUserById({ userId: session.user.id });
+
+  if (user === undefined) {
+    return undefined;
+  }
+
   return user;
 }

@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
-import { cw } from '@/utils/tailwind';
+import { cw, inputFieldErrorClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -39,7 +40,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
   });
@@ -54,8 +55,19 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
         authProvider: 'credentials',
       });
 
-      toastSuccess('Account created successfully');
-      router.push('/login');
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      const loginSuccess = result === undefined || result.ok;
+
+      if (loginSuccess) {
+        router.push('/');
+      }
+
+      toastSuccess('Account created successfully. Check your email.');
     } catch (error) {
       console.error({ error });
       toastError('An error occurred while creating your account');
@@ -82,7 +94,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             type="text"
             {...register('firstName')}
             placeholder="Jane"
-            className={cw(errors.firstName && 'border-red-500')}
+            className={cw(errors.firstName && inputFieldErrorClassName)}
           />
         </div>
 
@@ -93,7 +105,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             type="text"
             {...register('lastName')}
             placeholder="Doe"
-            className={cw(errors.lastName && 'border-red-500')}
+            className={cw(errors.lastName && inputFieldErrorClassName)}
           />
         </div>
 
@@ -104,7 +116,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             type="text"
             {...register('email')}
             placeholder="m@example.com"
-            className={cw(errors.email && 'border-red-500')}
+            className={cw(errors.email && inputFieldErrorClassName)}
           />
         </div>
 
@@ -115,7 +127,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             type="password"
             placeholder="********"
             {...register('password')}
-            className={cw(errors.password && 'border-red-500')}
+            className={cw(errors.password && inputFieldErrorClassName)}
           />
         </div>
 
@@ -126,12 +138,12 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             type="password"
             placeholder="********"
             {...register('confirmPassword')}
-            className={cw(errors.password && 'border-red-500')}
+            className={cw(errors.password && inputFieldErrorClassName)}
           />
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? 'Loading...' : 'Register'}
+        <Button type="submit" disabled={isSubmitting || isSubmitSuccessful} className="w-full">
+          {isSubmitting || isSubmitSuccessful ? 'Loading...' : 'Register'}
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
           <span className="relative z-10 bg-background px-2 text-muted-foreground">

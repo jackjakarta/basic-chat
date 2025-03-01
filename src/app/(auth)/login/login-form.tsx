@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { emailSchema } from '@/utils/schemas';
-import { cw } from '@/utils/tailwind';
+import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isSubmitSuccessful },
     setError,
     watch,
   } = useForm<LoginFormData>({
@@ -55,7 +55,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
   const emailValue = watch('email');
   const passwordValue = watch('password');
-  const buttonDisabled = !emailValue || !passwordValue || isSubmitting;
+  const buttonDisabled = !emailValue || !passwordValue || isSubmitting || isSubmitSuccessful;
 
   return (
     <form
@@ -77,9 +77,11 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             type="text"
             {...register('email')}
             placeholder="m@example.com"
-            className={cw((errors.email || errors.root) && 'border-red-500 bg-red-50')}
+            className={cw((errors.email || errors.root) && inputFieldErrorClassName)}
           />
-          {errors.email && <div className="text-red-500 text-xs">{errors.email.message}</div>}
+          {errors.email && (
+            <div className={inputFieldErrorMessageClassName}>{errors.email.message}</div>
+          )}
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
@@ -95,14 +97,18 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             id="password"
             type="password"
             {...register('password')}
-            className={cw((errors.password || errors.root) && 'border-red-500 bg-red-50')}
+            className={cw((errors.password || errors.root) && inputFieldErrorClassName)}
           />
-          {errors.password && <div className="text-red-500 text-xs">{errors.password.message}</div>}
-          {errors.root && <div className="text-red-500 text-xs">{errors.root.message}</div>}
+          {errors.password && (
+            <div className={inputFieldErrorMessageClassName}>{errors.password.message}</div>
+          )}
+          {errors.root && (
+            <div className={inputFieldErrorMessageClassName}>{errors.root.message}</div>
+          )}
         </div>
 
         <Button type="submit" className="w-full" disabled={buttonDisabled}>
-          {isSubmitting ? 'Logging in...' : 'Login'}
+          {isSubmitting || isSubmitSuccessful ? 'Logging in...' : 'Login'}
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
           <span className="relative z-10 bg-background px-2 text-muted-foreground">
