@@ -13,14 +13,14 @@ export async function createUserActionMailTemplate(
   action: TokenAction,
 ): Promise<MailTemplateResponse | undefined> {
   if (action === 'reset-password' && (await dbGetUserByEmail({ email })) === undefined) {
-    console.warn(`Cannot send email to non-existing user with email '${email}'`);
+    console.error({ error: `Cannot send email to non-existing user with email '${email}'` });
     return undefined;
   }
 
   const userActionRow = await dbInsertOrUpdateActionToken({ email, action });
 
   if (userActionRow === undefined) {
-    console.warn(`Failed to retrieve or create action token for email '${email}'`);
+    console.error({ error: `Failed to retrieve or create action token for email '${email}'` });
     return undefined;
   }
 
@@ -28,7 +28,8 @@ export async function createUserActionMailTemplate(
     token: userActionRow.token,
   });
 
-  const actionUrl = buildUserActionUrl({ searchParams });
+  const actionUrl = buildUserActionUrl({ searchParams, tokenAction: action });
+  console.debug({ actionUrl });
 
   switch (action) {
     case 'verify-email':
