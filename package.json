@@ -30,6 +30,7 @@
     "@radix-ui/react-slot": "1.1.2",
     "@radix-ui/react-switch": "1.1.3",
     "@radix-ui/react-tooltip": "1.1.8",
+    "@sentry/nextjs": "^9",
     "@t3-oss/env-nextjs": "0.7.3",
     "ai": "4.1.41",
     "bcrypt": "5.1.1",
