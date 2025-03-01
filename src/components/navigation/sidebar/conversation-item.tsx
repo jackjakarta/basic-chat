@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMobile } from '@/components/hooks/use-mobile';
 import { useToast } from '@/components/hooks/use-toast';
 import CheckIcon from '@/components/icons/check';
 import DotsHorizontalIcon from '@/components/icons/dots-horizontal';
@@ -15,7 +16,7 @@ import { type ConversationRow } from '@/db/schema';
 import { cw } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
@@ -29,8 +30,15 @@ const renameSchema = z.object({
 
 type FormData = z.infer<typeof renameSchema>;
 
-export default function ConversationItem({ conversation }: { conversation: ConversationRow }) {
+type ConversationItemProps = {
+  conversation: ConversationRow;
+  onClickMobile?: () => void;
+};
+
+export default function ConversationItem({ conversation, onClickMobile }: ConversationItemProps) {
   const pathname = usePathname();
+  const isMobile = useIsMobile();
+  const router = useRouter();
   const { toastSuccess, toastError, toastLoading, removeToast } = useToast();
 
   const [editMode, setEditMode] = React.useState(false);
@@ -68,6 +76,10 @@ export default function ConversationItem({ conversation }: { conversation: Conve
       await deleteConversationAction({ conversationId });
       removeToast();
       toastSuccess('Deleted conversation');
+
+      if (pathname.includes(conversationId)) {
+        router.replace('/');
+      }
     } catch (error) {
       console.error({ error });
       removeToast();
@@ -112,6 +124,7 @@ export default function ConversationItem({ conversation }: { conversation: Conve
           {!editMode && (
             <>
               <Link
+                onClick={onClickMobile}
                 href={
                   conversation.agentId !== null
                     ? `/agents/${conversation.agentId}/c/${conversation.id}`
@@ -125,8 +138,15 @@ export default function ConversationItem({ conversation }: { conversation: Conve
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="p-2 focus:outline-none invisible group-hover/item:visible"
+                    className={cw(
+                      'p-2 focus:outline-none',
+                      !isMobile && 'invisible group-hover/item:visible',
+                    )}
                     aria-label="Open menu"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
                   >
                     <DotsHorizontalIcon />
                   </button>

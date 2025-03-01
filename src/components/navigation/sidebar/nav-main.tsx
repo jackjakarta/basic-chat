@@ -10,12 +10,16 @@ import { Bot, Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
-export function NavMain() {
+type NavMainProps = {
+  onClickMobile?: () => void;
+};
+
+export function NavMain({ onClickMobile }: NavMainProps) {
   return (
     <SidebarGroup>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton className="cursor-pointer" asChild>
+          <SidebarMenuButton onClick={onClickMobile} className="cursor-pointer" asChild>
             <Link href="/" className="flex items-center gap-2">
               <Plus />
               <span>New Chat</span>
@@ -24,7 +28,7 @@ export function NavMain() {
         </SidebarMenuItem>
 
         <SidebarMenuItem>
-          <SidebarMenuButton className="cursor-pointer" asChild>
+          <SidebarMenuButton onClick={onClickMobile} className="cursor-pointer" asChild>
             <Link href="/agents" className="flex items-center gap-2">
               <Bot />
               <span>Agents</span>
