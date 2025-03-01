@@ -16,7 +16,11 @@ import useSWR from 'swr';
 
 import ConversationItem from './conversation-item';
 
-export function NavChats() {
+type NavChatsProps = {
+  onClickMobile?: () => void;
+};
+
+export function NavChats({ onClickMobile }: NavChatsProps) {
   const { data, isLoading } = useSWR<{ conversations: ConversationRow[] }>(
     '/api/conversations',
     fetcher,
@@ -37,7 +41,11 @@ export function NavChats() {
 
                 {data && data.conversations.length > 0 ? (
                   data.conversations.map((conversation) => (
-                    <ConversationItem key={conversation.id} conversation={conversation} />
+                    <ConversationItem
+                      key={conversation.id}
+                      conversation={conversation}
+                      onClickMobile={onClickMobile}
+                    />
                   ))
                 ) : (
                   <span className="text-xs">No chats at the moment</span>

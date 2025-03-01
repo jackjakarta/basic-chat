@@ -1,6 +1,12 @@
 'use client';
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  useSidebar,
+} from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
 import React from 'react';
 
@@ -15,14 +21,20 @@ type SidebarProps = React.ComponentProps<typeof Sidebar> & {
 };
 
 export default function AppSidebar({ user, ...props }: SidebarProps) {
+  const { setOpenMobile } = useSidebar();
+
+  function handleItemClickMobile() {
+    setOpenMobile(false);
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <NavHeader {...user} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain />
-        <NavChats />
+        <NavMain onClickMobile={handleItemClickMobile} />
+        <NavChats onClickMobile={handleItemClickMobile} />
         <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
