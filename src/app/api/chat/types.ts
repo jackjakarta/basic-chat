@@ -1,10 +1,7 @@
-import { conversationRoleSchema } from '@/db/schema';
 import { z } from 'zod';
 
-export const chatMessageSchema = z.object({
-  id: z.string(),
-  content: z.string(),
-  role: conversationRoleSchema,
-});
+export const modelsSchema = z.enum(['gpt-4o-mini', 'gpt-4o', 'gpt-4.5-preview']);
+export type AIModel = z.infer<typeof modelsSchema>;
 
-export type ChatMessage = z.infer<typeof chatMessageSchema>;
+export const imageModelsSchema = z.enum(['dall-e-3']);
+export type AIImageModel = z.infer<typeof imageModelsSchema>;

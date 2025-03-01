@@ -1,5 +1,3 @@
-import { on } from 'events';
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,13 +7,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import React from 'react';
-import { z } from 'zod';
 
-const alertTypeSchema = z.enum(['success', 'error', 'warning', 'info']);
-type AlertType = z.infer<typeof alertTypeSchema>;
+type AlertType = 'destructive' | 'info';
 
 type AlertModalProps = {
   title: string;
@@ -32,6 +27,7 @@ export default function AlertModal({
   isOpen,
   onOpenChange,
   description,
+  type,
 }: AlertModalProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
@@ -42,7 +38,9 @@ export default function AlertModal({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Confirm</AlertDialogAction>
+          <AlertDialogAction onClick={onConfirm}>
+            {type === 'destructive' ? 'Confirm' : 'Ok'}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

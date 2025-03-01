@@ -1,6 +1,6 @@
 'use client';
 
-import { type AIModel } from '@/app/api/chat/models';
+import { type AIModel } from '@/app/api/chat/types';
 import React from 'react';
 
 type ModelContextType = {
