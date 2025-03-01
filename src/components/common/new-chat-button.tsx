@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { Button } from '../ui/button';
 
-type NewChatButtonProps = React.ComponentPropsWithoutRef<'button'>;
+type NewChatButtonProps = React.ComponentPropsWithoutRef<typeof Button>;
 
 export default function NewChatButton({ className, ...props }: NewChatButtonProps) {
   const router = useRouter();

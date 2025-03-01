@@ -38,7 +38,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
 
   return (
     <Link href={`/agents/${agent.id}/c`}>
-      <Card className="w-full p-4 flex items-center justify-between space-x-4 cursor-pointer">
+      <Card className="w-full p-4 flex items-center hover:bg-secondary/40 justify-between space-x-4 cursor-pointer">
         <div className="flex items-center space-x-4">
           <Avatar className="h-12 w-12">
             <AvatarImage src={agent.pictureUrl ?? ''} alt={agent.name} />

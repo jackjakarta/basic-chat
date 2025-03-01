@@ -3,7 +3,7 @@ import React from 'react';
 
 export function useChatOptions({ messages }: { messages: Message[] }) {
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
-  const [isCopied, setIsCopied] = React.useState(false);
+  const [copiedMessageIndex, setCopiedMessageIndex] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     if (scrollRef.current) {
@@ -11,14 +11,14 @@ export function useChatOptions({ messages }: { messages: Message[] }) {
     }
   }, [messages]);
 
-  function handleCopy(text: string) {
+  function handleCopy(text: string, index: number) {
     navigator.clipboard.writeText(text);
-    setIsCopied(true);
+    setCopiedMessageIndex(index);
 
     setTimeout(() => {
-      setIsCopied(false);
+      setCopiedMessageIndex(null);
     }, 1000);
   }
 
-  return { scrollRef, isCopied, handleCopy };
+  return { scrollRef, copiedMessageIndex, handleCopy };
 }
