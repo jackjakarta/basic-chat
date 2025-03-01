@@ -19,12 +19,12 @@ export async function POST(request: NextRequest) {
   const user = await getUser();
 
   const {
-    id,
+    chatId,
     messages,
     modelId,
     agentId,
   }: {
-    id: string;
+    chatId: string;
     messages: Message[];
     modelId: AIModel;
     agentId?: string;
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     agentId !== undefined ? await dbGetAgentById({ agentId, userId: user.id }) : undefined;
 
   const conversation = await dbGetOrCreateConversation({
-    conversationId: id,
+    conversationId: chatId,
     userId: user.id,
     agentId: maybeAgent?.id,
   });
@@ -62,15 +62,14 @@ export async function POST(request: NextRequest) {
     orderNumber: messages.length,
   });
 
-  const definedModel = parsedModelId.data;
-  console.debug({ definedModel });
-
   const agentInstructions = maybeAgent !== undefined ? maybeAgent.instructions : undefined;
   const systemPrompt = constructSystemPrompt({ agentInstructions });
+
+  console.debug({ modelId });
   console.debug({ systemPrompt });
 
   const result = streamText({
-    model: myProvider.languageModel(definedModel),
+    model: myProvider.languageModel(modelId),
     system: systemPrompt,
     messages,
     tools: {

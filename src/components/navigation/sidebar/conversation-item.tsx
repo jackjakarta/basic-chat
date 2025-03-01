@@ -49,7 +49,6 @@ export default function ConversationItem({ conversation }: { conversation: Conve
 
     try {
       await updateConversationTitle({ conversationId: conversation.id, title: data.name });
-      console.debug({ data });
       removeToast();
       toastSuccess('Saved conversation name');
     } catch (error) {
@@ -83,17 +82,21 @@ export default function ConversationItem({ conversation }: { conversation: Conve
       <SidebarMenuSubButton
         asChild
         className={cw(
-          'pl-2 pr-0.5 hover:bg-sidebar-accent/90',
-          pathname.includes(conversation.id) && 'bg-sidebar-accent',
+          'pl-2 pr-0.5',
+          !editMode ? 'hover:bg-sidebar-accent/90' : 'hover:bg-transparent active:bg-transparent',
+          pathname.includes(conversation.id) && !editMode && 'bg-sidebar-accent',
         )}
       >
         <div className="flex justify-between items-center w-full">
           {editMode && (
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-1 flex items-center gap-2">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex-1 flex items-center gap-2 -ml-2"
+            >
               <input
                 {...register('name')}
                 autoFocus
-                className="bg-white py-1 px-1 rounded-sm w-full border border-gray-300 focus:outline-none"
+                className="py-1 pr-1 pl-2 rounded-sm w-full focus:outline-none"
               />
               <button
                 type="submit"
@@ -148,7 +151,7 @@ export default function ConversationItem({ conversation }: { conversation: Conve
                       e.preventDefault();
                       handleDeleteConversation(conversation.id);
                     }}
-                    className="text-red-500 cursor-pointer"
+                    className="text-destructive focus:text-destructive cursor-pointer"
                   >
                     Delete
                   </DropdownMenuItem>

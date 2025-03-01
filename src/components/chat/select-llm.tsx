@@ -25,7 +25,7 @@ export default function SelectLlmModel() {
     <Select value={model} onValueChange={(value) => setModel(value as AIModel)}>
       <SelectTrigger
         title="Select LLM Model"
-        className="mt-2 w-auto h-[32px] border-none hover:bg-accent shadow-none focus:ring-0 focus:ring-transparent"
+        className="w-auto h-[32px] border-none hover:bg-accent shadow-none focus:ring-0 focus:ring-transparent"
       >
         <SelectValue placeholder="Select a model" />
       </SelectTrigger>

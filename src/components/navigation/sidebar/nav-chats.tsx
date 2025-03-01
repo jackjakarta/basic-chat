@@ -32,13 +32,13 @@ export function NavChats() {
             </SidebarMenuButton>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {isLoading
-                  ? Array.from({ length: 14 }).map((_, index) => (
-                      <SidebarMenuSkeleton key={index} />
-                    ))
-                  : data?.conversations.map((conversation) => (
-                      <ConversationItem key={conversation.id} conversation={conversation} />
-                    ))}
+                {isLoading &&
+                  Array.from({ length: 14 }).map((_, index) => <SidebarMenuSkeleton key={index} />)}
+
+                {data &&
+                  data.conversations.map((conversation) => (
+                    <ConversationItem key={conversation.id} conversation={conversation} />
+                  ))}
               </SidebarMenuSub>
             </CollapsibleContent>
           </SidebarMenuItem>

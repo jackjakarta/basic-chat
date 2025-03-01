@@ -13,9 +13,9 @@ export default function Header() {
   const isEmptyChat = pathname === '/';
 
   return (
-    <div className="flex items-center gap-2">
-      <SidebarTrigger className="ml-2 mt-2 p-4" />
-      {!open && <NewChatButton disabled={isEmptyChat} className="mt-2 p-4 mr-2" />}
+    <div className="flex items-center gap-4 p-4">
+      <SidebarTrigger />
+      {!open && <NewChatButton disabled={isEmptyChat} className="mr-2" />}
       <SelectLlmModel />
     </div>
   );

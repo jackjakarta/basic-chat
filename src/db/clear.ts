@@ -2,7 +2,10 @@ import { db } from '.';
 import { conversationMessageTable, conversationTable } from './schema';
 
 async function clearDb({ skip }: { skip: boolean }) {
-  if (skip) return;
+  if (skip) {
+    console.debug('Skipping database clear');
+    return;
+  }
 
   await db.transaction(async (tx) => {
     await tx.delete(conversationMessageTable);
@@ -10,7 +13,7 @@ async function clearDb({ skip }: { skip: boolean }) {
   });
 }
 
-clearDb({ skip: false })
+clearDb({ skip: true })
   .then(() => {
     console.info('Database cleared');
     process.exit(0);

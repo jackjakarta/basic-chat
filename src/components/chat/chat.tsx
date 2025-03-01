@@ -35,7 +35,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       api: '/api/chat',
       experimental_throttle: 100,
       maxSteps: 2,
-      body: { id, modelId: model, agentId },
+      body: { chatId: id, modelId: model, agentId },
       generateId: generateUUID,
       onResponse: () => {
         if (messages.length > 1) {
@@ -54,11 +54,8 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
     },
   );
 
-  const { scrollRef, isCopied, handleCopy } = useChatOptions({ messages });
-
+  const { scrollRef, copiedMessageIndex, handleCopy } = useChatOptions({ messages });
   const chatPath = agentId !== undefined ? `/agents/${agentId}/c/${id}` : `/c/${id}`;
-  const waitingForResponse = status === 'submitted' || status === 'streaming';
-  const assitantError = status === 'error';
 
   async function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,7 +70,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   }
 
   async function handleSubmitOnEnter(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === 'Enter' && !waitingForResponse && !e.shiftKey) {
+    if (e.key === 'Enter' && status !== 'submitted' && status !== 'streaming' && !e.shiftKey) {
       e.preventDefault();
 
       if (e.currentTarget.value.trim().length > 0) {
@@ -83,12 +80,16 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   }
 
   return (
-    <div className="flex flex-col h-full w-full overflow-hidden">
-      <div className="flex flex-col flex-1 justify-between items-center w-full overflow-hidden">
+    <div
+      ref={scrollRef}
+      className="flex flex-col h-full w-full overflow-y-auto"
+      style={{ maxHeight: 'calc(100vh - 150px)' }}
+    >
+      <div className="flex flex-col flex-1 justify-between items-center w-full">
         <div
-          ref={scrollRef}
-          className="flex-grow w-full max-w-[50rem] overflow-y-auto p-4 pb-[5rem]"
-          style={{ maxHeight: 'calc(100vh - 150px)' }}
+          // ref={scrollRef}
+          className="flex-grow w-full max-w-[50rem] p-4 pb-[5rem]"
+          // style={{ maxHeight: 'calc(100vh - 150px)' }}
         >
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">MY LOGO HERE</div>
@@ -108,49 +109,76 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                       )}
                     >
                       <div>
-                        {message.content.length > 0 ? (
+                        {message.content.length > 0 && status !== 'error' ? (
                           <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
                         ) : (
                           <LoadingText>
-                            {toolNameMap(message?.toolInvocations?.[0]?.toolName) ?? 'Loading...'}
+                            {toolNameMap(
+                              message?.parts?.[0]?.type === 'tool-invocation'
+                                ? message.parts?.[0].toolInvocation.toolName
+                                : '',
+                            ) ?? ''}
                           </LoadingText>
                         )}
 
-                        {isLastNonUser && !waitingForResponse && (
-                          <div className="flex items-center gap-1">
-                            <button
-                              title="Copy message"
-                              type="button"
-                              onClick={() => handleCopy(message.content)}
-                              className="rounded-full hover:text-primary mt-1"
-                              aria-label="Copy"
+                        {message.role === 'assistant' &&
+                          status !== 'submitted' &&
+                          status !== 'streaming' && (
+                            <div
+                              className={cw(
+                                'flex items-center gap-1 hover:opacity-100',
+                                isLastNonUser ? 'opacity-100' : 'opacity-0',
+                              )}
                             >
-                              <div className="p-2 rounded-md hover:bg-secondary/65 text-primary">
-                                {isCopied ? (
-                                  <CheckIcon className="w-3.5 h-3.5" />
-                                ) : (
-                                  <ClipboardIcon className="w-3.5 h-3.5" />
+                              <button
+                                title="Copy message"
+                                type="button"
+                                onClick={() => handleCopy(message.content, index)}
+                                className="rounded-full mt-1 "
+                                aria-label="Copy"
+                              >
+                                <div
+                                  className={cw(
+                                    'p-2 rounded-md hover:bg-secondary/65',
+                                    'text-primary hover:text-primary',
+                                    'dark:text-sidebar-accent hover:dark:text-sidebar-accent',
+                                  )}
+                                >
+                                  {copiedMessageIndex === index ? (
+                                    <CheckIcon className="w-3.5 h-3.5" />
+                                  ) : (
+                                    <ClipboardIcon className="w-3.5 h-3.5" />
+                                  )}
+                                </div>
+                              </button>
+                              <TTSButton
+                                text={message.content}
+                                className={cw(
+                                  'mt-1 p-2 rounded-md hover:bg-secondary/65',
+                                  'text-primary dark:text-sidebar-accent',
                                 )}
-                              </div>
-                            </button>
-                            <TTSButton
-                              text={message.content}
-                              className="mt-1 p-2 rounded-md hover:bg-secondary/65 text-primary"
-                              spinnerClassName="w-3.5 h-3.5"
-                            />
-                            <button
-                              title="Reload last message"
-                              type="button"
-                              onClick={() => reload()}
-                              className="mt-1"
-                              aria-label="Reload"
-                            >
-                              <div className="p-2 rounded-md hover:bg-secondary/65 text-primary">
-                                <ReloadIcon className="w-3.5 h-3.5" />
-                              </div>
-                            </button>
-                          </div>
-                        )}
+                                spinnerClassName="w-3.5 h-3.5"
+                              />
+                              {isLastNonUser && (
+                                <button
+                                  title="Reload last message"
+                                  type="button"
+                                  onClick={() => reload()}
+                                  className="mt-1"
+                                  aria-label="Reload"
+                                >
+                                  <div
+                                    className={cw(
+                                      'p-2 rounded-md hover:bg-secondary/65',
+                                      'text-primary dark:text-sidebar-accent',
+                                    )}
+                                  >
+                                    <ReloadIcon className="w-3.5 h-3.5" />
+                                  </div>
+                                </button>
+                              )}
+                            </div>
+                          )}
                       </div>
                     </div>
                   );
@@ -163,7 +191,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
               )}
             </>
           )}
-          {assitantError && (
+          {status === 'error' && (
             <div className="mx-4 p-4 gap-2 text-sm rounded-2xl bg-red-100 text-red-500 border border-red-500 text-right mt-8">
               <div className="flex justify-between items-center px-2">
                 {error?.message ?? 'Something went wrong'}
@@ -189,13 +217,13 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                 <AutoResizeTextarea
                   autoFocus
                   placeholder="Type your message here..."
-                  className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto placeholder-black p-2"
+                  className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto p-2"
                   onChange={handleInputChange}
                   value={input}
                   onKeyDown={handleSubmitOnEnter}
                   maxLength={20000}
                 />
-                {waitingForResponse ? (
+                {status === 'submitted' || status === 'streaming' ? (
                   <button
                     type="button"
                     title="Stop generating"
@@ -219,8 +247,11 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
               </div>
             </form>
             <span className="text-xs mt-2 font-normal text-main-900 flex self-center">
-              Press <kbd className="mx-2 text-xs bg-gray-100 rounded-md p-0.5">Enter</kbd> to send
-              message
+              Press{' '}
+              <kbd className="mx-2 text-xs bg-gray-100 dark:bg-accent rounded-md px-2 py-0.5">
+                Enter
+              </kbd>{' '}
+              to send message
             </span>
           </div>
         </div>

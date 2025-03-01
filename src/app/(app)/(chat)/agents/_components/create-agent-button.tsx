@@ -61,11 +61,9 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
   }
 
   return (
-    <>
-      <Button onClick={() => setIsModalOpen(true)} className={className}>
-        <div className="flex items-center gap-2">
-          <span className="text-sm">Create Agent</span>
-        </div>
+    <div className="flex flex-col items-start gap-4">
+      <Button className={className} onClick={() => setIsModalOpen(true)}>
+        <span className="text-sm">Create Agent</span>
       </Button>
 
       <DialogWindow open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -100,6 +98,6 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
           </CardFooter>
         </form>
       </DialogWindow>
-    </>
+    </div>
   );
 }
