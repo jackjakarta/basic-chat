@@ -11,7 +11,7 @@ type ModelContextType = {
 const ModelContext = React.createContext<ModelContextType | undefined>(undefined);
 
 export function LlmModelProvider({ children }: { children: React.ReactNode }) {
-  const [model, setModel] = React.useState<AIModel>('gpt-4o');
+  const [model, setModel] = React.useState<AIModel>('gpt-4.5-preview');
 
   return <ModelContext.Provider value={{ model, setModel }}>{children}</ModelContext.Provider>;
 }
