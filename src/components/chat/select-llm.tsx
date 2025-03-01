@@ -1,6 +1,6 @@
 'use client';
 
-import { type AIModel } from '@/app/api/chat/models';
+import { modelsSchema, type AIModel } from '@/app/api/chat/types';
 import {
   Select,
   SelectContent,
@@ -30,12 +30,11 @@ export default function SelectLlmModel() {
         <SelectValue placeholder="Select a model" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="gpt-4o" className="me-4">
-          <span className="me-2">GPT-4o</span>
-        </SelectItem>
-        <SelectItem value="gpt-4o-mini">
-          <span className="me-2">GPT-4o Mini</span>
-        </SelectItem>
+        {modelsSchema.options.map((model) => (
+          <SelectItem key={model} value={model} className="me-4">
+            <span className="me-2">{model}</span>
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );

@@ -10,10 +10,11 @@ import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { modelsSchema, myProvider, type AIModel } from './models';
+import { myProvider } from './models';
 import { constructSystemPrompt } from './system-prompt';
 import { generateImageFromText } from './tools/generate-image';
 import { braveSearch } from './tools/web-search';
+import { modelsSchema, type AIModel } from './types';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();

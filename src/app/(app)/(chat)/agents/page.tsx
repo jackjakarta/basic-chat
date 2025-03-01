@@ -18,7 +18,7 @@ export default async function Page() {
           perform particular tasks or solve particular problems.
         </p>
         <CreateAgentButton className="w-fit rounded-lg" />
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {agents.map((agent) => (
             <AgentCard key={agent.id} agent={agent} />
           ))}

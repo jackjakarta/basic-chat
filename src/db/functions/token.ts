@@ -6,6 +6,15 @@ import { tokenTable, userTable, type TokenAction, type TokenRow } from '../schem
 
 export async function dbValidateToken(token: string): Promise<TokenRow | undefined> {
   const tokenModel = (await db.select().from(tokenTable).where(eq(tokenTable.token, token)))[0];
+  const currentDate = new Date();
+
+  if (
+    tokenModel?.expiresAt !== null &&
+    tokenModel?.expiresAt !== undefined &&
+    tokenModel?.expiresAt < currentDate
+  ) {
+    return undefined;
+  }
 
   if (tokenModel?.action === 'verify-email' && tokenModel.email !== null) {
     await db
@@ -27,14 +36,15 @@ export async function dbInsertOrUpdateActionToken({
   try {
     const token = action === 'verify-email' ? nanoid(6).toUpperCase() : nanoid(32);
     const createdAt = new Date();
+    const expiresAt = new Date(createdAt.getTime() + 30 * 60 * 1000);
 
     const result = (
       await db
         .insert(tokenTable)
-        .values({ email, token, action, createdAt })
+        .values({ email, token, action, createdAt, expiresAt })
         .onConflictDoUpdate({
           target: [tokenTable.email, tokenTable.action],
-          set: { token, createdAt },
+          set: { token, createdAt, expiresAt },
         })
         .returning()
     )[0];
