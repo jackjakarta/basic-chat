@@ -104,6 +104,35 @@ export async function POST(request: NextRequest) {
             }
           },
         },
+        // transcribeYoutubeVideo: {
+        //   description:
+        //     'You take a YouTube video transcript and provide a summary of the video content.',
+        //   parameters: z.object({
+        //     youtubeUrl: z.string().describe('The URL of the YouTube video.'),
+        //   }),
+        //   execute: async ({ youtubeUrl }) => {
+        //     try {
+        //       const toolResults = await transcribeYoutubeVideo({ videoUrl: youtubeUrl });
+
+        //       if (!toolResults) {
+        //         return `I could retrieve the transcription for: '${youtubeUrl}'.`;
+        //       }
+
+        //       console.debug({ toolResults });
+        //       return toolResults;
+        //     } catch (error) {
+        //       const errorMessage = `An error occurred while transcribing the video. We are sorry.`;
+
+        //       if (error instanceof Error) {
+        //         console.error({ error: error.message });
+        //         throw new Error(errorMessage);
+        //       }
+
+        //       console.error({ error });
+        //       throw new Error(errorMessage);
+        //     }
+        //   },
+        // },
       },
       async onFinish(assistantMessage) {
         await dbInsertChatContent({

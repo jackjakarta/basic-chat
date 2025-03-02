@@ -76,6 +76,9 @@ importers:
       elevenlabs:
         specifier: 1.51.0
         version: 1.51.0
+      formdata-node:
+        specifier: 6.0.3
+        version: 6.0.3
       katex:
         specifier: 0.16.21
         version: 0.16.21
