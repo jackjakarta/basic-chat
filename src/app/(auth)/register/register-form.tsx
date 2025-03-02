@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
-import { cw, inputFieldErrorClassName } from '@/utils/tailwind';
+import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -96,6 +96,9 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             placeholder="Jane"
             className={cw(errors.firstName && inputFieldErrorClassName)}
           />
+          {errors.firstName && (
+            <span className={inputFieldErrorMessageClassName}>{errors.firstName.message}</span>
+          )}
         </div>
 
         <div className="grid gap-2">
@@ -107,6 +110,9 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             placeholder="Doe"
             className={cw(errors.lastName && inputFieldErrorClassName)}
           />
+          {errors.lastName && (
+            <span className={inputFieldErrorMessageClassName}>{errors.lastName.message}</span>
+          )}
         </div>
 
         <div className="grid gap-2">
@@ -118,6 +124,9 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             placeholder="m@example.com"
             className={cw(errors.email && inputFieldErrorClassName)}
           />
+          {errors.email && (
+            <span className={inputFieldErrorMessageClassName}>{errors.email.message}</span>
+          )}
         </div>
 
         <div className="grid gap-2">
@@ -129,6 +138,9 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             {...register('password')}
             className={cw(errors.password && inputFieldErrorClassName)}
           />
+          {errors.password && (
+            <span className={inputFieldErrorMessageClassName}>{errors.password.message}</span>
+          )}
         </div>
 
         <div className="grid gap-2">
@@ -140,6 +152,11 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
             {...register('confirmPassword')}
             className={cw(errors.password && inputFieldErrorClassName)}
           />
+          {errors.confirmPassword && (
+            <span className={inputFieldErrorMessageClassName}>
+              {errors.confirmPassword.message}
+            </span>
+          )}
         </div>
 
         <Button type="submit" disabled={isSubmitting || isSubmitSuccessful} className="w-full">

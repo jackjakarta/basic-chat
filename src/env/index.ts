@@ -13,13 +13,18 @@ export const env = createEnv({
     mailjetApiSecret: z.string().min(1),
     githubClientId: z.string().min(1),
     githubClientSecret: z.string().min(1),
+    awsAccessKeyId: z.string().min(1),
+    awsBucketUrl: z.string().min(1),
+    awsSecretAccessKey: z.string().min(1),
+    awsS3EndpointUrl: z.string().min(1),
+    awsRegion: z.string().min(1),
+    awsBucketName: z.string().min(1),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
     NEXT_PUBLIC_passwordValidator: z.enum(['weak', 'medium', 'strong']).default('medium'),
   },
   runtimeEnv: {
-    // Server
     databaseUrl: process.env.DATABASE_URL,
     nextAuthUrl: process.env.NEXTAUTH_URL,
     nextAuthSecret: process.env.NEXTAUTH_SECRET,
@@ -30,9 +35,13 @@ export const env = createEnv({
     mailjetApiSecret: process.env.MAILJET_API_SECRET,
     githubClientId: process.env.GITHUB_CLIENT_ID,
     githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+    awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    awsBucketUrl: process.env.AWS_BUCKET_URL,
+    awsS3EndpointUrl: process.env.AWS_S3_ENDPOINT_URL,
+    awsRegion: process.env.AWS_REGION,
+    awsBucketName: process.env.AWS_STORAGE_BUCKET_NAME,
     devMode: process.env.DEV_MODE,
-
-    // Client
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },
 });

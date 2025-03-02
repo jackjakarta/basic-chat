@@ -1,12 +1,21 @@
 export function verifyMailTemplate({ verifyCode }: { verifyCode: string }) {
+  const formatedCode = insertSpaceAtHalf(verifyCode);
+
   return {
     Subject: { Data: 'Activate your account' },
     Body: {
       Html: {
-        Data: emailTemplate.replace('$REGISTER_CODE', verifyCode),
+        Data: emailTemplate.replace('$REGISTER_CODE', formatedCode),
       },
     },
   };
+}
+
+function insertSpaceAtHalf(str: string): string {
+  const half = Math.floor(str.length / 2);
+  const splitString = str.slice(0, half) + ' ' + str.slice(half);
+
+  return splitString;
 }
 
 const emailTemplate = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -24,5 +24,9 @@ export async function summarizeConversationTitle({
 
   const summary = response.choices[0]?.message.content;
 
+  if (!summary) {
+    return 'New Chat';
+  }
+
   return summary;
 }

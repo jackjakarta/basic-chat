@@ -2,6 +2,8 @@ import { env } from '@/env';
 import fetch from 'node-fetch';
 import { z } from 'zod';
 
+const braveApiKey = env.braveApiKey;
+
 const responseSchema = z.object({
   query: z.object({
     original: z.string(),
@@ -38,8 +40,6 @@ const responseSchema = z.object({
 });
 
 type BraveResponse = z.infer<typeof responseSchema>;
-
-const braveApiKey = env.braveApiKey;
 
 export async function braveSearch(searchQuery: string): Promise<BraveResponse> {
   const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(searchQuery)}`;

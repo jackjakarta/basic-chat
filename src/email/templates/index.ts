@@ -57,22 +57,22 @@ export async function createInformationMailTemplate(
 ) {
   switch (information.type) {
     case 'email-verified-success':
-      return buildInformationEmailTemplate(
-        'Account verified',
-        'Account activated',
-        `Your account has been successfully activated. ${email !== undefined ? `You can now log in with your email address ${email}.` : ''}`,
-      );
+      return buildInformationEmailTemplate({
+        subject: 'Account verified',
+        header: 'Account activated',
+        content: `Your account has been successfully activated. ${email !== undefined ? `You can now log in with your email address ${email}.` : ''}`,
+      });
     case 'reset-password-success':
-      return buildInformationEmailTemplate(
-        'Password reset',
-        'Password reset',
-        `Your password has been successfully reset.`,
-      );
+      return buildInformationEmailTemplate({
+        subject: 'Password reset',
+        header: 'Password reset',
+        content: `Your password has been successfully reset.`,
+      });
     case 'account-delete-success':
-      return buildInformationEmailTemplate(
-        'Account deleted',
-        'Account deleted',
-        `We are sad to see you go. Your account has been successfully deleted.`,
-      );
+      return buildInformationEmailTemplate({
+        subject: 'Account deleted',
+        header: 'Account deleted',
+        content: `We are sad to see you go. Your account has been successfully deleted.`,
+      });
   }
 }

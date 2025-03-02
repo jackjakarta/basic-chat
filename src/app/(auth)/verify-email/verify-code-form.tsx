@@ -35,12 +35,11 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
 
   async function onSubmit(data: LoginFormData) {
     const { code: _code } = data;
-    const code = _code.trim().toUpperCase();
-    const cleanedCode = sanitizeCode(code);
+    const code = sanitizeCode(_code);
 
     try {
-      await verifyEmailCodeAction({ token: cleanedCode });
-      router.push('/');
+      await verifyEmailCodeAction({ token: code });
+      router.replace('/');
     } catch (error) {
       console.error({ error });
       setError('code', {
@@ -113,5 +112,8 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
 }
 
 function sanitizeCode(input: string): string {
-  return input.replace(/\s+/g, '').toUpperCase();
+  const trimmed = input.trim();
+  const sanitized = trimmed.replace(/\s+/g, '').toUpperCase();
+
+  return sanitized;
 }

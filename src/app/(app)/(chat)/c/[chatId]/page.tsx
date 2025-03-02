@@ -20,7 +20,7 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
-  const chatId = parsedParams.data.params.chatId;
+  const { chatId } = parsedParams.data.params;
   const chat = await dbGetConversationById({ conversationId: chatId, userId: user.id });
 
   if (chat === undefined) {

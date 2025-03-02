@@ -12,7 +12,6 @@ import { z } from 'zod';
 
 import { myProvider } from './models';
 import { constructSystemPrompt } from './system-prompt';
-import { generateImageFromText } from './tools/generate-image';
 import { braveSearch } from './tools/web-search';
 import { modelsSchema, type AIModel } from './types';
 
@@ -63,8 +62,8 @@ export async function POST(request: NextRequest) {
     orderNumber: messages.length,
   });
 
-  const agentInstructions = maybeAgent !== undefined ? maybeAgent.instructions : undefined;
-  const systemPrompt = constructSystemPrompt({ agentInstructions });
+  const maybeAgentInstructions = maybeAgent?.instructions;
+  const systemPrompt = constructSystemPrompt({ agentInstructions: maybeAgentInstructions });
 
   console.debug({ modelId });
   console.debug({ systemPrompt });
@@ -82,8 +81,7 @@ export async function POST(request: NextRequest) {
         }),
         execute: async ({ searchQuery }) => {
           try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const toolResults: any = await braveSearch(searchQuery);
+            const toolResults = await braveSearch(searchQuery);
 
             if (!toolResults) {
               return `I could not find any relevant information about '${searchQuery}'.`;
@@ -104,24 +102,6 @@ export async function POST(request: NextRequest) {
           }
         },
       },
-      generateImage: {
-        description: 'Generate an image based on the description provided by the user.',
-        parameters: z.object({
-          imageDescription: z
-            .string()
-            .describe('The description of the image provided by the user.'),
-        }),
-        execute: async ({ imageDescription }) => {
-          const toolResults = await generateImageFromText({ imageDescription });
-
-          if (toolResults === undefined) {
-            throw new Error('An error occurred while generating the image.');
-          }
-
-          console.debug({ toolResults });
-          return toolResults;
-        },
-      },
     },
     async onFinish(assistantMessage) {
       await dbInsertChatContent({
@@ -140,7 +120,7 @@ export async function POST(request: NextRequest) {
 
         await dbUpdateConversationTitle({
           conversationId: conversation.id,
-          name: conversationTitle ?? conversation.id,
+          name: conversationTitle,
           userId: user.id,
         });
       }
