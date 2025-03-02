@@ -1,4 +1,5 @@
 import { GalleryVerticalEnd } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,9 +18,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
       <div className="relative hidden bg-muted opacity-90 lg:block">
-        <img
+        <Image
           src="/login-screen.jpg"
           alt="Image"
+          width={1920}
+          height={1080}
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>

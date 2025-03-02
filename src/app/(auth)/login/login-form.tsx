@@ -97,6 +97,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             id="password"
             type="password"
             {...register('password')}
+            placeholder="********"
             className={cw((errors.password || errors.root) && inputFieldErrorClassName)}
           />
           {errors.password && (
