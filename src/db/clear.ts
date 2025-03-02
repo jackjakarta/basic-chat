@@ -3,7 +3,7 @@ import { conversationMessageTable, conversationTable } from './schema';
 
 async function clearDb({ skip }: { skip: boolean }) {
   if (skip) {
-    console.debug('Skipping database clear');
+    console.info({ warning: 'Skipping database clear. Set to false to clear the database' });
     return;
   }
 

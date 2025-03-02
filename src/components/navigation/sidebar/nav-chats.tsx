@@ -39,17 +39,18 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                 {isLoading &&
                   Array.from({ length: 14 }).map((_, index) => <SidebarMenuSkeleton key={index} />)}
 
-                {data && data.conversations.length > 0 ? (
-                  data.conversations.map((conversation) => (
-                    <ConversationItem
-                      key={conversation.id}
-                      conversation={conversation}
-                      onClickMobile={onClickMobile}
-                    />
-                  ))
-                ) : (
-                  <span className="text-xs">No chats at the moment</span>
-                )}
+                {data &&
+                  (data.conversations.length > 0 ? (
+                    data.conversations.map((conversation) => (
+                      <ConversationItem
+                        key={conversation.id}
+                        conversation={conversation}
+                        onClickMobile={onClickMobile}
+                      />
+                    ))
+                  ) : (
+                    <span className="text-xs">No chats at the moment</span>
+                  ))}
               </SidebarMenuSub>
             </CollapsibleContent>
           </SidebarMenuItem>
