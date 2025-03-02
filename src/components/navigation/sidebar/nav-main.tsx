@@ -6,7 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { Bot, Plus } from 'lucide-react';
+import { Bot, Building, Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -32,6 +32,15 @@ export function NavMain({ onClickMobile }: NavMainProps) {
             <Link href="/agents" className="flex items-center gap-2">
               <Bot />
               <span>Agents</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <SidebarMenuButton onClick={onClickMobile} className="cursor-pointer" asChild>
+            <Link href="/" className="flex items-center gap-2">
+              <Building />
+              <span>Organisation</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>

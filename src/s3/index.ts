@@ -23,7 +23,7 @@ const s3 = new S3Client({
   },
 });
 
-export const bucketNameSchema = z.enum(['generated-images', 'user-images']);
+export const bucketNameSchema = z.literal('generated-images');
 export type BucketName = z.infer<typeof bucketNameSchema>;
 
 export async function uploadImageToS3({
