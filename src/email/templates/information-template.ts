@@ -1,4 +1,12 @@
-export function buildInformationEmailTemplate(subject: string, header: string, content: string) {
+export function buildInformationEmailTemplate({
+  subject,
+  header,
+  content,
+}: {
+  subject: string;
+  header: string;
+  content: string;
+}) {
   const data = getTemplate({ header, content });
 
   return {

@@ -9,6 +9,22 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'kglrzykqhwkegojcqach.supabase.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.gravatar.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
 export default withSentryConfig(nextConfig, {

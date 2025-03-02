@@ -13,15 +13,15 @@ const successToastOptions: ToastOptions = {
 
 const errorToastOptions: ToastOptions = {
   duration: 8000,
-  icon: <X className="text-red-500" />,
+  icon: <X className="text-destructive" />,
   style: { display: 'flex', borderRadius: '10px', backgroundColor: '#FFEBE8', color: '#D93025' },
   position: 'top-right',
 };
 
 const loadingToastOptions: ToastOptions = {
-  icon: <SpinnerLoading className="w-8 h-8 text-blue-600" />,
+  icon: <SpinnerLoading className="w-8 h-8 text-primary" />,
   style: { display: 'flex', borderRadius: '10px', backgroundColor: '#F0F0F0', color: '#333' },
-  position: 'top-center',
+  position: 'top-right',
 };
 
 export function useToast() {
