@@ -6,12 +6,15 @@ import { getUser } from '@/utils/auth';
 import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 
-import { newAgentSchema } from './_components/create-agent-button';
+const requestSchema = z.object({
+  name: z.string().min(1, 'Agent name is required'),
+  instructions: z.string().min(1, 'Instructions are required'),
+});
 
-type CreateAgentRequestBody = z.infer<typeof newAgentSchema>;
+type CreateAgentRequestBody = z.infer<typeof requestSchema>;
 
 export async function createAgentAction(body: CreateAgentRequestBody): Promise<AgentRow> {
-  const parsedData = newAgentSchema.safeParse(body);
+  const parsedData = requestSchema.safeParse(body);
 
   if (!parsedData.success) {
     throw new Error('Invalid data');
