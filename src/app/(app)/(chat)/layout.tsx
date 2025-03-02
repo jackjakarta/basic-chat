@@ -10,7 +10,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <SidebarProvider>
-      <AppSidebar variant="sidebar" className="border-accent" user={user} />
+      <AppSidebar user={user} />
       <SidebarInset>
         <Header />
         {children}

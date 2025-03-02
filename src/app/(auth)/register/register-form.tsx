@@ -183,8 +183,8 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
         </Button>
       </div>
       <div className="flex justify-center items-center gap-2 text-sm">
-        Alredy have an account?{' '}
-        <Link href="/login" className="underline underline-offset-4">
+        <span className="text-muted-foreground">Alredy have an account?</span>
+        <Link href="/login" className="hover:opacity-75">
           Login
         </Link>
       </div>

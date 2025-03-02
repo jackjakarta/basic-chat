@@ -3,7 +3,7 @@
 import { dbDeleteConversationById, dbUpdateConversationTitle } from '@/db/functions/chat';
 import { getUser } from '@/utils/auth';
 
-export async function updateConversationTitle({
+export async function updateConversationTitleAction({
   conversationId,
   title,
 }: {

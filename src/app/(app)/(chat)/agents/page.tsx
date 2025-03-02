@@ -19,9 +19,11 @@ export default async function Page() {
         </p>
         <CreateAgentButton className="w-fit rounded-lg" />
         <div className="flex flex-col gap-4">
-          {agents.map((agent) => (
-            <AgentCard key={agent.id} agent={agent} />
-          ))}
+          {agents.length === 0 ? (
+            <p>No agents found</p>
+          ) : (
+            agents.map((agent) => <AgentCard key={agent.id} agent={agent} />)
+          )}
         </div>
       </div>
     </PageContainer>
