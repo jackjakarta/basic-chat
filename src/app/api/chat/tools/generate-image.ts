@@ -3,8 +3,7 @@ import { uploadImageToS3 } from '@/s3';
 import { nanoid } from 'nanoid';
 
 export async function generateImageFromText({ imageDescription }: { imageDescription: string }) {
-  const prompt = `Generate an image based on the following text: ${imageDescription}`;
-
+  const prompt = `Generate an image based on the following description: ${imageDescription}`;
   const imageUrl = await generateImage({ prompt });
 
   if (imageUrl === undefined) {
