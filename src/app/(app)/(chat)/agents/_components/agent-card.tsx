@@ -1,6 +1,7 @@
 'use client';
 
 import AlertDialog from '@/components/common/alert-dialog';
+import { useToast } from '@/components/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -15,27 +16,30 @@ import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import toast from 'react-hot-toast';
 
 import { deleteAgentAction } from '../[agentId]/actions';
 
 export default function AgentCard({ agent }: { agent: AgentRow }) {
   const router = useRouter();
+  const { toastSuccess, toastError, toastLoading, removeToast } = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
   async function handleDeleteAgent(e: React.MouseEvent) {
     e.preventDefault();
-    toast.loading('Deleting agent...');
+    toastLoading('Deleting agent');
 
     try {
       await deleteAgentAction({ agentId: agent.id });
-      toast.remove();
-      toast.success('Agent deleted');
+
+      removeToast();
+      setIsDeleteModalOpen(false);
+
+      toastSuccess('Agent deleted');
       router.refresh();
     } catch (error) {
       console.error({ error });
-      toast.remove();
-      toast.error('Failed to delete agent');
+      removeToast();
+      toastError('Failed to delete agent');
     }
   }
 

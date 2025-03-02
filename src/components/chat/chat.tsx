@@ -86,11 +86,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       style={{ maxHeight: 'calc(100vh - 150px)' }}
     >
       <div className="flex flex-col flex-1 justify-between items-center w-full">
-        <div
-          // ref={scrollRef}
-          className="flex-grow w-full max-w-[50rem] p-4 pb-[5rem]"
-          // style={{ maxHeight: 'calc(100vh - 150px)' }}
-        >
+        <div className="flex-grow w-full max-w-[50rem] p-4 pb-[5rem]">
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">MY LOGO HERE</div>
           ) : (
@@ -157,7 +153,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                                   'mt-1 p-2 rounded-md hover:bg-secondary/65',
                                   'text-primary dark:text-sidebar-accent',
                                 )}
-                                spinnerClassName="w-3.5 h-3.5"
+                                iconClassName="w-3.5 h-3.5"
                               />
                               {isLastNonUser && (
                                 <button

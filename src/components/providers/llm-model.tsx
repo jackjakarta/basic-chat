@@ -10,8 +10,14 @@ type ModelContextType = {
 
 const ModelContext = React.createContext<ModelContextType | undefined>(undefined);
 
-export function LlmModelProvider({ children }: { children: React.ReactNode }) {
-  const [model, setModel] = React.useState<AIModel>('gpt-4.5-preview');
+export function LlmModelProvider({
+  defaultModel,
+  children,
+}: {
+  defaultModel: AIModel;
+  children: React.ReactNode;
+}) {
+  const [model, setModel] = React.useState<AIModel>(defaultModel);
 
   return <ModelContext.Provider value={{ model, setModel }}>{children}</ModelContext.Provider>;
 }
@@ -20,7 +26,7 @@ export function useLlmModel() {
   const context = React.useContext(ModelContext);
 
   if (context === undefined) {
-    throw new Error('useModel must be used within a LlmModelProvider');
+    throw new Error('useLlmModel must be used within a LlmModelProvider');
   }
 
   return context;

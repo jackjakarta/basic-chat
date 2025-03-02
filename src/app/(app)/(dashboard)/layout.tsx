@@ -3,14 +3,12 @@ import DashboardSidebar from '@/components/navigation/sidebar/dashboard/dashboar
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { getUser } from '@/utils/auth';
 
-export const dynamic = 'force-dynamic';
-
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const user = await getUser();
 
   return (
     <SidebarProvider>
-      <DashboardSidebar variant="sidebar" className="border-accent" user={user} />
+      <DashboardSidebar user={user} />
       <SidebarInset>
         <Header />
         {children}

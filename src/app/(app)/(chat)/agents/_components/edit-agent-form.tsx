@@ -1,14 +1,15 @@
 'use client';
 
+import { useToast } from '@/components/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { type AgentRow } from '@/db/schema';
+import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import { z } from 'zod';
 
 import { updateAgentAction } from '../[agentId]/actions';
@@ -22,6 +23,7 @@ type FormData = z.infer<typeof editAgentSchema>;
 
 export default function EditAgentForm({ agent }: { agent: AgentRow }) {
   const router = useRouter();
+  const { toastSuccess, toastLoading, toastError } = useToast();
 
   const {
     register,
@@ -36,16 +38,14 @@ export default function EditAgentForm({ agent }: { agent: AgentRow }) {
   });
 
   async function onSubmit(data: FormData) {
-    toast.loading('Updating agent...');
+    toastLoading('Updating agent...');
 
     try {
       await updateAgentAction({ agentId: agent.id, data });
-      toast.remove();
-      toast.success('Agent updated');
+      toastSuccess('Agent updated successfully');
     } catch (error) {
       console.error({ error });
-      toast.remove();
-      toast.error('Failed to update agent');
+      toastError('Failed to update agent');
     } finally {
       router.refresh();
     }
@@ -55,13 +55,26 @@ export default function EditAgentForm({ agent }: { agent: AgentRow }) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
         <Label htmlFor="name">Name</Label>
-        <Input id="name" {...register('name')} />
-        {errors.name && <span className="text-red-500">{errors.name.message}</span>}
+        <Input
+          id="name"
+          {...register('name')}
+          className={cw(errors.name && inputFieldErrorClassName)}
+        />
+        {errors.name && (
+          <span className={inputFieldErrorMessageClassName}>{errors.name.message}</span>
+        )}
       </div>
       <div>
         <Label htmlFor="instructions">Instructions</Label>
-        <Textarea rows={6} id="instructions" {...register('instructions')} />
-        {errors.instructions && <span className="text-red-500">{errors.instructions.message}</span>}
+        <Textarea
+          rows={6}
+          id="instructions"
+          {...register('instructions')}
+          className={cw(errors.name && inputFieldErrorClassName)}
+        />
+        {errors.instructions && (
+          <span className={inputFieldErrorMessageClassName}>{errors.instructions.message}</span>
+        )}
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">

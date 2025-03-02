@@ -26,10 +26,12 @@ const loadingToastOptions: ToastOptions = {
 
 export function useToast() {
   function toastError(message: string) {
+    toast.remove();
     toast.error(message, errorToastOptions);
   }
 
   function toastSuccess(message: string) {
+    toast.remove();
     toast.success(message, successToastOptions);
   }
 
