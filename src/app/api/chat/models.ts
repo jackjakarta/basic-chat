@@ -8,7 +8,7 @@ const openai = createOpenAI({
   apiKey: env.openaiApiKey,
 });
 
-export const defaultChatModel: AIModel = 'gpt-4o-mini';
+export const defaultChatModel: AIModel = 'gpt-4.5-preview';
 export const defaultImageModel: AIImageModel = 'dall-e-3';
 
 const languageModels = Object.fromEntries(

@@ -30,7 +30,7 @@ export default function AppSidebar({ user, ...props }: SidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <NavHeader {...user} />
+        <NavHeader organisationName="Nice Enterprise" organisationType="Enterprise Level" />
       </SidebarHeader>
       <SidebarContent>
         <NavMain onClickMobile={handleItemClickMobile} />

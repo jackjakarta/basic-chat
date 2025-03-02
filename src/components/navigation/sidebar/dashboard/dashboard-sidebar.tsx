@@ -9,15 +9,15 @@ import { NavMain } from '../nav-main';
 import { NavSecondary } from '../nav-secondary';
 import { NavUser } from '../nav-user';
 
-type SidebarProps = React.ComponentProps<typeof Sidebar> & {
+type SidebarProps = React.ComponentPropsWithoutRef<typeof Sidebar> & {
   user: ObscuredUser;
 };
 
 export default function DashboardSidebar({ user, ...props }: SidebarProps) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar variant="sidebar" className="border-accent" {...props}>
       <SidebarHeader>
-        <NavHeader {...user} />
+        <NavHeader organisationName="Nice Enterprise" organisationType="Enterprise Level" />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />

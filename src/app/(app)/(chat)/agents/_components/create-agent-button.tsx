@@ -1,6 +1,7 @@
 'use client';
 
 import DialogWindow from '@/components/common/modal';
+import { useToast } from '@/components/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
   CardContent,
@@ -12,11 +13,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import { z } from 'zod';
 
 import { createAgentAction } from '../actions';
@@ -42,21 +43,20 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
   });
 
   const router = useRouter();
+  const { toastSuccess, toastLoading, toastError } = useToast();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   async function onSubmit(data: FormData) {
-    toast.loading('Creating agent...');
+    toastLoading('Creating agent...');
 
     try {
       const newAgent = await createAgentAction({ ...data });
       setIsModalOpen(false);
-      toast.remove();
-      toast.success('Agent created successfully');
+      toastSuccess('Agent created successfully');
       router.push(`/agents/${newAgent.id}`);
     } catch (error) {
       console.error({ error });
-      toast.remove();
-      toast.error('Failed to create agent');
+      toastError('Failed to create agent');
     }
   }
 
@@ -75,8 +75,15 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Agent Name</Label>
-              <Input id="name" {...register('name')} placeholder="Enter agent name" />
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+              <Input
+                id="name"
+                {...register('name')}
+                placeholder="Enter agent name"
+                className={cw(errors.name && inputFieldErrorClassName)}
+              />
+              {errors.name && (
+                <p className={inputFieldErrorMessageClassName}>{errors.name.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="instructions">Instructions</Label>
@@ -84,10 +91,10 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
                 id="instructions"
                 {...register('instructions')}
                 placeholder="Enter instructions for the agent"
-                className="min-h-[100px]"
+                className={cw('min-h-[100px]', errors.name && inputFieldErrorClassName)}
               />
               {errors.instructions && (
-                <p className="text-sm text-red-500">{errors.instructions.message}</p>
+                <p className={inputFieldErrorMessageClassName}>{errors.instructions.message}</p>
               )}
             </div>
           </CardContent>
