@@ -4,16 +4,17 @@ import { cw } from '@/utils/tailwind';
 import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import React from 'react';
-import toast from 'react-hot-toast';
 import { mutate } from 'swr';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
 import LoadingText from '../common/loading-text';
 import TTSButton from '../common/tts-button';
 import { useChatOptions } from '../hooks/use-chat-options';
+import { useToast } from '../hooks/use-toast';
 import ArrowRightIcon from '../icons/arrow-right';
 import CheckIcon from '../icons/check';
 import ClipboardIcon from '../icons/clipboard';
+import ChatLogoIcon from '../icons/logo';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
@@ -27,6 +28,7 @@ type ChatProps = {
 
 export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   const { model } = useLlmModel();
+  const { toastError } = useToast();
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
@@ -65,7 +67,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       window.history.replaceState({}, '', chatPath);
     } catch (error) {
       console.error({ error });
-      toast.error("Couldn't send message");
+      toastError('Failed to send message');
     }
   }
 
@@ -88,7 +90,9 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       <div className="flex flex-col flex-1 justify-between items-center w-full">
         <div className="flex-grow w-full max-w-[50rem] p-4 pb-[5rem]">
           {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full">MY LOGO HERE</div>
+            <div className="flex items-center justify-center h-full">
+              <ChatLogoIcon className="text-primary dark:text-secondary w-64 h-64" />
+            </div>
           ) : (
             <>
               <div className="flex flex-col gap-4 px-4">

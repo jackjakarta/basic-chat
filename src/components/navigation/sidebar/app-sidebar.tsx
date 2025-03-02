@@ -28,9 +28,9 @@ export default function AppSidebar({ user, ...props }: SidebarProps) {
   }
 
   return (
-    <Sidebar {...props}>
+    <Sidebar variant="sidebar" className="border-accent" {...props}>
       <SidebarHeader>
-        <NavHeader organisationName="Nice Enterprise" organisationType="Enterprise Level" />
+        <NavHeader />
       </SidebarHeader>
       <SidebarContent>
         <NavMain onClickMobile={handleItemClickMobile} />
