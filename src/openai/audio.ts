@@ -1,14 +1,19 @@
-import { type Uploadable } from 'openai/uploads.mjs';
+export async function transcribeAudio({ audioUrl }: { audioUrl: string }) {
+  const endpoint = 'http://192.168.2.139:8000/api/v1/audio/';
 
-import { openai } from '.';
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ audio_url: audioUrl }),
+    });
 
-export async function transcribeAudio({ audioFile }: { audioFile: Uploadable }): Promise<string> {
-  const transcriptionObject = await openai.audio.transcriptions.create({
-    file: audioFile,
-    model: 'whisper-1',
-  });
-
-  const transcription = transcriptionObject.text;
-
-  return transcription;
+    const data = await response.json();
+    console.debug({ data });
+    return data.text;
+  } catch (error) {
+    console.error({ error });
+  }
 }

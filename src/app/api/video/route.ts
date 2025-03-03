@@ -1,5 +1,7 @@
 import { transcribeAudio } from '@/openai/audio';
-import { File } from 'formdata-node';
+import { uploadAudioToS3 } from '@/s3';
+import { nanoid } from 'nanoid';
+// import { File } from 'formdata-node';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -19,10 +21,17 @@ export async function POST(request: NextRequest) {
     const { videoUrl } = parsed.data;
 
     const audioFileBuffer = await getAudioBuffer({ videoUrl });
-    const buffer = Buffer.from(audioFileBuffer);
-    const audioFile = new File([buffer], 'uploaded-audio.wav', { type: 'video/wav' });
 
-    const transcription = await transcribeAudio({ audioFile });
+    const audioUrl = await uploadAudioToS3({
+      fileBuffer: audioFileBuffer,
+      fileName: `${nanoid(14)}.wav`,
+      bucketName: 'audio',
+    });
+
+    console.debug({ audioUrl });
+
+    const transcription = await transcribeAudio({ audioUrl });
+    console.debug({ transcription });
 
     return NextResponse.json({ success: true, transcription }, { status: 201 });
   } catch (error) {

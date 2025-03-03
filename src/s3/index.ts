@@ -23,7 +23,7 @@ const s3 = new S3Client({
   },
 });
 
-export const bucketNameSchema = z.literal('generated-images');
+export const bucketNameSchema = z.enum(['audio', 'generated-images']);
 export type BucketName = z.infer<typeof bucketNameSchema>;
 
 export async function uploadImageToS3({
@@ -47,6 +47,29 @@ export async function uploadImageToS3({
   const imageUrl = `${bucketBaseUrl}/${bucketName}/${fileName}`;
 
   return imageUrl;
+}
+
+export async function uploadAudioToS3({
+  fileName,
+  fileBuffer,
+  bucketName,
+}: {
+  fileName: string;
+  fileBuffer: ArrayBuffer;
+  bucketName: BucketName;
+}): Promise<string> {
+  const uploadCommand = new PutObjectCommand({
+    Bucket: bucketName,
+    Key: fileName,
+    Body: Buffer.from(fileBuffer),
+    ContentType: 'audio/*',
+  });
+
+  await s3.send(uploadCommand);
+
+  const audioUrl = `${bucketBaseUrl}/${bucketName}/${fileName}`;
+
+  return audioUrl;
 }
 
 export async function deleteFileFromS3({
