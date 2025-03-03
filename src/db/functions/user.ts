@@ -1,9 +1,17 @@
+import { type ObscuredUser } from '@/utils/user';
 import { eq } from 'drizzle-orm';
 
 import { db } from '..';
 import { hashPassword, verifyPassword } from '../crypto';
 import { DatabaseError } from '../error';
-import { userTable, type InsertUserRow, type UserRow } from '../schema';
+import {
+  agentTable,
+  conversationMessageTable,
+  conversationTable,
+  userTable,
+  type InsertUserRow,
+  type UserRow,
+} from '../schema';
 
 export async function dbCreateNewUser({
   email,
@@ -20,7 +28,7 @@ export async function dbCreateNewUser({
       throw new Error('This email already exists');
     }
 
-    const user = (
+    const newUser = (
       await db
         .insert(userTable)
         .values({
@@ -34,11 +42,11 @@ export async function dbCreateNewUser({
         .returning()
     )[0];
 
-    if (user === undefined) {
+    if (newUser === undefined) {
       throw new Error("Couldn't create user");
     }
 
-    return user;
+    return newUser;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -52,14 +60,15 @@ export async function dbGetAuthenticatedUser({
 }: {
   email: string;
   password: string;
-}) {
+}): Promise<ObscuredUser | undefined> {
   const userModel = (await db.select().from(userTable).where(eq(userTable.email, email)))[0];
 
-  if (!userModel) {
+  if (userModel === undefined) {
     return undefined;
   }
 
   const passwordVerified = await verifyPassword(password, userModel.passwordHash);
+
   if (!passwordVerified) {
     return undefined;
   }
@@ -96,4 +105,13 @@ export async function dbUpdateUserPassword({
   )[0];
 
   return user;
+}
+
+export async function dbDeleteUser({ userId }: { userId: string }) {
+  await db.transaction(async (tx) => {
+    await tx.delete(conversationMessageTable).where(eq(conversationMessageTable.userId, userId));
+    await tx.delete(conversationTable).where(eq(conversationTable.userId, userId));
+    await tx.delete(agentTable).where(eq(agentTable.userId, userId));
+    await tx.delete(userTable).where(eq(userTable.id, userId));
+  });
 }
