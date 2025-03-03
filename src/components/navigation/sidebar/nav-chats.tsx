@@ -49,7 +49,7 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                       />
                     ))
                   ) : (
-                    <span className="text-xs">No chats at the moment</span>
+                    <span className="text-xs dark:opacity-70">No chats at the moment</span>
                   ))}
               </SidebarMenuSub>
             </CollapsibleContent>

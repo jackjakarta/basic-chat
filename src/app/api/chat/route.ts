@@ -41,6 +41,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const validModelId = parsedModelId.data;
+    console.debug({ modelId: validModelId });
+
     const maybeAgent =
       agentId !== undefined ? await dbGetAgentById({ agentId, userId: user.id }) : undefined;
 
@@ -67,11 +70,8 @@ export async function POST(request: NextRequest) {
     const maybeAgentInstructions = maybeAgent?.instructions;
     const systemPrompt = constructSystemPrompt({ agentInstructions: maybeAgentInstructions });
 
-    console.debug({ modelId });
-    console.debug({ systemPrompt });
-
     const result = streamText({
-      model: myProvider.languageModel(modelId),
+      model: myProvider.languageModel(validModelId),
       system: systemPrompt,
       messages,
       tools: {
