@@ -1,0 +1,53 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "delete-confirmation": "Are you sure you want to delete this item?",
+    "delete-confirmation-title": "Delete Confirmation",
+    "delete-confirmation-accept": "Yes, delete",
+    "delete-confirmation-cancel": "Cancel"
+  },
+  "sidebar": {
+    "new-chat": "New chat",
+    "agents": "Agents",
+    "organisation": "Organisation"
+  },
+  "agents": {
+    "title": "Agents",
+    "description": "Agents are custom AI assistants designed with a specific set of instructions tailored to perform particular tasks or solve particular problems.",
+    "no-agents": "No agents found. Create your first agent.",
+    "buttons": {
+      "create-agent": "Create Agent",
+      "creating-agent": "Creating..."
+    },
+    "create": {
+      "title": "Create New Agent",
+      "description": "Fill in the details to create a new AI agent.",
+      "name": "Name",
+      "form": {
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter agent name"
+        },
+        "instructions": {
+          "label": "Instructions",
+          "placeholder": "Enter agent instructions"
+        }
+      }
+    },
+    "toasts": {
+      "toast-create-loading": "Creating agent...",
+      "toast-create-success": "Agent created successfully",
+      "toast-create-error": "Error creating agent"
+    }
+  }
+}

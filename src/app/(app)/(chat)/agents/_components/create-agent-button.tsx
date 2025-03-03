@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -42,21 +43,22 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
     resolver: zodResolver(newAgentSchema),
   });
 
+  const t = useTranslations('agents');
   const router = useRouter();
   const { toastSuccess, toastLoading, toastError } = useToast();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   async function onSubmit(data: FormData) {
-    toastLoading('Creating agent...');
+    toastLoading(t('toasts.toast-create-loading'));
 
     try {
       const newAgent = await createAgentAction({ ...data });
       setIsModalOpen(false);
-      toastSuccess('Agent created successfully');
+      toastSuccess(t('toasts.toast-create-success'));
       router.push(`/agents/${newAgent.id}`);
     } catch (error) {
       console.error({ error });
-      toastError('Failed to create agent');
+      toastError(t('toasts.toast-create-error'));
     }
   }
 
@@ -69,16 +71,16 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
       <DialogWindow open={isModalOpen} onOpenChange={setIsModalOpen}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardHeader>
-            <CardTitle>Create New Agent</CardTitle>
-            <CardDescription>Fill in the details to create a new AI agent.</CardDescription>
+            <CardTitle>{t('create.title')}</CardTitle>
+            <CardDescription>{t('create.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Agent Name</Label>
+              <Label htmlFor="name">{t('create.form.name.label')}</Label>
               <Input
                 id="name"
                 {...register('name')}
-                placeholder="Enter agent name"
+                placeholder={t('create.form.name.placeholder')}
                 className={cw(errors.name && inputFieldErrorClassName)}
               />
               {errors.name && (
@@ -86,11 +88,11 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="instructions">Instructions</Label>
+              <Label htmlFor="instructions">{t('create.form.instructions.label')}</Label>
               <Textarea
                 id="instructions"
                 {...register('instructions')}
-                placeholder="Enter instructions for the agent"
+                placeholder={t('create.form.instructions.placeholder')}
                 className={cw('min-h-[100px]', errors.name && inputFieldErrorClassName)}
               />
               {errors.instructions && (
@@ -100,7 +102,7 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create Agent'}
+              {isSubmitting ? t('buttons.creating-agent') : t('buttons.create-agent')}
             </Button>
           </CardFooter>
         </form>
