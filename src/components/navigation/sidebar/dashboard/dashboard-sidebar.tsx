@@ -17,7 +17,7 @@ export default function DashboardSidebar({ user, ...props }: SidebarProps) {
   return (
     <Sidebar variant="sidebar" className="border-accent" {...props}>
       <SidebarHeader>
-        <NavHeader organisationName="Nice Enterprise" organisationType="Enterprise Level" />
+        <NavHeader />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />

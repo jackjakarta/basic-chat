@@ -102,7 +102,7 @@ export default function InitiatePasswordResetForm({
         </Button>
       </div>
       <div className="text-center text-sm">
-        <Link href="/login" className="underline underline-offset-4">
+        <Link href="/login" className="hover:opacity-75">
           Back to login
         </Link>
       </div>

@@ -22,7 +22,7 @@ import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import { z } from 'zod';
 
-import { deleteConversationAction, updateConversationTitle } from './actions';
+import { deleteConversationAction, updateConversationTitleAction } from './actions';
 
 const renameSchema = z.object({
   name: z.string().min(1),
@@ -39,7 +39,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const { toastSuccess, toastError, toastLoading, removeToast } = useToast();
+  const { toastSuccess, toastError, toastLoading } = useToast();
 
   const [editMode, setEditMode] = React.useState(false);
 
@@ -56,12 +56,10 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
     toastLoading('Saving conversation name');
 
     try {
-      await updateConversationTitle({ conversationId: conversation.id, title: data.name });
-      removeToast();
+      await updateConversationTitleAction({ conversationId: conversation.id, title: data.name });
       toastSuccess('Saved conversation name');
     } catch (error) {
       console.error({ error });
-      removeToast();
       toastError('Failed to save conversation name');
     } finally {
       mutate('/api/conversations');
@@ -74,7 +72,6 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
 
     try {
       await deleteConversationAction({ conversationId });
-      removeToast();
       toastSuccess('Deleted conversation');
 
       if (pathname.includes(conversationId)) {
@@ -82,7 +79,6 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
       }
     } catch (error) {
       console.error({ error });
-      removeToast();
       toastError('Failed to delete conversation');
     } finally {
       mutate('/api/conversations');

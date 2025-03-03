@@ -88,7 +88,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             <Label htmlFor="password">Password</Label>
             <Link
               href="/reset-password"
-              className="ml-auto text-xs underline-offset-4 hover:underline"
+              className="ml-auto text-xs text-muted-foreground hover:opacity-75"
             >
               Forgot your password?
             </Link>
@@ -127,8 +127,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         </Button>
       </div>
       <div className="flex justify-center items-center gap-2 text-sm">
-        Don&apos;t have an account?{' '}
-        <Link href="/register" className="underline underline-offset-4">
+        <span className="text-muted-foreground">Don&apos;t have an account? </span>
+        <Link href="/register" className="hover:opacity-75">
           Sign up
         </Link>
       </div>

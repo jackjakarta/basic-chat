@@ -6,6 +6,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { GithubIcon } from 'lucide-react';
+import Link from 'next/link';
 
 const data = {
   navSecondary: [
@@ -25,10 +26,10 @@ export function NavSecondary({ ...props }: React.ComponentPropsWithoutRef<typeof
           {data.navSecondary.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
