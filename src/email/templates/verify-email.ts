@@ -5,7 +5,7 @@ export function verifyMailTemplate({ verifyCode }: { verifyCode: string }) {
     Subject: { Data: 'Activate your account' },
     Body: {
       Html: {
-        Data: emailTemplate.replace('$REGISTER_CODE', formatedCode),
+        Data: emailTemplateHtml.replace('$REGISTER_CODE', formatedCode),
       },
     },
   };
@@ -18,7 +18,7 @@ function insertSpaceAtHalf(str: string): string {
   return splitString;
 }
 
-const emailTemplate = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+export const emailTemplateHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en"
   ><head
     ><meta name="viewport" content="width=device-width" /><meta

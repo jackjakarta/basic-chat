@@ -2,7 +2,9 @@
 
 import { dbCreateNewUser } from '@/db/functions/user';
 import { authProviderSchema } from '@/db/schema';
+import { sendTestEmail } from '@/email/local';
 import { sendUserActionEmail } from '@/email/send';
+import { emailTemplateHtml } from '@/email/templates/verify-email';
 import { isDevMode } from '@/utils/dev-mode';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
 import { z } from 'zod';
@@ -39,7 +41,15 @@ export async function registerNewUserAction(body: RegisterUserRequestBody) {
       to: newUser.email,
       action: 'verify-email',
     });
+
+    return newUser;
   }
+
+  await sendTestEmail({
+    email: newUser.email,
+    subject: 'Verify your email',
+    html: emailTemplateHtml.replace('$REGISTER_CODE', 'ESI D4K'),
+  });
 
   return newUser;
 }

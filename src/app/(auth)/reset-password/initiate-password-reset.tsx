@@ -41,23 +41,23 @@ export default function InitiatePasswordResetForm({
     const { email } = data;
     const successMessage = `An email has been sent to '${email}'`;
 
-    const user = await getUserByEmail({ email });
+    // const user = await getUserByEmail({ email });
 
-    if (user.email === undefined) {
-      toastSuccess(successMessage);
-      console.error('User not found');
-      router.push('/login');
-      return;
-    }
+    // if (user.email === undefined) {
+    //   toastSuccess(successMessage);
+    //   console.error('User not found');
+    //   router.push('/login');
+    //   return;
+    // }
 
     try {
-      const emailResult = await sendPasswordResetEmail({ email });
+      await sendPasswordResetEmail({ email });
 
-      if (!emailResult.success) {
-        console.error({ emailResult });
-        toastError('Failed to send password reset email');
-        return;
-      }
+      // if (!emailResult.success) {
+      //   console.error({ emailResult });
+      //   toastError('Failed to send password reset email');
+      //   return;
+      // }
 
       toastSuccess(successMessage);
       router.push('/login');
