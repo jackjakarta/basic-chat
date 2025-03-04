@@ -4,7 +4,7 @@ import { elevenlabs } from '.';
 
 export async function generateTTS({ text }: { text: string }) {
   try {
-    const voiceId = 'JBFqnCBsd6RMkjVDRZzb';
+    const voiceId = 'xeBpkkuzgxa0IwKt7NTP';
 
     const audioStream = await elevenlabs.textToSpeech.convert(voiceId, {
       text,
