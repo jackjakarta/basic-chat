@@ -3,8 +3,8 @@
 import { cw } from '@/utils/tailwind';
 import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
+import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
-import { mutate } from 'swr';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
 import LoadingText from '../common/loading-text';
@@ -30,6 +30,8 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   const { model } = useLlmModel();
   const { toastError } = useToast();
 
+  const queryClient = useQueryClient();
+
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
       id,
@@ -44,20 +46,24 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
           return;
         }
 
-        mutate('/api/conversations');
+        refetchConversations();
       },
       onFinish: () => {
         if (messages.length > 1) {
           return;
         }
 
-        mutate('/api/conversations');
+        refetchConversations();
       },
     },
   );
 
   const { scrollRef, copiedMessageIndex, handleCopy } = useChatOptions({ messages });
   const chatPath = agentId !== undefined ? `/agents/${agentId}/c/${id}` : `/c/${id}`;
+
+  function refetchConversations() {
+    queryClient.invalidateQueries({ queryKey: ['conversations'] });
+  }
 
   async function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();

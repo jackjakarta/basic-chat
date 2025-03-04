@@ -15,11 +15,11 @@ import { SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sideba
 import { type ConversationRow } from '@/db/schema';
 import { cw } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { mutate } from 'swr';
 import { z } from 'zod';
 
 import { deleteConversationAction, updateConversationTitleAction } from './actions';
@@ -39,9 +39,10 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const { toastSuccess, toastError, toastLoading } = useToast();
+  const queryClient = useQueryClient();
 
   const [editMode, setEditMode] = React.useState(false);
+  const { toastSuccess, toastError, toastLoading } = useToast();
 
   const {
     register,
@@ -51,6 +52,10 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
     resolver: zodResolver(renameSchema),
     defaultValues: { name: conversation.name ?? '' },
   });
+
+  function refetchConversations() {
+    queryClient.invalidateQueries({ queryKey: ['conversations'] });
+  }
 
   async function onSubmit(data: FormData) {
     toastLoading('Saving conversation name');
@@ -62,7 +67,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
       console.error({ error });
       toastError('Failed to save conversation name');
     } finally {
-      mutate('/api/conversations');
+      refetchConversations();
       setEditMode(false);
     }
   }
@@ -81,7 +86,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
       console.error({ error });
       toastError('Failed to delete conversation');
     } finally {
-      mutate('/api/conversations');
+      refetchConversations();
     }
   }
 
