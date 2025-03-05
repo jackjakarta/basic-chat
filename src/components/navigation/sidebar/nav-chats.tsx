@@ -9,22 +9,23 @@ import {
   SidebarMenuSkeleton,
   SidebarMenuSub,
 } from '@/components/ui/sidebar';
-import { type ConversationRow } from '@/db/schema';
-import { fetcher } from '@/utils/fetcher';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
-import useSWR from 'swr';
 
 import ConversationItem from './conversation-item';
+import { fetchClientSideConversations } from './utils';
 
 type NavChatsProps = {
   onClickMobile?: () => void;
 };
 
 export function NavChats({ onClickMobile }: NavChatsProps) {
-  const { data, isLoading } = useSWR<{ conversations: ConversationRow[] }>(
-    '/api/conversations',
-    fetcher,
-  );
+  const { data: conversations = [], isLoading } = useQuery({
+    queryKey: ['conversations'],
+    queryFn: fetchClientSideConversations,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+  });
 
   return (
     <SidebarGroup>
@@ -39,9 +40,9 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                 {isLoading &&
                   Array.from({ length: 14 }).map((_, index) => <SidebarMenuSkeleton key={index} />)}
 
-                {data &&
-                  (data.conversations.length > 0 ? (
-                    data.conversations.map((conversation) => (
+                {conversations &&
+                  (conversations.length > 0 ? (
+                    conversations.map((conversation) => (
                       <ConversationItem
                         key={conversation.id}
                         conversation={conversation}

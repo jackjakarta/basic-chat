@@ -2,7 +2,9 @@
 
 import { dbDeleteActionToken, dbValidateToken } from '@/db/functions/token';
 import { dbGetUserByEmail, dbUpdateUserPassword } from '@/db/functions/user';
+import { sendTestEmail } from '@/email/local';
 import { sendUserActionEmail, sendUserActionInformationEmail } from '@/email/send';
+import { resetPasswordHtml } from '@/email/templates/reset-password';
 import { isDevMode } from '@/utils/dev-mode';
 import { z } from 'zod';
 
@@ -59,7 +61,10 @@ export async function sendPasswordResetEmail({ email }: { email: string }) {
     throw new Error('User not found');
   }
 
-  const emailResult = await sendUserActionEmail({ to: email, action: 'reset-password' });
+  if (!isDevMode) {
+    const emailResult = await sendUserActionEmail({ to: email, action: 'reset-password' });
+    return emailResult;
+  }
 
-  return emailResult;
+  await sendTestEmail({ email, subject: 'Reset password', html: resetPasswordHtml });
 }

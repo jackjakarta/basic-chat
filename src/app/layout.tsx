@@ -1,5 +1,7 @@
 import { ThemeProvider } from '@/components/providers/theme';
 import { type Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { Barlow } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 
@@ -18,13 +20,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={barlow.className}>
         <ThemeProvider
           attribute="class"
@@ -32,8 +36,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Toaster />
-          {children}
+          <NextIntlClientProvider messages={messages}>
+            <Toaster />
+            {children}
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

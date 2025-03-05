@@ -45,7 +45,7 @@ export default function InitiatePasswordResetForm({
 
     if (user.email === undefined) {
       toastSuccess(successMessage);
-      console.error('User not found');
+      console.error({ error: 'User not found', file: 'initiate-password-reset.tsx' });
       router.push('/login');
       return;
     }
@@ -53,7 +53,7 @@ export default function InitiatePasswordResetForm({
     try {
       const emailResult = await sendPasswordResetEmail({ email });
 
-      if (!emailResult.success) {
+      if (!emailResult?.success) {
         console.error({ emailResult });
         toastError('Failed to send password reset email');
         return;
