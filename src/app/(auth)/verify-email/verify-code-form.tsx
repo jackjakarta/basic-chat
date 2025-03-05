@@ -80,7 +80,7 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
               id="code"
               type="button"
               onClick={handleResend}
-              className="ml-auto text-xs hover:text-muted-foreground"
+              className="ml-auto text-xs text-muted-foreground hover:text-primary-foreground"
             >
               Resend code
             </button>
