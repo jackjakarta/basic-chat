@@ -65,7 +65,7 @@ export default function CreateAgentButton({ className }: CreateAgentButtonProps)
   return (
     <div className="flex flex-col items-start gap-4">
       <Button className={className} onClick={() => setIsModalOpen(true)}>
-        <span className="text-sm">Create Agent</span>
+        <span className="text-sm">{t('buttons.create-agent')}</span>
       </Button>
 
       <DialogWindow open={isModalOpen} onOpenChange={setIsModalOpen}>
