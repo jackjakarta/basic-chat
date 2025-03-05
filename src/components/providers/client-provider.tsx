@@ -15,7 +15,7 @@ export function ClientProvider({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session} refetchInterval={60} refetchOnWindowFocus>
+      <SessionProvider session={session} refetchInterval={120} refetchOnWindowFocus>
         {children}
       </SessionProvider>
     </QueryClientProvider>
