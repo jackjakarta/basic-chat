@@ -80,7 +80,7 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
               id="code"
               type="button"
               onClick={handleResend}
-              className="ml-auto text-xs underline-offset-4 hover:underline"
+              className="ml-auto text-xs hover:text-muted-foreground"
             >
               Resend code
             </button>
@@ -102,8 +102,8 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
         </Button>
       </div>
       <div className="flex justify-center items-center gap-2 text-sm">
-        Alredy have an account?{' '}
-        <Link href="/login" className="underline underline-offset-4">
+        <span className="text-muted-foreground">Alredy have an account?</span>
+        <Link href="/login" className="hover:text-muted-foreground">
           Login
         </Link>
       </div>

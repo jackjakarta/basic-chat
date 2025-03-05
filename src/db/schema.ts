@@ -1,4 +1,14 @@
-import { boolean, integer, pgSchema, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  index,
+  integer,
+  pgSchema,
+  text,
+  timestamp,
+  unique,
+  uuid,
+  vector,
+} from 'drizzle-orm/pg-core';
 import { z } from 'zod';
 
 export const appSchema = pgSchema('app');
@@ -16,6 +26,7 @@ export const userTable = appSchema.table('user_entity', {
   authProvider: authProviderPgEnum('auth_provider').notNull(),
   emailVerified: boolean('email_verified').notNull().default(false),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 });
 
 export type UserRow = typeof userTable.$inferSelect;
@@ -33,6 +44,7 @@ export const tokenTable = appSchema.table(
     token: text('token').notNull(),
     email: text('email'),
     createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
     expiresAt: timestamp('expires_at', { mode: 'date', withTimezone: true }),
   },
   (table) => {
@@ -53,6 +65,7 @@ export const conversationTable = appSchema.table('conversation', {
     .notNull(),
   agentId: uuid('agent_id').references(() => agentTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 });
 
 export type ConversationRow = typeof conversationTable.$inferSelect;
@@ -75,6 +88,7 @@ export const conversationMessageTable = appSchema.table('conversation_message', 
   role: conversationRolePgEnum('role').notNull(),
   orderNumber: integer('order_number').notNull(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 });
 
 export type ConversationMessageRow = typeof conversationMessageTable.$inferSelect;
@@ -89,7 +103,41 @@ export const agentTable = appSchema.table('agent', {
     .references(() => userTable.id)
     .notNull(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 });
 
 export type AgentRow = typeof agentTable.$inferSelect;
 export type InsertAgentRow = typeof agentTable.$inferInsert;
+
+export const agentResourceTable = appSchema.table('agent_resource', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  agentId: uuid('agent_id')
+    .references(() => agentTable.id)
+    .notNull(),
+  content: text('name').notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+});
+
+export type AgentResourceRow = typeof agentResourceTable.$inferSelect;
+export type InsertAgentResourceRow = typeof agentResourceTable.$inferInsert;
+
+export const embeddingsTable = appSchema.table(
+  'embeddings',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    agentResourceId: uuid('agent_resource_id')
+      .references(() => agentResourceTable.id)
+      .notNull(),
+    content: text('name'),
+    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    embeddingIndex: index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
+  }),
+);
+
+export type EmbeddingsRow = typeof embeddingsTable.$inferSelect;
+export type InsertEmbeddingsRow = typeof embeddingsTable.$inferInsert;

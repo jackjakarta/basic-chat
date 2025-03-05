@@ -45,11 +45,13 @@ export async function registerNewUserAction(body: RegisterUserRequestBody) {
     return newUser;
   }
 
-  await sendTestEmail({
-    email: newUser.email,
-    subject: 'Verify your email',
-    html: emailTemplateHtml.replace('$REGISTER_CODE', 'ESI D4K'),
-  });
+  if (authProvider === 'credentials' && isDevMode) {
+    await sendTestEmail({
+      email: newUser.email,
+      subject: 'Verify your email',
+      html: emailTemplateHtml.replace('$REGISTER_CODE', 'ESI D4K'),
+    });
+  }
 
   return newUser;
 }
