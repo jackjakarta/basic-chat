@@ -14,9 +14,9 @@ const barlow = Barlow({
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Chat Template',
-    description: 'A template for AI chat bot projects',
-    icons: { icon: '/favicon.ico' },
+    title: 'AI Chat Bot',
+    description: 'A basic AI chat bot',
+    icons: { icon: '/favicon.svg' },
   };
 }
 
