@@ -1,7 +1,6 @@
 'use client';
 
 import { cw } from '@/utils/tailwind';
-import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
@@ -40,7 +39,6 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       experimental_throttle: 100,
       maxSteps: 2,
       body: { chatId: id, modelId: model, agentId },
-      generateId: generateUUID,
       onResponse: () => {
         if (messages.length > 1) {
           return;
@@ -65,7 +63,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   }
 
-  async function customHandleSubmit(e: React.FormEvent) {
+  function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     try {
@@ -77,12 +75,12 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
     }
   }
 
-  async function handleSubmitOnEnter(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function handleSubmitOnEnter(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && status !== 'submitted' && status !== 'streaming' && !e.shiftKey) {
       e.preventDefault();
 
       if (e.currentTarget.value.trim().length > 0) {
-        await customHandleSubmit(e);
+        customHandleSubmit(e);
       }
     }
   }
@@ -111,7 +109,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                       className={cw(
                         'w-fit text-secondary-foreground',
                         message.role === 'user' &&
-                          'p-4 rounded-2xl rounded-br-none self-end bg-primary text-primary-foreground max-w-[70%] break-words',
+                          'p-4 rounded-2xl rounded-br-none self-end bg-sidebar-accent text-secondary-foreground max-w-[70%] break-words',
                       )}
                     >
                       <div>

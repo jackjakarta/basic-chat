@@ -1,4 +1,7 @@
+import { toErrorMessage } from '@/utils/error';
 import nodemailer from 'nodemailer';
+
+import { EmailActionResult } from './types';
 
 export async function sendTestEmail({
   email,
@@ -8,7 +11,7 @@ export async function sendTestEmail({
   email: string;
   subject: string;
   html: string;
-}) {
+}): Promise<EmailActionResult | undefined> {
   const transporter = nodemailer.createTransport({
     host: '127.0.0.1',
     port: 1025,
@@ -29,7 +32,9 @@ export async function sendTestEmail({
   try {
     const info = await transporter.sendMail(mailOptions);
     console.debug({ info });
+    return { success: true };
   } catch (error) {
     console.error({ error });
+    return { success: false, error: toErrorMessage(error) };
   }
 }
