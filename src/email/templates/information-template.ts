@@ -23,13 +23,15 @@ function getTemplate({ header, content }: { header: string; content: string }) {
   const template = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en"
   ><head
-    ><meta name="viewport" content="width=device-width" /><meta
-      content="text/html; charset=UTF-8"
-      http-equiv="Content-Type"
-    /><meta name="x-apple-disable-message-reformatting" /><meta
-      http-equiv="X-UA-Compatible"
-      content="IE=edge"
-    /><meta name="x-apple-disable-message-reformatting" /><meta
+    ><meta name="viewport" content="width=device-width" /><link
+      rel="preload"
+      as="image"
+      href="https://kglrzykqhwkegojcqach.supabase.co/storage/v1/object/public/assets//logo-margin.png"
+    /><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta
+      name="x-apple-disable-message-reformatting"
+    /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta
+      name="x-apple-disable-message-reformatting"
+    /><meta
       name="format-detection"
       content="telephone=no,address=no,email=no,date=no,url=no"
     /><meta name="color-scheme" content="light" /><meta
@@ -62,9 +64,22 @@ function getTemplate({ header, content }: { header: string; content: string }) {
       ><tbody
         ><tr style="width:100%"
           ><td
-            ><h3
-              style="margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;text-align:left;color:#111827;font-size:24px;line-height:38px;font-weight:600"
-              >Klikr App</h3
+            ><table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="margin-top:0px;margin-bottom:0px"
+              ><tbody style="width:100%"
+                ><tr style="width:100%"
+                  ><td align="left" data-id="__react-email-column"
+                    ><img
+                      title="Image"
+                      alt="Image"
+                      src="https://kglrzykqhwkegojcqach.supabase.co/storage/v1/object/public/assets//logo-margin.png"
+                      style="display:block;outline:none;border:none;text-decoration:none;width:168px;max-width:100%" /></td></tr></tbody></table
             ><table
               align="center"
               width="100%"
@@ -127,21 +142,21 @@ function getTemplate({ header, content }: { header: string; content: string }) {
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"
-                ><span style="color:#000000">klikr.app</span></a
+                ><span style="color:#000000">chat.codebyalex.dev</span></a
               ><br /><a
-                href="https://klikr.app/privacy-policy"
+                href="https://chat.codebyalex.dev/privacy-policy"
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"
                 ><span style="color:#000000">Privacy Policy</span></a
               ><br /><a
-                href="https://klikr.app/contact"
+                href="https://chat.codebyalex.dev/contact"
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"
                 ><span style="color:#000000">Contact</span></a
               ><br /><a
-                href="https://klikr.app/terms"
+                href="https://chat.codebyalex.dev/terms"
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"

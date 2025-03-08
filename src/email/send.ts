@@ -41,8 +41,8 @@ export async function sendUserActionEmail({
       Messages: [
         {
           From: {
-            Email: 'info@klikr.app',
-            Name: 'Klikr App',
+            Email: 'info@codebyalex.dev',
+            Name: 'AI Chat App',
           },
           To: [
             {
@@ -100,8 +100,8 @@ export async function sendUserActionInformationEmail({
       Messages: [
         {
           From: {
-            Email: 'info@klikr.app',
-            Name: 'Klikr App',
+            Email: 'info@codebyalex.dev',
+            Name: 'AI Chat App',
           },
           To: [
             {

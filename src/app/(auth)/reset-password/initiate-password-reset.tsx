@@ -54,7 +54,7 @@ export default function InitiatePasswordResetForm({
       const emailResult = await sendPasswordResetEmail({ email });
 
       if (!emailResult?.success) {
-        console.error({ emailResult });
+        console.error({ error: emailResult });
         toastError('Failed to send password reset email');
         return;
       }
