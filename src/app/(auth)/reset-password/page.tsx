@@ -1,5 +1,6 @@
 import { dbValidateToken } from '@/db/functions/token';
-import { notFound } from 'next/navigation';
+import { getMaybeUser } from '@/utils/auth';
+import { notFound, redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import InitiatePasswordResetForm from './initiate-password-reset';
@@ -12,6 +13,12 @@ const pageContextSchema = z.object({
 });
 
 export default async function Page(context: unknown) {
+  const user = await getMaybeUser();
+
+  if (user !== undefined) {
+    redirect('/');
+  }
+
   const parsedParams = pageContextSchema.safeParse(context);
 
   if (!parsedParams.success) {

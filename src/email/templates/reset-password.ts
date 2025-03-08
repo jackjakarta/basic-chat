@@ -12,13 +12,15 @@ export function resetPasswordTemplate({ actionUrl }: { actionUrl: string }) {
 export const resetPasswordHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en"
   ><head
-    ><meta name="viewport" content="width=device-width" /><meta
-      content="text/html; charset=UTF-8"
-      http-equiv="Content-Type"
-    /><meta name="x-apple-disable-message-reformatting" /><meta
-      http-equiv="X-UA-Compatible"
-      content="IE=edge"
-    /><meta name="x-apple-disable-message-reformatting" /><meta
+    ><meta name="viewport" content="width=device-width" /><link
+      rel="preload"
+      as="image"
+      href="https://kglrzykqhwkegojcqach.supabase.co/storage/v1/object/public/assets//logo-margin.png"
+    /><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta
+      name="x-apple-disable-message-reformatting"
+    /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta
+      name="x-apple-disable-message-reformatting"
+    /><meta
       name="format-detection"
       content="telephone=no,address=no,email=no,date=no,url=no"
     /><meta name="color-scheme" content="light" /><meta
@@ -51,9 +53,6 @@ export const resetPasswordHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 T
       ><tbody
         ><tr style="width:100%"
           ><td
-            ><h3
-              style="margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;text-align:left;color:#111827;font-size:24px;line-height:38px;font-weight:600"
-              >Klikr App</h3
             ><table
               align="center"
               width="100%"
@@ -61,7 +60,23 @@ export const resetPasswordHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 T
               cellpadding="0"
               cellspacing="0"
               role="presentation"
-              style="max-width:37.5em;height:32px"
+              style="margin-top:0px;margin-bottom:0px"
+              ><tbody style="width:100%"
+                ><tr style="width:100%"
+                  ><td align="left" data-id="__react-email-column"
+                    ><img
+                      title="Image"
+                      alt="Image"
+                      src="https://kglrzykqhwkegojcqach.supabase.co/storage/v1/object/public/assets//logo-margin.png"
+                      style="display:block;outline:none;border:none;text-decoration:none;width:168px;max-width:100%" /></td></tr></tbody></table
+            ><table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="max-width:37.5em;height:64px"
               ><tbody
                 ><tr style="width:100%"><td></td></tr></tbody></table
             ><p
@@ -76,7 +91,7 @@ export const resetPasswordHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 T
               cellpadding="0"
               cellspacing="0"
               role="presentation"
-              style="max-width:37.5em;height:32px"
+              style="max-width:37.5em;height:16px"
               ><tbody
                 ><tr style="width:100%"><td></td></tr></tbody></table
             ><table
@@ -92,22 +107,20 @@ export const resetPasswordHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 T
                   ><td
                     ><a
                       href="$RESET_LINK"
-                      style="line-height:100%;text-decoration:none;display:inline-block;max-width:100%;mso-padding-alt:0px;color:#000000;background-color:transparent;border-color:#000000;border-width:2px;border-style:solid;font-size:14px;font-weight:500;border-radius:9999px;padding:12px 32px 12px 32px"
+                      style="line-height:100%;text-decoration:none;display:inline-block;max-width:100%;mso-padding-alt:0px;color:#ffffff;background-color:#3f4026;border-color:#3f4026;border-width:2px;border-style:solid;font-size:14px;font-weight:500;border-radius:6px;padding:8px 24px 8px 24px"
                       target="_blank"
                       ><span
                         ><!--[if mso
-                          ]><i style="mso-font-width:400%;mso-text-raise:18" hidden
-                            >&#8202;&#8202;&#8202;&#8202;</i
+                          ]><i style="mso-font-width:400%;mso-text-raise:12" hidden
+                            >&#8202;&#8202;&#8202;</i
                           ><!
                         [endif]--></span
                       ><span
-                        style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px"
+                        style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:6px"
                         >Reset Password</span
                       ><span
                         ><!--[if mso
-                          ]><i style="mso-font-width:400%" hidden
-                            >&#8202;&#8202;&#8202;&#8202;&#8203;</i
-                          ><!
+                          ]><i style="mso-font-width:400%" hidden>&#8202;&#8202;&#8202;&#8203;</i><!
                         [endif]--></span
                       ></a
                     ></td
@@ -121,7 +134,7 @@ export const resetPasswordHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 T
               cellpadding="0"
               cellspacing="0"
               role="presentation"
-              style="max-width:37.5em;height:32px"
+              style="max-width:37.5em;height:64px"
               ><tbody
                 ><tr style="width:100%"><td></td></tr></tbody></table
             ><p
@@ -146,25 +159,25 @@ export const resetPasswordHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 T
             /><p
               style="font-size:15px;line-height:26.25px;margin:0 0 20px 0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:#374151"
               ><a
-                href="https://klikr.app"
+                href="https://chat.codebyalex.dev"
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"
-                ><span style="color:#000000">klikr.app</span></a
+                ><span style="color:#000000">chat.codebyalex.dev</span></a
               ><br /><a
-                href="https://klikr.app/privacy-policy"
+                href="https://chat.codebyalex.dev/privacy-policy"
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"
                 ><span style="color:#000000">Privacy Policy</span></a
               ><br /><a
-                href="https://klikr.app/contact"
+                href="https://chat.codebyalex.dev/contact"
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"
                 ><span style="color:#000000">Contact</span></a
               ><br /><a
-                href="https://klikr.app/terms"
+                href="https://chat.codebyalex.dev/terms"
                 rel="noopener noreferrer nofollow"
                 style="color:#111827;text-decoration:none;font-weight:500"
                 target="_blank"

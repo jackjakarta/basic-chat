@@ -41,6 +41,7 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                   Array.from({ length: 14 }).map((_, index) => <SidebarMenuSkeleton key={index} />)}
 
                 {conversations &&
+                  !isLoading &&
                   (conversations.length > 0 ? (
                     conversations.map((conversation) => (
                       <ConversationItem

@@ -66,5 +66,11 @@ export async function sendPasswordResetEmail({ email }: { email: string }) {
     return emailResult;
   }
 
-  await sendTestEmail({ email, subject: 'Reset password', html: resetPasswordHtml });
+  const testEmailResult = await sendTestEmail({
+    email,
+    subject: 'Reset password',
+    html: resetPasswordHtml,
+  });
+
+  return testEmailResult;
 }
