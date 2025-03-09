@@ -6,7 +6,7 @@ import { getUser } from '@/utils/auth';
 import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 
-const requestSchema = z.object({
+export const requestSchema = z.object({
   name: z.string().min(1, 'Agent name is required'),
   instructions: z.string().min(1, 'Instructions are required'),
 });

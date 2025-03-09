@@ -1,3 +1,4 @@
+import { generateCode } from '@/utils/nanoid';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 
@@ -34,7 +35,7 @@ export async function dbInsertOrUpdateActionToken({
   action: TokenAction;
 }): Promise<TokenRow | undefined> {
   try {
-    const token = action === 'verify-email' ? nanoid(6).toUpperCase() : nanoid(32);
+    const token = action === 'verify-email' ? generateCode({ length: 6 }) : nanoid(32);
     const createdAt = new Date();
     const expiresAt = new Date(createdAt.getTime() + 30 * 60 * 1000);
 

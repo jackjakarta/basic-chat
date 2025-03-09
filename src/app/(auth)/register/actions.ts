@@ -48,7 +48,7 @@ export async function registerNewUserAction(body: RegisterUserRequestBody) {
   await sendTestEmail({
     email: newUser.email,
     subject: 'Verify your email',
-    html: emailTemplateHtml.replace('$REGISTER_CODE', 'ESI D4K'),
+    html: emailTemplateHtml.replace('$REGISTER_CODE', 'K4AYJD'),
   });
 
   return newUser;
