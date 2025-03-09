@@ -1,6 +1,6 @@
 'use client';
 
-import { toastError, toastSuccess } from '@/components/common/toast';
+import { useToast } from '@/components/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,6 +28,7 @@ export default function InitiatePasswordResetForm({
   ...props
 }: InitiatePasswordResetFormProps) {
   const router = useRouter();
+  const { toastSuccess, toastError } = useToast();
 
   const {
     register,

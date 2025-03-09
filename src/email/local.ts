@@ -1,7 +1,7 @@
 import { toErrorMessage } from '@/utils/error';
 import nodemailer from 'nodemailer';
 
-import { EmailActionResult } from './types';
+import { type EmailActionResult } from './types';
 
 export async function sendTestEmail({
   email,

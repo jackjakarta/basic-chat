@@ -1,0 +1,1 @@
+ALTER TABLE "app"."action_token" ADD CONSTRAINT "action_token_token_unique" UNIQUE("token");

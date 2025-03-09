@@ -21,7 +21,7 @@ import { deleteAgentAction } from '../[agentId]/actions';
 
 export default function AgentCard({ agent }: { agent: AgentRow }) {
   const router = useRouter();
-  const { toastSuccess, toastError, toastLoading, removeToast } = useToast();
+  const { toastSuccess, toastError, toastLoading } = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
   async function handleDeleteAgent(e: React.MouseEvent) {
@@ -30,15 +30,11 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
 
     try {
       await deleteAgentAction({ agentId: agent.id });
-
-      removeToast();
       setIsDeleteModalOpen(false);
-
       toastSuccess('Agent deleted');
       router.refresh();
     } catch (error) {
       console.error({ error });
-      removeToast();
       toastError('Failed to delete agent');
     }
   }
@@ -46,7 +42,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
   return (
     <>
       <Link href={`/agents/${agent.id}/c`}>
-        <Card className="w-full p-4 flex items-center hover:bg-secondary/40 justify-between space-x-4 cursor-pointer">
+        <Card className="w-full p-4 flex border-none shadow-none items-center dark:bg-secondary/40 hover:bg-sidebar/50 dark:hover:bg-secondary/20 justify-between space-x-4 cursor-pointer">
           <div className="flex items-center space-x-4">
             <Avatar className="h-12 w-12">
               <AvatarImage src={agent.pictureUrl ?? ''} alt={agent.name} />
@@ -69,7 +65,10 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
                 <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
               </Link>
               <DropdownMenuItem
-                onClick={() => setIsDeleteModalOpen(true)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsDeleteModalOpen(true);
+                }}
                 className="text-destructive focus:text-destructive cursor-pointer"
               >
                 Delete
@@ -87,6 +86,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
         title="Delete Agent"
         description={`Are you sure you want to delete the agent "${agent.name}"?`}
         onConfirm={handleDeleteAgent}
+        type="destructive"
       />
     </>
   );
