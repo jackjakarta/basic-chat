@@ -28,6 +28,35 @@
       "toast-create-success": "Agent created successfully"
     }
   },
+  "auth": {
+    "login": {
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter email"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter password"
+        },
+        "submit": "Login"
+      }
+    },
+    "logout": "Logout",
+    "register": {
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter email"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter password"
+        },
+        "submit": "Register"
+      }
+    }
+  },
   "common": {
     "cancel": "Cancel",
     "close": "Close",
@@ -45,9 +74,15 @@
     "save": "Save",
     "yes": "Yes"
   },
+  "not-found": {
+    "title": "Page not found",
+    "description": "We couldn't find the page you were looking for. The page might have been moved, deleted, or never existed.",
+    "action": "Check the URL or navigate back to the homepage.",
+    "button": "Back to Home"
+  },
   "sidebar": {
     "agents": "Agents",
     "new-chat": "New chat",
-    "organisation": "Organisation"
+    "settings": "Settings"
   }
 }
