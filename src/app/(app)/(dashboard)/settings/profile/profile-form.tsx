@@ -7,9 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { firstNameSchema, lastNameSchema } from '@/utils/schemas';
 import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
-import { ObscuredUser } from '@/utils/user';
+import { getUserAvatarUrl, ObscuredUser } from '@/utils/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -34,11 +36,14 @@ type RegistrationProps = {
 export default function ProfileForm({
   firstName,
   lastName,
+  email,
   customInstructions,
   className,
   ...props
 }: RegistrationProps) {
   const router = useRouter();
+
+  const t = useTranslations('settings.profile');
   const tCommon = useTranslations('common');
 
   const { toastSuccess, toastError } = useToast();
@@ -56,6 +61,8 @@ export default function ProfileForm({
       customInstructions: customInstructions ?? '',
     },
   });
+
+  const userAvatarUrl = getUserAvatarUrl({ email });
 
   async function onSubmit(data: FormData) {
     try {
@@ -85,14 +92,33 @@ export default function ProfileForm({
       {...props}
     >
       <div className="grid gap-6">
+        <div className="flex flex-col items-center pb-4">
+          <Image
+            src={userAvatarUrl}
+            alt="user-avatar"
+            width={89}
+            height={89}
+            className="rounded-full"
+          />
+          <span className="mt-2 text-xs text-muted-foreground">
+            {t('avatar-disclaimer')}{' '}
+            <Link
+              className="text-sidebar-primary hover:text-sidebar-primary/70 dark:text-sidebar-border dark:hover:text-sidebar-border/70"
+              href="https://gravatar.com"
+              target="_blank"
+            >
+              Gravatar.com
+            </Link>
+          </span>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-4">
-            <Label htmlFor="firstName">{tCommon('first-name')}</Label>
+            <Label htmlFor="firstName">{t('form.first-name.label')}</Label>
             <Input
               id="firstName"
               type="text"
               {...register('firstName')}
-              placeholder="Jane"
+              placeholder={t('form.first-name.placeholder')}
               disabled={isSubmitting}
               className={cw(inputFieldClassName, errors.firstName && inputFieldErrorClassName)}
             />
@@ -102,12 +128,12 @@ export default function ProfileForm({
           </div>
 
           <div className="grid gap-4">
-            <Label htmlFor="lastName">{tCommon('last-name')}</Label>
+            <Label htmlFor="lastName">{t('form.last-name.label')}</Label>
             <Input
               id="lastName"
               type="text"
               {...register('lastName')}
-              placeholder="Doe"
+              placeholder={t('form.last-name.placeholder')}
               disabled={isSubmitting}
               className={cw(inputFieldClassName, errors.lastName && inputFieldErrorClassName)}
             />
@@ -117,15 +143,13 @@ export default function ProfileForm({
           </div>
         </div>
         <div className="grid gap-4">
-          <Label htmlFor="instructions">
-            What preferences should the chat consider in responses?
-          </Label>
+          <Label htmlFor="instructions">{t('form.custom-instructions.label')}</Label>
           <Textarea
             id="instructions"
             rows={8}
             style={{ resize: 'none' }}
             {...register('customInstructions')}
-            placeholder="eg. I primarily use this chat for coding questions, so please keep responses concise and to the point."
+            placeholder={t('form.custom-instructions.placeholder')}
             disabled={isSubmitting}
             className={cw(
               inputFieldClassName,
