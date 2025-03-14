@@ -7,5 +7,5 @@ export default function PageContainer({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cw('max-w-3xl px-4', className)}>{children}</div>;
+  return <div className={cw('max-w-4xl px-4', className)}>{children}</div>;
 }

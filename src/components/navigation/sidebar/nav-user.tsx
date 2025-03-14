@@ -75,7 +75,7 @@ export function NavUser({ firstName, lastName, email }: ObscuredUser) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href="/profile">
+              <Link href="/settings/profile">
                 <DropdownMenuItem className="cursor-pointer">
                   <BadgeCheck />
                   Profile
