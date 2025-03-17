@@ -16,16 +16,16 @@ export async function dbGetOrCreateConversation({
   userId: string;
   agentId?: string;
 }) {
-  return (
-    await db
-      .insert(conversationTable)
-      .values({ id: conversationId, name: 'New Chat', userId, agentId })
-      .onConflictDoUpdate({
-        target: conversationTable.id,
-        set: { id: conversationId },
-      })
-      .returning()
-  )[0];
+  const conversation = await db
+    .insert(conversationTable)
+    .values({ id: conversationId, name: 'New Chat', userId, agentId })
+    .onConflictDoUpdate({
+      target: conversationTable.id,
+      set: { id: conversationId },
+    })
+    .returning();
+
+  return conversation[0];
 }
 
 export async function dbGetCoversationMessages({
@@ -50,15 +50,19 @@ export async function dbGetCoversationMessages({
 }
 
 export async function dbInsertChatContent(chatContent: InsertConversationMessageRow) {
-  return (await db.insert(conversationMessageTable).values(chatContent).returning())[0];
+  const newChatContent = await db.insert(conversationMessageTable).values(chatContent).returning();
+
+  return newChatContent[0];
 }
 
 export async function dbGetConversations({ userId }: { userId: string }) {
-  return db
+  const conversations = await db
     .select()
     .from(conversationTable)
     .where(eq(conversationTable.userId, userId))
     .orderBy(desc(conversationTable.createdAt));
+
+  return conversations;
 }
 
 export async function dbGetConversationById({
@@ -70,27 +74,27 @@ export async function dbGetConversationById({
   userId: string;
   agentId?: string;
 }) {
-  if (agentId) {
-    return (
-      await db
-        .select()
-        .from(conversationTable)
-        .where(
-          and(
-            eq(conversationTable.id, conversationId),
-            eq(conversationTable.userId, userId),
-            eq(conversationTable.agentId, agentId),
-          ),
-        )
-    )[0];
-  }
-
-  return (
-    await db
+  if (agentId !== undefined) {
+    const agentConversation = await db
       .select()
       .from(conversationTable)
-      .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
-  )[0];
+      .where(
+        and(
+          eq(conversationTable.id, conversationId),
+          eq(conversationTable.userId, userId),
+          eq(conversationTable.agentId, agentId),
+        ),
+      );
+
+    return agentConversation[0];
+  }
+
+  const conversation = await db
+    .select()
+    .from(conversationTable)
+    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)));
+
+  return conversation[0];
 }
 
 export async function dbUpdateConversationTitle({
@@ -102,23 +106,26 @@ export async function dbUpdateConversationTitle({
   name: string;
   userId: string;
 }) {
-  return (
-    await db
-      .update(conversationTable)
-      .set({ name })
-      .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
-      .returning()
-  )[0];
+  const updatedConversation = await db
+    .update(conversationTable)
+    .set({ name })
+    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
+    .returning();
+
+  return updatedConversation[0];
 }
 
 export async function dbUpdateConversationMessageContent(
   conversationMessageId: string,
   conversationMessageContent: string,
 ) {
-  await db
+  const updatedConversationMessage = await db
     .update(conversationMessageTable)
     .set({ content: conversationMessageContent })
-    .where(eq(conversationMessageTable.id, conversationMessageId));
+    .where(eq(conversationMessageTable.id, conversationMessageId))
+    .returning();
+
+  return updatedConversationMessage[0];
 }
 
 export async function dbDeleteConversationById({
@@ -128,8 +135,8 @@ export async function dbDeleteConversationById({
   conversationId: string;
   userId: string;
 }) {
-  await db.transaction(async (trx) => {
-    await trx
+  await db.transaction(async (tx) => {
+    await tx
       .delete(conversationMessageTable)
       .where(
         and(
@@ -138,7 +145,7 @@ export async function dbDeleteConversationById({
         ),
       );
 
-    await trx
+    await tx
       .delete(conversationTable)
       .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)));
   });

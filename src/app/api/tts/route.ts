@@ -1,12 +1,24 @@
 import { generateTTS } from '@/elevenlabs/tts';
 import { getValidSession } from '@/utils/auth';
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
+
+const requestSchema = z.object({
+  text: z.string().min(1),
+});
 
 export async function POST(req: Request) {
   await getValidSession();
 
   try {
-    const { text } = await req.json();
+    const json = await req.json();
+    const body = requestSchema.safeParse(json);
+
+    if (!body.success) {
+      return NextResponse.json({ error: body.error.errors }, { status: 400 });
+    }
+
+    const { text } = body.data;
     const audioBuffer = await generateTTS({ text });
 
     return new NextResponse(audioBuffer, {
@@ -16,6 +28,6 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

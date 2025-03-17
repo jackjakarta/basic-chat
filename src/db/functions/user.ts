@@ -115,3 +115,19 @@ export async function dbDeleteUser({ userId }: { userId: string }) {
     await tx.delete(userTable).where(eq(userTable.id, userId));
   });
 }
+
+export async function dbUpdateUserSettings({
+  userId,
+  customInstructions,
+}: {
+  userId: string;
+  customInstructions: string;
+}): Promise<UserRow | undefined> {
+  const user = await db
+    .update(userTable)
+    .set({ settings: { customInstructions } })
+    .where(eq(userTable.id, userId))
+    .returning();
+
+  return user[0];
+}

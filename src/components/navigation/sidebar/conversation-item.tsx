@@ -67,8 +67,8 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
       console.error({ error });
       toastError('Failed to save conversation name');
     } finally {
-      refetchConversations();
       setEditMode(false);
+      refetchConversations();
     }
   }
 

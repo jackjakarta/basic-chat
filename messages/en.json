@@ -72,7 +72,17 @@
     "loading": "Loading...",
     "no": "No",
     "save": "Save",
-    "yes": "Yes"
+    "save-changes": "Save Changes",
+    "search": "Search",
+    "submit": "Submit",
+    "yes": "Yes",
+    "email": "Email",
+    "password": "Password",
+    "confirm-password": "Confirm Password",
+    "new-password": "New Password",
+    "name": "Name",
+    "first-name": "First name",
+    "last-name": "Last Name"
   },
   "not-found": {
     "title": "Page not found",
@@ -80,9 +90,29 @@
     "action": "Check the URL or navigate back to the homepage.",
     "button": "Back to Home"
   },
+  "settings": {
+    "profile": {
+      "title": "Profile",
+      "description": "Update your profile information.",
+      "avatar-disclaimer": "You can change your avatar on",
+      "form": {
+        "first-name": {
+          "label": "First name",
+          "placeholder": "Enter first name"
+        },
+        "last-name": {
+          "label": "Last name",
+          "placeholder": "Enter last name"
+        },
+        "custom-instructions": {
+          "label": "What preferences should the chat consider in responses?",
+          "placeholder": "eg. I primarily use this chat for coding questions, so please keep responses concise and to the point"
+        }
+      }
+    }
+  },
   "sidebar": {
     "agents": "Agents",
-    "new-chat": "New chat",
-    "settings": "Settings"
+    "new-chat": "New chat"
   }
 }

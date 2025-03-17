@@ -7,7 +7,7 @@ import {
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
 import * as Sentry from '@sentry/nextjs';
-import { streamText, type Message } from 'ai';
+import { streamText, tool, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -67,15 +67,17 @@ export async function POST(request: NextRequest) {
       orderNumber: messages.length,
     });
 
-    const maybeAgentInstructions = maybeAgent?.instructions;
-    const systemPrompt = constructSystemPrompt({ agentInstructions: maybeAgentInstructions });
+    const systemPrompt = constructSystemPrompt({
+      agentInstructions: maybeAgent?.instructions,
+      userCustomInstructions: user.settings?.customInstructions,
+    });
 
     const result = streamText({
       model: myProvider.languageModel(validModelId),
       system: systemPrompt,
       messages,
       tools: {
-        searchTheWeb: {
+        searchTheWeb: tool({
           description:
             'Search the web if the user asks a question that the assistant cannot answer. Or if the user asks the assistant to search the web.',
           parameters: z.object({
@@ -103,7 +105,7 @@ export async function POST(request: NextRequest) {
               throw new Error(errorMessage);
             }
           },
-        },
+        }),
       },
       async onFinish(assistantMessage) {
         await dbInsertChatContent({

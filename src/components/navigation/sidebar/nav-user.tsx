@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react';
+import { BadgeCheck, ChevronsUpDown, CodeXml, LogOut, Sparkles } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -68,27 +68,27 @@ export function NavUser({ firstName, lastName, email }: ObscuredUser) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href="/profile">
+              <Link href="/settings/profile">
                 <DropdownMenuItem className="cursor-pointer">
                   <BadgeCheck />
                   Profile
                 </DropdownMenuItem>
               </Link>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem className="cursor-pointer">
+                <CodeXml />
+                API Console
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <Bell />
                 Notifications
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
