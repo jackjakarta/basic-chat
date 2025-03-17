@@ -26,20 +26,22 @@ const s3 = new S3Client({
 export const bucketNameSchema = z.literal('generated-images');
 export type BucketName = z.infer<typeof bucketNameSchema>;
 
-export async function uploadImageToS3({
+export async function uploadFileToS3({
   fileName,
   fileBuffer,
   bucketName,
+  contentType = 'image/png',
 }: {
   fileName: string;
   fileBuffer: ArrayBuffer;
   bucketName: BucketName;
+  contentType?: string;
 }): Promise<string> {
   const uploadCommand = new PutObjectCommand({
     Bucket: bucketName,
     Key: fileName,
     Body: Buffer.from(fileBuffer),
-    ContentType: 'image/png',
+    ContentType: contentType,
   });
 
   await s3.send(uploadCommand);

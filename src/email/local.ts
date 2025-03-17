@@ -17,8 +17,8 @@ export async function sendTestEmail({
     port: 1025,
     secure: false,
     auth: {
-      user: 'joke@dsa.com',
-      pass: 'dsada',
+      user: 'jack@gmail.com',
+      pass: 'hdsa2gh1uih',
     },
   });
 

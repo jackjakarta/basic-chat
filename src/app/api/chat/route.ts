@@ -13,6 +13,7 @@ import { z } from 'zod';
 
 import { myProvider } from './models';
 import { constructSystemPrompt } from './system-prompt';
+import { generateImageFromText } from './tools/generate-image';
 import { braveSearch } from './tools/web-search';
 import { modelsSchema, type AIModel } from './types';
 
@@ -95,6 +96,33 @@ export async function POST(request: NextRequest) {
               return toolResults;
             } catch (error) {
               const errorMessage = `An error occurred while searching the web. We are sorry.`;
+
+              if (error instanceof Error) {
+                console.error({ error: error.message });
+                throw new Error(errorMessage);
+              }
+
+              console.error({ error });
+              throw new Error(errorMessage);
+            }
+          },
+        }),
+        generateImage: tool({
+          description: 'Generate an image based on the provided description.',
+          parameters: z.object({
+            imageDescription: z.string().describe('The description of the image to be generated.'),
+          }),
+          execute: async ({ imageDescription }) => {
+            try {
+              const imageUrl = await generateImageFromText({ imageDescription });
+
+              if (imageUrl === undefined) {
+                return 'An error occurred while generating the image.';
+              }
+
+              return imageUrl;
+            } catch (error) {
+              const errorMessage = 'An error occurred while generating the image. We are sorry.';
 
               if (error instanceof Error) {
                 console.error({ error: error.message });
