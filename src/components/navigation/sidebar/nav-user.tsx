@@ -17,15 +17,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CodeXml,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from 'lucide-react';
+import { BadgeCheck, ChevronsUpDown, CodeXml, LogOut, Sparkles } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 

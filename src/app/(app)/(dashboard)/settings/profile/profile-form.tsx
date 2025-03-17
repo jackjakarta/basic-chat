@@ -17,6 +17,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { updateUserSettingsAction } from './actions';
+
 const inputFieldClassName =
   'dark:border-muted/50 dark:hover:border-muted dark:focus:border-transparent dark:focus-visible:ring-muted';
 
@@ -31,7 +33,7 @@ type FormData = z.infer<typeof registrationSchema>;
 type RegistrationProps = {
   className?: React.ComponentProps<'form'>['className'];
   customInstructions?: string;
-} & ObscuredUser;
+} & Partial<ObscuredUser>;
 
 export default function ProfileForm({
   firstName,
@@ -62,10 +64,11 @@ export default function ProfileForm({
     },
   });
 
-  const userAvatarUrl = getUserAvatarUrl({ email });
+  const userAvatarUrl = getUserAvatarUrl({ email: email ?? '' });
 
   async function onSubmit(data: FormData) {
     try {
+      await updateUserSettingsAction({ customInstructions: data.customInstructions ?? '' });
       console.debug({ data });
       toastSuccess('Account created successfully. Check your email.');
     } catch (error) {

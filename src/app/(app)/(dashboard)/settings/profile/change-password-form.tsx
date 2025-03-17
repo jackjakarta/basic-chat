@@ -17,10 +17,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { updateUserPasswordAction } from './actions';
+
 const registrationSchema = z
   .object({
     newPassword: passwordSchema,
-    confirmPassword: z.string().min(1, 'Confirm password is required'),
+    confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -40,6 +42,7 @@ export default function ChangePasswordForm({ className, ...props }: Registration
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(registrationSchema),
@@ -47,12 +50,14 @@ export default function ChangePasswordForm({ className, ...props }: Registration
 
   async function onSubmit(data: FormData) {
     try {
-      console.debug({ data });
-      toastSuccess('Account created successfully. Check your email.');
+      const { newPassword } = data;
+      await updateUserPasswordAction({ newPassword });
+      toastSuccess('Passwort changed successfully');
     } catch (error) {
       console.error({ error });
-      toastError('An error occurred while creating your account');
+      toastError('An error occurred while changing your password');
     } finally {
+      reset();
       router.refresh();
     }
   }
@@ -76,7 +81,7 @@ export default function ChangePasswordForm({ className, ...props }: Registration
               id="firstName"
               type="password"
               {...register('newPassword')}
-              placeholder="Jane"
+              placeholder="Your new passowrd"
               className={cw(inputFieldClassName, errors.newPassword && inputFieldErrorClassName)}
             />
             {errors.newPassword && (
@@ -90,7 +95,7 @@ export default function ChangePasswordForm({ className, ...props }: Registration
               id="lastName"
               type="password"
               {...register('confirmPassword')}
-              placeholder="Doe"
+              placeholder="Confirm your password"
               className={cw(
                 inputFieldClassName,
                 errors.confirmPassword && inputFieldErrorClassName,

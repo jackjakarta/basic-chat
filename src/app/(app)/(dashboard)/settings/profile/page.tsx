@@ -12,7 +12,12 @@ export default async function Page() {
   return (
     <>
       <UICard className={uiCardClassName}>
-        <ProfileForm {...user} />
+        <ProfileForm
+          firstName={user.firstName}
+          lastName={user.lastName}
+          email={user.email}
+          customInstructions={user.settings?.customInstructions}
+        />
       </UICard>
       <UICard className={uiCardClassName}>
         <ChangePasswordForm />

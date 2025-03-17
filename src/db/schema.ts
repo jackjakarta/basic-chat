@@ -1,4 +1,13 @@
-import { boolean, integer, pgSchema, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  integer,
+  json,
+  pgSchema,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { z } from 'zod';
 
 export const appSchema = pgSchema('app');
@@ -6,6 +15,12 @@ export const appSchema = pgSchema('app');
 export const authProviderSchema = z.enum(['credentials', 'github']);
 export const authProviderPgEnum = appSchema.enum('auth_provider', authProviderSchema.options);
 export type AuthProvider = z.infer<typeof authProviderSchema>;
+
+export const userSettingsSchema = z.object({
+  customInstructions: z.string().optional(),
+});
+
+export type UserSettings = z.infer<typeof userSettingsSchema>;
 
 export const userTable = appSchema.table('user_entity', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -15,6 +30,7 @@ export const userTable = appSchema.table('user_entity', {
   passwordHash: text('password_hash').notNull(),
   authProvider: authProviderPgEnum('auth_provider').notNull(),
   emailVerified: boolean('email_verified').notNull().default(false),
+  settings: json('settings').$type<UserSettings>(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 });
 
