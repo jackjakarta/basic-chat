@@ -116,7 +116,7 @@ export default function ChangePasswordForm({ className, ...props }: Registration
           )}
         >
           <div className="flex flex-row justify-end items-center gap-2">
-            <Button type="button" variant="neutral">
+            <Button onClick={() => reset()} type="button" variant="neutral">
               {tCommon('cancel')}
             </Button>
             <Button type="submit" variant="secondary" disabled={isSubmitting}>
