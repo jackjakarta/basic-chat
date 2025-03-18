@@ -11,6 +11,7 @@ export async function updateConversationTitleAction({
   title: string;
 }) {
   const user = await getUser();
+
   const updatedConversation = await dbUpdateConversationTitle({
     conversationId,
     name: title,
