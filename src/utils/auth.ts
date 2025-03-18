@@ -41,9 +41,5 @@ export async function getMaybeUser() {
 
   const user = await dbGetUserById({ userId: session.user.id });
 
-  if (user === undefined) {
-    return undefined;
-  }
-
   return user;
 }
