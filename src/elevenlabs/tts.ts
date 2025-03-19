@@ -2,10 +2,10 @@ import { streamToBuffer } from '@/utils/buffer';
 
 import { elevenlabs } from '.';
 
+const voiceId = 'xeBpkkuzgxa0IwKt7NTP';
+
 export async function generateTTS({ text }: { text: string }) {
   try {
-    const voiceId = 'xeBpkkuzgxa0IwKt7NTP';
-
     const audioStream = await elevenlabs.textToSpeech.convert(voiceId, {
       text,
       model_id: 'eleven_flash_v2_5',
