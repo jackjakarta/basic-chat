@@ -52,12 +52,14 @@ export async function uploadFileToS3({
 }
 
 export async function deleteFileFromS3({
-  key,
+  fileName,
   bucketName,
 }: {
-  key: string;
+  fileName: string;
   bucketName: BucketName;
 }) {
+  const key = `${bucketName}/${fileName}`;
+
   const deleteParams: DeleteObjectCommandInput = {
     Bucket: bucketName,
     Key: key,

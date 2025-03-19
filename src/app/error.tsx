@@ -2,14 +2,13 @@
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import * as Sentry from '@sentry/nextjs';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import type NextError from 'next/error';
 import React from 'react';
 
 export default function Error({ error, reset }: { error: NextError; reset: () => void }) {
   React.useEffect(() => {
-    Sentry.captureException(error);
+    console.error({ error });
   }, [error]);
 
   return (

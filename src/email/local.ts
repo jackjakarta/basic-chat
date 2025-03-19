@@ -23,7 +23,7 @@ export async function sendTestEmail({
   });
 
   const mailOptions = {
-    from: 'info@klikr.app',
+    from: 'info@codebyalex.dev',
     to: email,
     subject,
     html,

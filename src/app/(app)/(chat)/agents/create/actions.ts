@@ -3,7 +3,6 @@
 import { dbInsertAgent } from '@/db/functions/agent';
 import { type AgentRow } from '@/db/schema';
 import { getUser } from '@/utils/auth';
-import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 
 export const requestSchema = z.object({
@@ -30,7 +29,7 @@ export async function createAgentAction(body: CreateAgentRequestBody): Promise<A
 
     return newAgent;
   } catch (error) {
-    Sentry.captureException(error);
+    console.error({ error });
     throw error;
   }
 }

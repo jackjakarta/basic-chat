@@ -1,10 +1,12 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
+export const passwordValidatorSchema = z.enum(['weak', 'medium', 'strong']).default('medium');
+
 export const env = createEnv({
   server: {
-    databaseUrl: z.string().min(1),
-    nextAuthUrl: z.string().min(1),
+    databaseUrl: z.string().url(),
+    nextAuthUrl: z.string().url(),
     nextAuthSecret: z.string().min(1),
     openaiApiKey: z.string().min(1),
     elevenlabsApiKey: z.string().min(1),
@@ -14,7 +16,7 @@ export const env = createEnv({
     githubClientId: z.string().min(1),
     githubClientSecret: z.string().min(1),
     awsAccessKeyId: z.string().min(1),
-    awsBucketUrl: z.string().min(1),
+    awsBucketUrl: z.string().url(),
     awsSecretAccessKey: z.string().min(1),
     awsS3EndpointUrl: z.string().min(1),
     awsRegion: z.string().min(1),
@@ -22,7 +24,7 @@ export const env = createEnv({
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
-    NEXT_PUBLIC_passwordValidator: z.enum(['weak', 'medium', 'strong']).default('medium'),
+    NEXT_PUBLIC_passwordValidator: passwordValidatorSchema,
   },
   runtimeEnv: {
     databaseUrl: process.env.DATABASE_URL,

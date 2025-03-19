@@ -1,5 +1,3 @@
-// TODO: this is not a type union, so there can be some metadat depending on the type,
-// like some organization name
 export type InformationEmailMetadata =
   | {
       type: 'email-verified-success';

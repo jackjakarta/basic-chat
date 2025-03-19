@@ -18,3 +18,13 @@ export function buildUserActionUrl({
 
   return userActionUrl;
 }
+
+export function extractFileNameFromUrl(url: string | null): string | null {
+  if (url === null) {
+    return null;
+  }
+
+  const match = url.match(/[^/]+$/);
+
+  return match ? match[0] : null;
+}
