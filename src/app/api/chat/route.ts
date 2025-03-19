@@ -6,7 +6,6 @@ import {
 } from '@/db/functions/chat';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
-import * as Sentry from '@sentry/nextjs';
 import { streamText, tool, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -162,7 +161,6 @@ export async function POST(request: NextRequest) {
     return result.toDataStreamResponse();
   } catch (error) {
     console.error({ error });
-    Sentry.captureException(error);
 
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
