@@ -4,7 +4,7 @@ import {
   dbInsertChatContent,
   dbUpdateConversationTitle,
 } from '@/db/functions/chat';
-import { summarizeConversationTitle } from '@/openai/text';
+import { aiSearch, summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
 import { streamText, tool, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,7 +13,6 @@ import { z } from 'zod';
 import { myProvider } from './models';
 import { constructSystemPrompt } from './system-prompt';
 import { generateImageFromText } from './tools/generate-image';
-import { braveSearch } from './tools/web-search';
 import { modelsSchema, type AIModel } from './types';
 
 export async function POST(request: NextRequest) {
@@ -76,6 +75,7 @@ export async function POST(request: NextRequest) {
       model: myProvider.languageModel(validModelId),
       system: systemPrompt,
       messages,
+      maxSteps: 5,
       tools: {
         searchTheWeb: tool({
           description:
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
           }),
           execute: async ({ searchQuery }) => {
             try {
-              const toolResults = await braveSearch(searchQuery);
+              const toolResults = await aiSearch({ searchQuery });
 
               if (!toolResults) {
                 return `I could not find any relevant information about '${searchQuery}'.`;

@@ -110,8 +110,7 @@ export const emailTemplateHtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 T
             ><p
               style="font-size:14px;line-height:24px;margin:16px 0;color:#64748B;margin-top:0px;margin-bottom:0px;text-align:left;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale"
               ><span style="color:rgb(153, 153, 153)"
-                >If you did not request a password reset, please ignore this email. However, if you
-                believe this was a mistake or unauthorized, please contact our support team
+                >If you believe this was a mistake or unauthorized, please contact our support team
                 immediately.</span
               ></p
             ><table
