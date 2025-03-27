@@ -6,12 +6,11 @@
     "dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next dev --hostname 127.0.0.1",
     "dev:turbo": "pnpm dev --turbo",
     "build": "next build",
-    "build:server": "ENVIRONMENT=production op run --env-file=\".env.op\" --no-masking -- next build",
     "build:dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next build",
     "start": "next start",
     "format": "prettier --write .",
-    "types": "tsc --noEmit",
     "format:check": "prettier --check .",
+    "types": "tsc --noEmit",
     "lint": "next lint",
     "test": "jest --verbose",
     "checks": "chmod +x $(git rev-parse --show-toplevel)/scripts/checks.sh && $(git rev-parse --show-toplevel)/scripts/checks.sh",
@@ -20,7 +19,6 @@
     "fetchenv:prod": "chmod +x $(git rev-parse --show-toplevel)/scripts/fetch-env.sh && $(git rev-parse --show-toplevel)/scripts/fetch-env.sh prod",
     "db:generate": "drizzle-kit generate --config=./src/db/drizzle.config.ts",
     "db:migrate": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/migrate.ts",
-    "db:migrate:prod": "ENVIRONMENT=production op run --env-file=\".env.op\" -- tsx ./src/db/migrate.ts",
     "db:clear": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/clear.ts",
     "db:studio": "ENVIRONMENT=development op run --env-file=\".env.op\" -- drizzle-kit studio --config=src/db/drizzle.config.ts"
   },
@@ -75,7 +73,7 @@
     "remark-math": "6.0.0",
     "tailwind-merge": "2.5.4",
     "tailwindcss-animate": "1.0.7",
-    "zod": "3.23.8"
+    "zod": "3.24.2"
   },
   "packageManager": "pnpm@9.15.3",
   "devDependencies": {
