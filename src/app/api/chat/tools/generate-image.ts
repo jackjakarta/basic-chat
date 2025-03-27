@@ -1,5 +1,5 @@
 import { generateImage } from '@/openai/image';
-import { uploadFileToS3 } from '@/s3';
+import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { nanoid } from 'nanoid';
 
 export async function generateImageFromText({ imageDescription }: { imageDescription: string }) {
@@ -19,11 +19,14 @@ export async function generateImageFromText({ imageDescription }: { imageDescrip
   const arrayBuffer = await response.arrayBuffer();
   const fileName = `${nanoid(10)}.png`;
 
-  const s3Url = await uploadFileToS3({
-    fileName,
+  const s3Key = await uploadFileToS3({
+    key: fileName,
     fileBuffer: arrayBuffer,
-    bucketName: 'generated-images',
-    contentType: 'image/png',
+  });
+
+  const s3Url = await getSignedUrlFromS3Get({
+    key: s3Key,
+    duration: 7200,
   });
 
   return s3Url;

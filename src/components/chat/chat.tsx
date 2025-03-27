@@ -1,5 +1,6 @@
 'use client';
 
+import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -18,6 +19,7 @@ import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
 import MarkdownDisplay from './markdown-display/markdown-display';
+import { toolNameMap } from './utils';
 
 type ChatProps = {
   id: string;
@@ -37,7 +39,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       initialMessages,
       api: '/api/chat',
       experimental_throttle: 100,
-      maxSteps: 2,
+      maxSteps: 5,
       body: { chatId: id, modelId: model, agentId },
       onResponse: () => {
         if (messages.length > 1) {
@@ -68,7 +70,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
 
     try {
       handleSubmit(e);
-      window.history.replaceState({}, '', chatPath);
+      replaceUrl(chatPath);
     } catch (error) {
       console.error({ error });
       toastError('Failed to send message');
@@ -114,7 +116,26 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                     >
                       <div>
                         {message.content.length > 0 && status !== 'error' ? (
-                          <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
+                          <>
+                            <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
+
+                            {/* <div className="mt-4">
+                              <span className="">Sources:</span>
+                              {message?.parts?.[0]?.type === 'tool-invocation' &&
+                                message.parts?.[0]?.toolInvocation.state === 'result' &&
+                                message.parts?.[0]?.toolInvocation.result?.sources?.map(
+                                  // @ts-expect-error -dsa
+                                  (source) => (
+                                    <div
+                                      key={source.url}
+                                      className="flex flex-col text-blue-400 gap-8 hover:underline"
+                                    >
+                                      <Link href={source.url}>{source.title}</Link>
+                                    </div>
+                                  ),
+                                )}
+                            </div> */}
+                          </>
                         ) : (
                           <LoadingText>
                             {toolNameMap(
@@ -262,17 +283,4 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       </div>
     </div>
   );
-}
-
-function toolNameMap(inputString: string | undefined): string | undefined {
-  if (inputString === undefined) {
-    return undefined;
-  }
-
-  const mapping: Record<string, string> = {
-    searchTheWeb: 'Searching the web...',
-    generateImage: 'Generating image...',
-  };
-
-  return mapping[inputString] ?? inputString;
 }

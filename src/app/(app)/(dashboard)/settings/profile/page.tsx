@@ -19,7 +19,10 @@ export default async function Page() {
           customInstructions={user.settings?.customInstructions}
         />
       </UICard>
-      <UICard className={uiCardClassName}>
+      <UICard
+        header={<h1 className="text-lg">Change your password</h1>}
+        className={uiCardClassName}
+      >
         <ChangePasswordForm />
       </UICard>
     </>
