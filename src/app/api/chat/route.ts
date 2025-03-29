@@ -4,7 +4,7 @@ import {
   dbInsertChatContent,
   dbUpdateConversationTitle,
 } from '@/db/functions/chat';
-import { aiSearch, summarizeConversationTitle } from '@/openai/text';
+import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
 import { streamText, tool, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,6 +13,8 @@ import { z } from 'zod';
 import { myProvider } from './models';
 import { constructSystemPrompt } from './system-prompt';
 import { generateImageFromText } from './tools/generate-image';
+import { getBarcaMatches } from './tools/get-barca-matches';
+import { openaiSearch } from './tools/openai-search';
 import { modelsSchema, type AIModel } from './types';
 
 export async function POST(request: NextRequest) {
@@ -85,13 +87,13 @@ export async function POST(request: NextRequest) {
           }),
           execute: async ({ searchQuery }) => {
             try {
-              const toolResults = await aiSearch({ searchQuery });
+              const toolResults = await openaiSearch({ searchQuery });
+              console.debug({ toolResults });
 
               if (!toolResults) {
                 return `I could not find any relevant information about '${searchQuery}'.`;
               }
 
-              console.debug({ toolResults });
               return toolResults;
             } catch (error) {
               const errorMessage = `An error occurred while searching the web. We are sorry.`;
@@ -114,6 +116,7 @@ export async function POST(request: NextRequest) {
           execute: async ({ imageDescription }) => {
             try {
               const imageUrl = await generateImageFromText({ imageDescription });
+              console.debug({ imageUrl });
 
               if (imageUrl === undefined) {
                 return 'An error occurred while generating the image.';
@@ -122,6 +125,32 @@ export async function POST(request: NextRequest) {
               return imageUrl;
             } catch (error) {
               const errorMessage = 'An error occurred while generating the image. We are sorry.';
+
+              if (error instanceof Error) {
+                console.error({ error: error.message });
+                throw new Error(errorMessage);
+              }
+
+              console.error({ error });
+              throw new Error(errorMessage);
+            }
+          },
+        }),
+        getBarcaMatches: tool({
+          description: 'Get information for the FC Barcelona upcoming football matches.',
+          parameters: z.object({}),
+          execute: async () => {
+            try {
+              const matches = await getBarcaMatches();
+              console.debug({ matches });
+
+              if (matches.length === 0) {
+                return 'An error occurred while getting the information.';
+              }
+
+              return matches;
+            } catch (error) {
+              const errorMessage = 'An error occurred while fetching match data. We are sorry.';
 
               if (error instanceof Error) {
                 console.error({ error: error.message });

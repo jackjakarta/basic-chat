@@ -12,11 +12,10 @@ import { z } from 'zod';
 const accessKeyId = env.awsAccessKeyId;
 const secretAccessKey = env.awsSecretAccessKey;
 const endpoint = env.awsS3EndpointUrl;
-const region = env.awsRegion;
 
 const s3 = new S3Client({
   forcePathStyle: true,
-  region,
+  region: 'eu-central-1',
   endpoint,
   credentials: {
     accessKeyId,

@@ -18,7 +18,8 @@ export const env = createEnv({
     awsAccessKeyId: z.string().min(1),
     awsSecretAccessKey: z.string().min(1),
     awsS3EndpointUrl: z.string().min(1),
-    awsRegion: z.string().min(1),
+    utilsApiUrl: z.string().url(),
+    utilsApiKey: z.string().min(1),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
@@ -38,8 +39,9 @@ export const env = createEnv({
     awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
     awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     awsS3EndpointUrl: process.env.AWS_S3_ENDPOINT_URL,
-    awsRegion: process.env.AWS_REGION,
     devMode: process.env.DEV_MODE,
+    utilsApiUrl: process.env.UTILS_API_URL,
+    utilsApiKey: process.env.UTILS_API_KEY,
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },
 });

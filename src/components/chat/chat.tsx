@@ -18,6 +18,7 @@ import ChatLogoIcon from '../icons/logo';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
+import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
 import { toolNameMap } from './utils';
 
@@ -30,7 +31,6 @@ type ChatProps = {
 export default function Chat({ id, initialMessages, agentId }: ChatProps) {
   const { model } = useLlmModel();
   const { toastError } = useToast();
-
   const queryClient = useQueryClient();
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
@@ -104,6 +104,10 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
               <div className="flex flex-col gap-4 px-4">
                 {messages.map((message, index) => {
                   const isLastNonUser = index === messages.length - 1 && message.role !== 'user';
+                  const finishedAssistantMessage =
+                    message.role === 'assistant' &&
+                    status !== 'submitted' &&
+                    status !== 'streaming';
 
                   return (
                     <div
@@ -118,23 +122,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                         {message.content.length > 0 && status !== 'error' ? (
                           <>
                             <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
-
-                            {/* <div className="mt-4">
-                              <span className="">Sources:</span>
-                              {message?.parts?.[0]?.type === 'tool-invocation' &&
-                                message.parts?.[0]?.toolInvocation.state === 'result' &&
-                                message.parts?.[0]?.toolInvocation.result?.sources?.map(
-                                  // @ts-expect-error -dsa
-                                  (source) => (
-                                    <div
-                                      key={source.url}
-                                      className="flex flex-col text-blue-400 gap-8 hover:underline"
-                                    >
-                                      <Link href={source.url}>{source.title}</Link>
-                                    </div>
-                                  ),
-                                )}
-                            </div> */}
+                            <DisplaySources message={message} status={status} />
                           </>
                         ) : (
                           <LoadingText>
@@ -146,64 +134,62 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                           </LoadingText>
                         )}
 
-                        {message.role === 'assistant' &&
-                          status !== 'submitted' &&
-                          status !== 'streaming' && (
-                            <div
-                              className={cw(
-                                'flex items-center gap-1 hover:opacity-100',
-                                isLastNonUser ? 'opacity-100' : 'opacity-0',
-                              )}
+                        {finishedAssistantMessage && (
+                          <div
+                            className={cw(
+                              'flex items-center gap-1 hover:opacity-100',
+                              isLastNonUser ? 'opacity-100' : 'opacity-0',
+                            )}
+                          >
+                            <button
+                              title="Copy message"
+                              type="button"
+                              onClick={() => handleCopy(message.content, index)}
+                              className="rounded-full mt-1 "
+                              aria-label="Copy"
                             >
+                              <div
+                                className={cw(
+                                  'p-2 rounded-md hover:bg-secondary/65',
+                                  'text-primary hover:text-primary',
+                                  'dark:text-sidebar-accent hover:dark:text-sidebar-accent',
+                                )}
+                              >
+                                {copiedMessageIndex === index ? (
+                                  <CheckIcon className="w-3.5 h-3.5" />
+                                ) : (
+                                  <ClipboardIcon className="w-3.5 h-3.5" />
+                                )}
+                              </div>
+                            </button>
+                            <TTSButton
+                              text={message.content}
+                              className={cw(
+                                'mt-1 p-2 rounded-md hover:bg-secondary/65',
+                                'text-primary dark:text-sidebar-accent',
+                              )}
+                              iconClassName="w-3.5 h-3.5"
+                            />
+                            {isLastNonUser && (
                               <button
-                                title="Copy message"
+                                title="Reload last message"
                                 type="button"
-                                onClick={() => handleCopy(message.content, index)}
-                                className="rounded-full mt-1 "
-                                aria-label="Copy"
+                                onClick={() => reload()}
+                                className="mt-1"
+                                aria-label="Reload"
                               >
                                 <div
                                   className={cw(
                                     'p-2 rounded-md hover:bg-secondary/65',
-                                    'text-primary hover:text-primary',
-                                    'dark:text-sidebar-accent hover:dark:text-sidebar-accent',
+                                    'text-primary dark:text-sidebar-accent',
                                   )}
                                 >
-                                  {copiedMessageIndex === index ? (
-                                    <CheckIcon className="w-3.5 h-3.5" />
-                                  ) : (
-                                    <ClipboardIcon className="w-3.5 h-3.5" />
-                                  )}
+                                  <ReloadIcon className="w-3.5 h-3.5" />
                                 </div>
                               </button>
-                              <TTSButton
-                                text={message.content}
-                                className={cw(
-                                  'mt-1 p-2 rounded-md hover:bg-secondary/65',
-                                  'text-primary dark:text-sidebar-accent',
-                                )}
-                                iconClassName="w-3.5 h-3.5"
-                              />
-                              {isLastNonUser && (
-                                <button
-                                  title="Reload last message"
-                                  type="button"
-                                  onClick={() => reload()}
-                                  className="mt-1"
-                                  aria-label="Reload"
-                                >
-                                  <div
-                                    className={cw(
-                                      'p-2 rounded-md hover:bg-secondary/65',
-                                      'text-primary dark:text-sidebar-accent',
-                                    )}
-                                  >
-                                    <ReloadIcon className="w-3.5 h-3.5" />
-                                  </div>
-                                </button>
-                              )}
-                            </div>
-                          )}
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
