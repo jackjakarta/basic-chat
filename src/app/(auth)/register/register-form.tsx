@@ -47,16 +47,16 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
 
   async function onSubmit(data: RegistrationFormData) {
     try {
-      await registerNewUserAction({
+      const newUser = await registerNewUserAction({
         firstName: data.firstName,
         lastName: data.lastName,
-        email: data.email,
+        email: data.email.toLowerCase(),
         password: data.password,
         authProvider: 'credentials',
       });
 
       const result = await signIn('credentials', {
-        email: data.email,
+        email: newUser.email,
         password: data.password,
         redirect: false,
       });

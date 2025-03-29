@@ -1,7 +1,9 @@
-import { dbGetAuthenticatedUser, dbGetUserById } from '@/db/functions/user';
+import { dbCreateNewUser, dbGetAuthenticatedUser, dbGetUserByEmail } from '@/db/functions/user';
 import { type UserRow } from '@/db/schema';
+import { env } from '@/env';
 import { type AuthOptions } from 'next-auth';
 import credentialsProvider from 'next-auth/providers/credentials';
+import GitHubProvider from 'next-auth/providers/github';
 import { z } from 'zod';
 
 const credentialsSchema = z.object({
@@ -29,6 +31,10 @@ export const authOptions = {
         }
       },
     }),
+    GitHubProvider({
+      clientId: env.githubClientId,
+      clientSecret: env.githubClientSecret,
+    }),
   ],
   session: { strategy: 'jwt' },
   callbacks: {
@@ -37,15 +43,29 @@ export const authOptions = {
       return session;
     },
     async jwt({ token, user }) {
-      const _user = (token.user ?? user) as UserRow;
+      if (user) {
+        let dbUser;
+        try {
+          dbUser = await dbGetUserByEmail({ email: user.email ?? '' });
+          console.debug({ dbUser });
 
-      try {
-        return {
-          user: await dbGetUserById({ userId: _user.id }),
-        };
-      } catch {
-        throw new Error(`Could not find user with id: ${_user.id}`);
+          if (!dbUser) {
+            throw new Error('User not found');
+          }
+        } catch {
+          dbUser = await dbCreateNewUser({
+            email: user.email ?? '',
+            firstName: user.name?.split(' ')[0] ?? '',
+            lastName: user.name?.split(' ')[1] ?? '',
+            password: '',
+            emailVerified: true,
+            authProvider: 'github',
+          });
+        }
+        return { user: dbUser };
       }
+
+      return token;
     },
   },
   jwt: {
