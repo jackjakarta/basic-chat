@@ -1,4 +1,4 @@
-import { UICard } from '@/components/common/container-card';
+import { UICard } from '@/components/common/ui-card';
 import { getUser } from '@/utils/auth';
 import { uiCardClassName } from '@/utils/tailwind';
 

@@ -1,4 +1,4 @@
-import { UICard } from '@/components/common/container-card';
+import { UICard } from '@/components/common/ui-card';
 import { cw, uiCardClassName } from '@/utils/tailwind';
 import { getTranslations } from 'next-intl/server';
 
