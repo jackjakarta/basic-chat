@@ -11,8 +11,6 @@ export default async function Page() {
     <>
       <UICard
         header={<h1 className="text-lg">{t('language.heading')}</h1>}
-        // footer={<span>{t('description')}</span>}
-        // footerClassName="text-sm text-muted-foreground/60"
         className={cw(uiCardClassName, 'pb-6')}
       >
         <SetLanguageSelect />

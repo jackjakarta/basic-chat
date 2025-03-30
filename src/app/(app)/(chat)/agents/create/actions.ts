@@ -13,6 +13,7 @@ export const requestSchema = z.object({
 type CreateAgentRequestBody = z.infer<typeof requestSchema>;
 
 export async function createAgentAction(body: CreateAgentRequestBody): Promise<AgentRow> {
+  const user = await getUser();
   const parsedData = requestSchema.safeParse(body);
 
   if (!parsedData.success) {
@@ -20,7 +21,6 @@ export async function createAgentAction(body: CreateAgentRequestBody): Promise<A
   }
 
   try {
-    const user = await getUser();
     const newAgent = await dbInsertAgent({ ...parsedData.data, userId: user.id });
 
     if (newAgent === undefined) {

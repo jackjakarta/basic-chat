@@ -8,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { siteLanguageSchema } from '@/utils/schemas';
+import { type SiteLanguage } from '@/utils/types';
 import React from 'react';
 
 import { setLanguageCookie } from './actions';
@@ -42,13 +44,25 @@ export default function SetLanguageSelect() {
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem className="cursor-pointer" value="en">
-          English
-        </SelectItem>
-        <SelectItem className="cursor-pointer" value="de">
-          Deutsch
-        </SelectItem>
+        {siteLanguageSchema.options.map((language) => (
+          <SelectItem key={language} value={language} className="hover:bg-muted cursor-pointer">
+            {languageNameMap(language)}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
+}
+
+function languageNameMap(language: SiteLanguage | undefined) {
+  if (language === undefined) {
+    return undefined;
+  }
+
+  const mapping: Record<SiteLanguage, string> = {
+    en: 'English',
+    de: 'Deutsch',
+  };
+
+  return mapping[language] ?? language;
 }

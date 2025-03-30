@@ -1,5 +1,6 @@
 'use client';
 
+import { toolNameMap } from '@/utils/chat';
 import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
 import { useChat, type Message } from '@ai-sdk/react';
@@ -20,7 +21,6 @@ import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
 import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
-import { toolNameMap } from './utils';
 
 type ChatProps = {
   id: string;
