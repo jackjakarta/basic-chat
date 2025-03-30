@@ -17,8 +17,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
-import { BadgeCheck, ChevronsUpDown, LogOut, Settings2 } from 'lucide-react';
-// import { CodeXml, Sparkles } from 'lucide-react';
+import { ChevronsUpDown, LogOut, Settings2, User2 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -86,7 +85,7 @@ export function NavUser({
             <DropdownMenuGroup>
               <Link href="/settings/profile">
                 <DropdownMenuItem className="cursor-pointer">
-                  <BadgeCheck />
+                  <User2 />
                   {t('profile')}
                 </DropdownMenuItem>
               </Link>

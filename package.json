@@ -8,6 +8,7 @@
     "build": "next build",
     "build:dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next build",
     "start": "next start",
+    "start:dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next start",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "types": "tsc --noEmit",
