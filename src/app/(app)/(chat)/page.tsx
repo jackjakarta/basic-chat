@@ -3,7 +3,7 @@ import { generateUUID } from '@/utils/uuid';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Page() {
+export default function Page() {
   const id = generateUUID();
 
   return <Chat key={id} id={id} initialMessages={[]} />;

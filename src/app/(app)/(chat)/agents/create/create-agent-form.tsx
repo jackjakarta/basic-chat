@@ -12,9 +12,10 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { createAgentAction, requestSchema } from './actions';
+import { createAgentAction } from './actions';
+import { newAgentSchema } from './schemas';
 
-type FormData = z.infer<typeof requestSchema>;
+type FormData = z.infer<typeof newAgentSchema>;
 
 export default function CreateAgentForm() {
   const t = useTranslations('agents');
@@ -26,7 +27,7 @@ export default function CreateAgentForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    resolver: zodResolver(requestSchema),
+    resolver: zodResolver(newAgentSchema),
   });
 
   async function onSubmit(data: FormData) {
