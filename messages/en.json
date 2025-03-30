@@ -91,6 +91,7 @@
     "button": "Back to Home"
   },
   "settings": {
+    "title": "Settings",
     "profile": {
       "title": "Profile",
       "description": "Update your profile information.",
@@ -109,10 +110,23 @@
           "placeholder": "eg. I primarily use this chat for coding questions, so please keep responses concise and to the point"
         }
       }
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Set your prefered language for the chat experience.",
+      "language": {
+        "heading": "Change language"
+      }
     }
   },
   "sidebar": {
     "agents": "Agents",
-    "new-chat": "New chat"
+    "new-chat": "New chat",
+    "no-chats": "No chats at the moment",
+    "chats": "Chats",
+    "user-menu": {
+      "profile": "Profile",
+      "preferences": "Preferences"
+    }
   }
 }

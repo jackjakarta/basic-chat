@@ -7,7 +7,11 @@ export function NavHeader() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton className="hover:bg-transparent cursor-default" size="lg" asChild>
+        <SidebarMenuButton
+          className="bg-sidebar-accent text-sidebar-accent-foreground cursor-default"
+          size="lg"
+          asChild
+        >
           <Link href="#">
             <div className="grid flex-1 text-left text-sm leading-tight">
               <ChatLogoIcon className="w-24 h-24 -ml-0.5" />

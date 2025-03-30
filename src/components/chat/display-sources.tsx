@@ -2,8 +2,12 @@ import { type Message } from 'ai';
 import Link from 'next/link';
 
 export default function DisplaySources({ message, status }: { message: Message; status: string }) {
+  if (message.role === 'user') {
+    return null;
+  }
+
   return (
-    <div className="mt-4">
+    <div className="mt-2">
       {message?.parts?.[0]?.type === 'tool-invocation' &&
         message?.parts?.[0]?.toolInvocation.toolName === 'searchTheWeb' && (
           <span className="">Sources:</span>

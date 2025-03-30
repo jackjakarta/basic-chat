@@ -2,7 +2,7 @@ import PageContainer from '@/components/common/page-container';
 
 import SettingsNav from './_components/settings-nav';
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <PageContainer className="mx-auto w-full">
       <div className="flex items-start gap-4">

@@ -1,0 +1,132 @@
+{
+  "agents": {
+    "buttons": {
+      "create-agent": "Agent erstellen",
+      "creating-agent": "Erstelle..."
+    },
+    "create": {
+      "description": "Geben Sie die Details ein, um einen neuen KI-Agenten zu erstellen.",
+      "form": {
+        "instructions": {
+          "label": "Anweisungen",
+          "placeholder": "Agentenanweisungen eingeben"
+        },
+        "name": {
+          "label": "Name",
+          "placeholder": "Agentenname eingeben"
+        }
+      },
+      "name": "Name",
+      "title": "Neuen Agenten erstellen"
+    },
+    "description": "Agenten sind benutzerdefinierte KI-Assistenten, die mit speziellen Anweisungen entwickelt wurden, um bestimmte Aufgaben durchzuführen oder Probleme zu lösen.",
+    "no-agents": "Keine Agenten gefunden. Erstellen Sie Ihren ersten Agenten.",
+    "title": "Agenten",
+    "toasts": {
+      "toast-create-error": "Fehler beim Erstellen des Agenten",
+      "toast-create-loading": "Agent wird erstellt...",
+      "toast-create-success": "Agent erfolgreich erstellt"
+    }
+  },
+  "auth": {
+    "login": {
+      "form": {
+        "email": {
+          "label": "E-Mail",
+          "placeholder": "E-Mail eingeben"
+        },
+        "password": {
+          "label": "Passwort",
+          "placeholder": "Passwort eingeben"
+        },
+        "submit": "Anmelden"
+      }
+    },
+    "logout": "Abmelden",
+    "register": {
+      "form": {
+        "email": {
+          "label": "E-Mail",
+          "placeholder": "E-Mail eingeben"
+        },
+        "password": {
+          "label": "Passwort",
+          "placeholder": "Passwort eingeben"
+        },
+        "submit": "Registrieren"
+      }
+    }
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "create": "Erstellen",
+    "delete": "Löschen",
+    "delete-confirmation": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?",
+    "delete-confirmation-accept": "Ja, löschen",
+    "delete-confirmation-cancel": "Abbrechen",
+    "delete-confirmation-title": "Löschbestätigung",
+    "edit": "Bearbeiten",
+    "error": "Fehler",
+    "loading": "Lädt...",
+    "no": "Nein",
+    "save": "Speichern",
+    "save-changes": "Änderungen speichern",
+    "search": "Suchen",
+    "submit": "Absenden",
+    "yes": "Ja",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirm-password": "Passwort bestätigen",
+    "new-password": "Neues Passwort",
+    "name": "Name",
+    "first-name": "Vorname",
+    "last-name": "Nachname"
+  },
+  "not-found": {
+    "title": "Seite nicht gefunden",
+    "description": "Die gesuchte Seite konnte nicht gefunden werden. Möglicherweise wurde die Seite verschoben, gelöscht oder existierte nie.",
+    "action": "Überprüfen Sie die URL oder gehen Sie zurück zur Startseite.",
+    "button": "Zurück zur Startseite"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "profile": {
+      "title": "Profil",
+      "description": "Aktualisieren Sie Ihre Profilinformationen.",
+      "avatar-disclaimer": "Sie können Ihr Avatar ändern auf",
+      "form": {
+        "first-name": {
+          "label": "Vorname",
+          "placeholder": "Vorname eingeben"
+        },
+        "last-name": {
+          "label": "Nachname",
+          "placeholder": "Nachname eingeben"
+        },
+        "custom-instructions": {
+          "label": "Welche Präferenzen sollte der Chat bei Antworten berücksichtigen?",
+          "placeholder": "z.B. Ich nutze den Chat hauptsächlich für Programmierfragen, bitte Antworten kurz und präzise halten."
+        }
+      }
+    },
+    "preferences": {
+      "title": "Einstellungen",
+      "description": "Wählen Sie Ihre bevorzugte Sprache für den Chat.",
+      "language": {
+        "heading": "Sprache ändern"
+      }
+    }
+  },
+  "sidebar": {
+    "agents": "Agenten",
+    "new-chat": "Neuer Chat",
+    "no-chats": "Momentan keine Gespräche",
+    "chats": "Gespräche",
+    "user-menu": {
+      "profile": "Profil",
+      "preferences": "Einstellungen"
+    }
+  }
+}

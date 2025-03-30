@@ -18,9 +18,10 @@ import { NavUser } from './nav-user';
 
 type SidebarProps = React.ComponentProps<typeof Sidebar> & {
   user: ObscuredUser;
+  avatarUrl?: string;
 };
 
-export default function AppSidebar({ user, ...props }: SidebarProps) {
+export default function AppSidebar({ user, avatarUrl, ...props }: SidebarProps) {
   const { setOpenMobile } = useSidebar();
 
   function handleItemClickMobile() {
@@ -38,7 +39,7 @@ export default function AppSidebar({ user, ...props }: SidebarProps) {
         <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser {...user} />
+        <NavUser {...user} avatarUrl={avatarUrl} />
       </SidebarFooter>
     </Sidebar>
   );

@@ -17,12 +17,21 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
-import { BadgeCheck, ChevronsUpDown, CodeXml, LogOut, Sparkles } from 'lucide-react';
+import { BadgeCheck, ChevronsUpDown, LogOut, Settings2 } from 'lucide-react';
+// import { CodeXml, Sparkles } from 'lucide-react';
 import { signOut } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
-export function NavUser({ firstName, lastName, email }: ObscuredUser) {
+export function NavUser({
+  firstName,
+  lastName,
+  email,
+  avatarUrl,
+}: ObscuredUser & { avatarUrl?: string }) {
   const { isMobile } = useSidebar();
+  const t = useTranslations('sidebar.user-menu');
+  const tAuth = useTranslations('auth');
 
   return (
     <SidebarMenu>
@@ -34,7 +43,7 @@ export function NavUser({ firstName, lastName, email }: ObscuredUser) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={undefined} alt="avatar" />
+                <AvatarImage src={avatarUrl} alt="avatar" />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -55,7 +64,7 @@ export function NavUser({ firstName, lastName, email }: ObscuredUser) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={undefined} alt="avatar" />
+                  <AvatarImage src={avatarUrl} alt="avatar" />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -67,36 +76,38 @@ export function NavUser({ firstName, lastName, email }: ObscuredUser) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem className="cursor-pointer">
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
               <Link href="/settings/profile">
                 <DropdownMenuItem className="cursor-pointer">
                   <BadgeCheck />
-                  Profile
+                  {t('profile')}
                 </DropdownMenuItem>
               </Link>
-              <DropdownMenuItem className="cursor-pointer">
+              {/* <DropdownMenuItem className="cursor-pointer">
                 <CodeXml />
                 API Console
-              </DropdownMenuItem>
-              {/* <DropdownMenuItem>
-                <Bell />
-                Notifications
               </DropdownMenuItem> */}
+              <Link href="/settings/preferences">
+                <DropdownMenuItem className="cursor-pointer">
+                  <Settings2 />
+                  {t('preferences')}
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => signOut({ callbackUrl: '/login' })}
+              onClick={async () => await signOut({ callbackUrl: '/login' })}
             >
               <LogOut />
-              Log out
+              {tAuth('logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
