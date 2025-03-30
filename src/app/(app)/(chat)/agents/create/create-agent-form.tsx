@@ -17,9 +17,9 @@ import { createAgentAction, requestSchema } from './actions';
 type FormData = z.infer<typeof requestSchema>;
 
 export default function CreateAgentForm() {
+  const t = useTranslations('agents');
   const router = useRouter();
   const { toastSuccess, toastLoading, toastError } = useToast();
-  const t = useTranslations('agents');
 
   const {
     register,
@@ -30,15 +30,15 @@ export default function CreateAgentForm() {
   });
 
   async function onSubmit(data: FormData) {
-    toastLoading('Create agent...');
+    toastLoading(t('toasts.toast-create-loading'));
 
     try {
       const newAgent = await createAgentAction(data);
-      toastSuccess('Agent created successfully');
+      toastSuccess(t('toasts.toast-create-success'));
       router.push(`/agents/${newAgent.id}`);
     } catch (error) {
       console.error({ error });
-      toastError('Failed to create agent');
+      toastError(t('toasts.toast-create-error'));
     }
   }
 
