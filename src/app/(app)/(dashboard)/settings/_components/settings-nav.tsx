@@ -31,7 +31,7 @@ export default function SettingsNav() {
   ];
 
   return (
-    <nav className="flex flex-col gap-2 w-44">
+    <nav className="flex flex-col gap-2 w-full md:w-44">
       {menuItems.map((item) => (
         <Link
           key={item.label}
