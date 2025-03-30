@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 
 import SelectLlmModel from '../chat/select-llm';
@@ -12,6 +13,7 @@ type HeaderProps = {
 
 export default function Header({ modelsSelect }: HeaderProps) {
   const pathname = usePathname();
+  const t = useTranslations('settings');
   const { open } = useSidebar();
 
   const isEmptyChat = pathname === '/';
@@ -23,7 +25,7 @@ export default function Header({ modelsSelect }: HeaderProps) {
       {!open && <NewChatButton disabled={isEmptyChat} className="mr-2" />}
       {modelsSelect && <SelectLlmModel />}
       {isSettingsPath && (
-        <h1 className="text-secondary-foreground text-lg font-medium">Settings</h1>
+        <h1 className="text-secondary-foreground text-lg font-medium">{t('title')}</h1>
       )}
     </div>
   );

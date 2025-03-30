@@ -28,12 +28,14 @@ export async function dbCreateNewUser({
       throw new Error('This email already exists');
     }
 
+    const maybePassword = authProvider === 'credentials' ? await hashPassword(password) : '';
+
     const newUser = (
       await db
         .insert(userTable)
         .values({
           email,
-          passwordHash: await hashPassword(password),
+          passwordHash: maybePassword,
           firstName,
           lastName,
           emailVerified,

@@ -10,6 +10,7 @@ import {
   SidebarMenuSub,
 } from '@/components/ui/sidebar';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import ConversationItem from './conversation-item';
@@ -20,6 +21,8 @@ type NavChatsProps = {
 };
 
 export function NavChats({ onClickMobile }: NavChatsProps) {
+  const t = useTranslations('sidebar');
+
   const { data: conversations = [], isLoading } = useQuery({
     queryKey: ['conversations'],
     queryFn: fetchClientSideConversations,
@@ -33,7 +36,7 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
         <Collapsible asChild open={true}>
           <SidebarMenuItem>
             <SidebarMenuButton className="hover:bg-transparent active:bg-transparent" asChild>
-              <span>Chats</span>
+              <span>{t('chats')}</span>
             </SidebarMenuButton>
             <CollapsibleContent>
               <SidebarMenuSub>
@@ -51,7 +54,7 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                       />
                     ))
                   ) : (
-                    <span className="text-xs dark:opacity-70">No chats at the moment</span>
+                    <span className="text-xs dark:opacity-70">{t('no-chats')}</span>
                   ))}
               </SidebarMenuSub>
             </CollapsibleContent>

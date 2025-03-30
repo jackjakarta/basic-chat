@@ -1,10 +1,9 @@
 import { UICard } from '@/components/common/container-card';
 import { getUser } from '@/utils/auth';
+import { uiCardClassName } from '@/utils/tailwind';
 
 import ChangePasswordForm from './change-password-form';
 import ProfileForm from './profile-form';
-
-const uiCardClassName = 'bg-muted/30 border-muted/50 pt-4 px-2';
 
 export default async function Page() {
   const user = await getUser();
@@ -19,12 +18,15 @@ export default async function Page() {
           customInstructions={user.settings?.customInstructions}
         />
       </UICard>
-      <UICard
-        header={<h1 className="text-lg">Change your password</h1>}
-        className={uiCardClassName}
-      >
-        <ChangePasswordForm />
-      </UICard>
+      {user.passwordHash && (
+        <UICard
+          header={<h1 className="text-lg">Change your password</h1>}
+          className={uiCardClassName}
+        >
+          <ChangePasswordForm />
+        </UICard>
+      )}
+      <div className="mb-16" />
     </>
   );
 }

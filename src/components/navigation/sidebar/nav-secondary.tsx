@@ -1,3 +1,4 @@
+import GithubIcon from '@/components/icons/github';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -5,28 +6,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { GithubIcon } from 'lucide-react';
 import Link from 'next/link';
 
-const data = {
-  navSecondary: [
-    {
-      title: 'GitHub',
-      url: 'https://github.com/jackjakarta/basic-chat',
-      icon: GithubIcon,
-    },
-  ],
-};
+const menuItems = [
+  {
+    title: 'GitHub',
+    url: 'https://github.com/jackjakarta/basic-chat',
+    icon: GithubIcon,
+  },
+];
 
 export function NavSecondary({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          {data.navSecondary.map((item) => (
+          {menuItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">
-                <Link href={item.url}>
+                <Link href={item.url} target="_blank">
                   <item.icon />
                   <span>{item.title}</span>
                 </Link>

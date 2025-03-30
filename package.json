@@ -15,8 +15,6 @@
     "test": "jest --verbose",
     "checks": "chmod +x $(git rev-parse --show-toplevel)/scripts/checks.sh && $(git rev-parse --show-toplevel)/scripts/checks.sh",
     "pipeline": "chmod +x $(git rev-parse --show-toplevel)/scripts/pipeline.sh && $(git rev-parse --show-toplevel)/scripts/pipeline.sh",
-    "fetchenv:local": "chmod +x $(git rev-parse --show-toplevel)/scripts/fetch-env.sh && $(git rev-parse --show-toplevel)/scripts/fetch-env.sh local",
-    "fetchenv:prod": "chmod +x $(git rev-parse --show-toplevel)/scripts/fetch-env.sh && $(git rev-parse --show-toplevel)/scripts/fetch-env.sh prod",
     "db:generate": "drizzle-kit generate --config=./src/db/drizzle.config.ts",
     "db:migrate": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/migrate.ts",
     "db:clear": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/clear.ts",
