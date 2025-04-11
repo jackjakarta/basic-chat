@@ -1,6 +1,7 @@
 'use client';
 
 import { toolNameMap } from '@/utils/chat';
+import { getTimeBasedGreeting } from '@/utils/greeting';
 import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
 import { useChat, type Message } from '@ai-sdk/react';
@@ -15,7 +16,6 @@ import { useToast } from '../hooks/use-toast';
 import ArrowRightIcon from '../icons/arrow-right';
 import CheckIcon from '../icons/check';
 import ClipboardIcon from '../icons/clipboard';
-import ChatLogoIcon from '../icons/logo';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
@@ -25,10 +25,11 @@ import MarkdownDisplay from './markdown-display/markdown-display';
 type ChatProps = {
   id: string;
   initialMessages: Message[];
+  userFirstName?: string;
   agentId?: string;
 };
 
-export default function Chat({ id, initialMessages, agentId }: ChatProps) {
+export default function Chat({ id, initialMessages, userFirstName, agentId }: ChatProps) {
   const { model } = useLlmModel();
   const { toastError } = useToast();
   const queryClient = useQueryClient();
@@ -93,11 +94,17 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
       className="flex flex-col h-full w-full overflow-y-auto"
       style={{ maxHeight: 'calc(100vh - 150px)' }}
     >
-      <div className="flex flex-col flex-1 justify-between items-center w-full">
-        <div className="flex-grow w-full max-w-[50rem] p-4 pb-[5rem]">
+      <div className="flex flex-col flex-1 justify-center items-center w-full">
+        <div
+          className={cw('w-full max-w-[50rem] p-4 pb-[5rem]', messages.length > 0 && 'flex-grow')}
+        >
           {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full">
-              <ChatLogoIcon className="text-primary dark:text-secondary w-64 h-64" />
+            <div className="flex flex-col items-center justify-center h-full">
+              {userFirstName && (
+                <h1 className="text-3xl font-normal text-primary dark:text-primary-foreground">
+                  {getTimeBasedGreeting(userFirstName)}
+                </h1>
+              )}
             </div>
           ) : (
             <>
@@ -217,12 +224,16 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
             </div>
           )}
         </div>
-
-        <div className="w-full fixed bottom-4 max-w-[25rem] md:max-w-[30rem] lg:max-w-[42rem] px-4">
+        <div
+          className={cw(
+            'w-full max-w-[25rem] md:max-w-[30rem] lg:max-w-[42rem] px-4 -mt-14',
+            messages.length > 0 ? 'fixed bottom-4' : '',
+          )}
+        >
           <div className="flex flex-col">
             <form
               onSubmit={customHandleSubmit}
-              className="bg-sidebar w-full p-1 border focus-within:border-primary rounded-xl"
+              className="bg-sidebar w-full p-1 border focus-within:border-primary border-none rounded-xl"
             >
               <div className="flex items-center">
                 <AutoResizeTextarea
@@ -239,7 +250,7 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                     type="button"
                     title="Stop generating"
                     onClick={() => stop()}
-                    className="p-1.5 flex items-center justify-center group disabled:cursor-not-allowed rounded-enterprise-sm hover:bg-secondary/20 me-2"
+                    className="p-1.5 flex items-center justify-center group disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
                     aria-label="Stop"
                   >
                     <StopIcon className="w-6 h-6 text-dark-gray group-disabled:bg-gray-200 group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
@@ -249,20 +260,16 @@ export default function Chat({ id, initialMessages, agentId }: ChatProps) {
                     type="submit"
                     title="Send message"
                     disabled={input.trim().length === 0}
-                    className="flex items-center justify-center group disabled:cursor-not-allowed rounded-enterprise-sm hover:bg-secondary/20 me-2"
+                    className="flex items-center justify-center group text-secondary disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
                     aria-label="Send Message"
                   >
-                    <ArrowRightIcon className="w-7 h-7 text-dark-gray group-disabled:bg-primary rounded-lg group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
+                    <ArrowRightIcon className="w-7 h-7 text-dark-gray group-disabled:bg-secondary rounded-lg dark:group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
                   </button>
                 )}
               </div>
             </form>
             <span className="text-xs mt-2 font-normal text-main-900 flex self-center">
-              Press{' '}
-              <kbd className="mx-2 text-xs bg-gray-100 dark:bg-accent rounded-md px-2 py-0.5">
-                Enter
-              </kbd>{' '}
-              to send message
+              This chat can search the web and generate images
             </span>
           </div>
         </div>
