@@ -1,6 +1,7 @@
 'use client';
 
 import GithubIcon from '@/components/icons/github';
+import GoogleIcon from '@/components/icons/google';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,6 +57,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
   async function handleGithubSignIn() {
     await signIn('github');
+  }
+
+  async function handleGoogleSignIn() {
+    await signIn('google');
   }
 
   const emailValue = watch('email');
@@ -121,10 +126,17 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             Or continue with
           </span>
         </div>
-        <Button onClick={handleGithubSignIn} type="button" variant="outline" className="w-full">
-          <GithubIcon />
-          Login with GitHub
-        </Button>
+
+        <div className="flex flex-col gap-4">
+          <Button onClick={handleGoogleSignIn} type="button" variant="outline" className="w-full">
+            <GoogleIcon />
+            Login with Google
+          </Button>
+          <Button onClick={handleGithubSignIn} type="button" variant="outline" className="w-full">
+            <GithubIcon />
+            Login with GitHub
+          </Button>
+        </div>
       </div>
       <div className="flex justify-center items-center gap-2 text-sm">
         <span className="text-muted-foreground">Don&apos;t have an account? </span>

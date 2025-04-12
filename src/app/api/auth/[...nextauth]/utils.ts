@@ -4,6 +4,7 @@ import { env } from '@/env';
 import { type AuthOptions } from 'next-auth';
 import credentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
 import { z } from 'zod';
 
 const credentialsSchema = z.object({
@@ -35,6 +36,10 @@ export const authOptions = {
       clientId: env.githubClientId,
       clientSecret: env.githubClientSecret,
     }),
+    GoogleProvider({
+      clientId: env.googleClientId,
+      clientSecret: env.googleClientSecret,
+    }),
   ],
   session: { strategy: 'jwt' },
   callbacks: {
@@ -42,12 +47,11 @@ export const authOptions = {
       session.user = token.user as UserRow;
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         let dbUser;
         try {
           dbUser = await dbGetUserByEmail({ email: user.email ?? '' });
-          console.debug({ dbUser });
 
           if (!dbUser) {
             throw new Error('User not found');
@@ -59,7 +63,7 @@ export const authOptions = {
             lastName: user.name?.split(' ')[1] ?? '',
             password: '',
             emailVerified: true,
-            authProvider: 'github',
+            authProvider: account?.provider === 'github' ? 'github' : 'google',
           });
         }
         return { user: dbUser };

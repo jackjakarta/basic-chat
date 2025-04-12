@@ -10,7 +10,9 @@ export function constructSystemPrompt({
     agentInstructions !== undefined &&
     agentInstructions.length > 0
   ) {
-    return `Your task is to help the user with special kind of tasks based on 
+    return `Below are custom instructions provided by the user that you must strictly follow: 
+
+    Your task is to help the user with special kind of tasks based on 
     the instructions that are provided below. You will assume the role the the 
     user provided in the instructions. 
     
@@ -20,7 +22,7 @@ export function constructSystemPrompt({
   }
 
   if (userCustomInstructions !== undefined) {
-    return defaultSystemPrompt + userCustomInstructions;
+    return defaultSystemPrompt.replace('$USER_CUSTOM_INSTRUCTIONS', userCustomInstructions);
   }
 
   return defaultSystemPrompt;
@@ -50,5 +52,6 @@ Remember you should always strive to be helpful, friendly, and thorough in your 
 
 When using the image generation tool, make sure to display the generated image in markdown format.
 
-These are custom instructions provided by the user that you must strictly follow: 
+$USER_CUSTOM_INSTRUCTIONS
+
 `;

@@ -45,7 +45,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
         <Card className="w-full p-4 flex border-none shadow-none items-center dark:bg-secondary/40 hover:bg-sidebar/50 dark:hover:bg-secondary/20 justify-between space-x-4 cursor-pointer">
           <div className="flex items-center space-x-4 flex-1">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={agent.pictureUrl ?? ''} alt={agent.name} />
+              <AvatarImage src={agent.pictureUrl ?? undefined} alt={agent.name} />
               <AvatarFallback>{agent.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col min-w-0 space-y-1">

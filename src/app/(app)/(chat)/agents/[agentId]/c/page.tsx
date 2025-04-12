@@ -30,5 +30,7 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
-  return <Chat key={id} id={id} initialMessages={[]} agentId={agent.id} />;
+  return (
+    <Chat key={id} id={id} initialMessages={[]} agentId={agent.id} userFirstName={user.firstName} />
+  );
 }
