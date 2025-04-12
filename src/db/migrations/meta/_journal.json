@@ -50,6 +50,13 @@
       "when": 1742249269160,
       "tag": "0006_fuzzy_vapor",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1744463605378,
+      "tag": "0007_parched_spyke",
+      "breakpoints": true
     }
   ]
 }

@@ -29,10 +29,7 @@ export default async function Page(context: unknown) {
 
   return (
     <PageContainer className="mx-auto w-full">
-      <div className="flex flex-col gap-8">
-        <h1 className="text-2xl font-medium">{agent.name}</h1>
-        <EditAgentForm agent={agent} />
-      </div>
+      <EditAgentForm agent={agent} />
     </PageContainer>
   );
 }

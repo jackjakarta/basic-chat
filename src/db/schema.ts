@@ -12,7 +12,7 @@ import { z } from 'zod';
 
 export const appSchema = pgSchema('app');
 
-export const authProviderSchema = z.enum(['credentials', 'github']);
+export const authProviderSchema = z.enum(['credentials', 'github', 'google']);
 export const authProviderPgEnum = appSchema.enum('auth_provider', authProviderSchema.options);
 export type AuthProvider = z.infer<typeof authProviderSchema>;
 

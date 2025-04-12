@@ -1,0 +1,1 @@
+ALTER TYPE "app"."auth_provider" ADD VALUE 'google';
