@@ -29,8 +29,13 @@
     }
   },
   "auth": {
+    "no-account": "Noch kein Konto?",
     "login": {
       "form": {
+        "title": "Melden Sie sich bei Ihrem Konto an",
+        "description": "Geben Sie unten Ihre E-Mail-Adresse ein, um sich bei Ihrem Konto anzumelden",
+        "or": "Oder fortfahren mit",
+        "login-with": "Anmelden mit",
         "email": {
           "label": "E-Mail",
           "placeholder": "E-Mail eingeben"
@@ -43,7 +48,20 @@
       }
     },
     "logout": "Abmelden",
+    "forgot-password": {
+      "message": "Passwort vergessen?",
+      "form": {
+        "title": "Passwort vergessen",
+        "description": "Geben Sie Ihre E-Mail-Adresse ein, um Ihr Passwort zurückzusetzen",
+        "email": {
+          "label": "E-Mail",
+          "placeholder": "E-Mail eingeben"
+        },
+        "submit": "Zurücksetzungslink senden"
+      }
+    },
     "register": {
+      "sign-up": "Registrieren",
       "form": {
         "email": {
           "label": "E-Mail",

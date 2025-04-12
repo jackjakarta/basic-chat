@@ -9,6 +9,7 @@ import { emailSchema } from '@/utils/schemas';
 import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -23,6 +24,8 @@ type LoginFormData = z.infer<typeof loginFormSchema>;
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
   const router = useRouter();
+  const t = useTranslations('auth.login.form');
+  const tAuth = useTranslations('auth');
 
   const {
     register,
@@ -74,14 +77,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       {...props}
     >
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
-        <p className="text-balance text-sm text-muted-foreground">
-          Enter your email below to login to your account
-        </p>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <p className="text-balance text-sm text-muted-foreground">{t('description')}</p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('email.label')}</Label>
           <Input
             id="email"
             type="text"
@@ -95,12 +96,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('password.label')}</Label>
             <Link
               href="/reset-password"
               className="ml-auto text-xs text-muted-foreground hover:opacity-75"
             >
-              Forgot your password?
+              {tAuth('forgot-password.message')}
             </Link>
           </div>
           <Input
@@ -122,26 +123,24 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           {isSubmitting || isSubmitSuccessful ? 'Logging in...' : 'Login'}
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-          <span className="relative z-10 bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
+          <span className="relative z-10 bg-background px-2 text-muted-foreground">{t('or')}</span>
         </div>
 
         <div className="flex flex-col gap-4">
           <Button onClick={handleGoogleSignIn} type="button" variant="outline" className="w-full">
             <GoogleIcon />
-            Login with Google
+            {t('login-with')} Google
           </Button>
           <Button onClick={handleGithubSignIn} type="button" variant="outline" className="w-full">
             <GithubIcon />
-            Login with GitHub
+            {t('login-with')} GitHub
           </Button>
         </div>
       </div>
       <div className="flex justify-center items-center gap-2 text-sm">
-        <span className="text-muted-foreground">Don&apos;t have an account? </span>
+        <span className="text-muted-foreground">{tAuth('no-account')} </span>
         <Link href="/register" className="hover:opacity-75">
-          Sign up
+          {tAuth('register.sign-up')}
         </Link>
       </div>
     </form>

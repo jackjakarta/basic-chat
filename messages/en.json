@@ -29,8 +29,13 @@
     }
   },
   "auth": {
+    "no-account": "Don't have an account?",
     "login": {
       "form": {
+        "title": "Login to your account",
+        "description": "Enter your email below to login to your account",
+        "or": "Or continue with",
+        "login-with": "Login with",
         "email": {
           "label": "Email",
           "placeholder": "Enter email"
@@ -43,7 +48,20 @@
       }
     },
     "logout": "Logout",
+    "forgot-password": {
+      "message": "Forgot your password?",
+      "form": {
+        "title": "Forgot Password",
+        "description": "Enter your email to reset your password",
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter email"
+        },
+        "submit": "Send Reset Link"
+      }
+    },
     "register": {
+      "sign-up": "Sign up",
       "form": {
         "email": {
           "label": "Email",
