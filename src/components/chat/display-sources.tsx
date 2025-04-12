@@ -1,5 +1,6 @@
 import { type Message } from 'ai';
-import Link from 'next/link';
+
+import { SourceTag } from './source-tag';
 
 export default function DisplaySources({ message, status }: { message: Message; status: string }) {
   if (message.role === 'user') {
@@ -7,23 +8,17 @@ export default function DisplaySources({ message, status }: { message: Message; 
   }
 
   return (
-    <div className="mt-2">
-      {message?.parts?.[0]?.type === 'tool-invocation' &&
-        message?.parts?.[0]?.toolInvocation.toolName === 'searchTheWeb' && (
-          <span className="">Sources:</span>
-        )}
-
+    <div className="mt-4">
       {status === 'ready' &&
         message?.parts?.[0]?.type === 'tool-invocation' &&
         message?.parts?.[0]?.toolInvocation.toolName === 'searchTheWeb' &&
-        message.parts?.[0]?.toolInvocation.state === 'result' &&
-        message.parts?.[0]?.toolInvocation.result?.sources?.map(
-          // @ts-expect-error - weird typing
-          (source) => (
-            <div key={source.url} className="flex flex-col text-blue-400 gap-8 hover:underline">
-              <Link href={source.url}>{source.title}</Link>
-            </div>
-          ),
+        message.parts?.[0]?.toolInvocation.state === 'result' && (
+          <div className="flex items-center flex-wrap gap-2">
+            {message.parts?.[0]?.toolInvocation.result?.sources?.map(
+              // @ts-expect-error - weird typing
+              (source) => <SourceTag key={source.url} url={source.url} title={source.title} />,
+            )}
+          </div>
         )}
     </div>
   );
