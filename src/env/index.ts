@@ -22,6 +22,7 @@ export const env = createEnv({
     awsS3EndpointUrl: z.string().min(1),
     utilsApiUrl: z.string().url(),
     utilsApiKey: z.string().min(1),
+    jwtSecret: z.string().min(1),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
@@ -46,6 +47,7 @@ export const env = createEnv({
     devMode: process.env.DEV_MODE,
     utilsApiUrl: process.env.UTILS_API_URL,
     utilsApiKey: process.env.UTILS_API_KEY,
+    jwtSecret: process.env.JWT_SECRET,
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },
 });

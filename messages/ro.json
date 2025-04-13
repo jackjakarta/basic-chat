@@ -1,0 +1,150 @@
+{
+  "agents": {
+    "buttons": {
+      "create-agent": "Creează Agent",
+      "creating-agent": "Se creează..."
+    },
+    "create": {
+      "description": "Completează detaliile pentru a crea un agent AI nou.",
+      "form": {
+        "instructions": {
+          "label": "Instrucțiuni",
+          "placeholder": "Introdu instrucțiunile agentului"
+        },
+        "name": {
+          "label": "Nume",
+          "placeholder": "Introdu numele agentului"
+        }
+      },
+      "name": "Nume",
+      "title": "Creează Agent Nou"
+    },
+    "description": "Agenții sunt asistenți AI personalizați, concepuți cu instrucțiuni specifice pentru a efectua anumite sarcini sau pentru a rezolva anumite probleme.",
+    "no-agents": "Nu există agenți. Creează primul tău agent.",
+    "title": "Agenți",
+    "toasts": {
+      "toast-create-error": "Eroare la crearea agentului",
+      "toast-create-loading": "Se creează agentul...",
+      "toast-create-success": "Agentul a fost creat cu succes"
+    }
+  },
+  "auth": {
+    "no-account": "Nu ai cont?",
+    "login": {
+      "form": {
+        "title": "Conectează-te la contul tău",
+        "description": "Introdu email-ul pentru a te conecta la cont",
+        "or": "Sau continuă cu",
+        "login-with": "Conectează-te cu",
+        "email": {
+          "label": "Email",
+          "placeholder": "Introdu email"
+        },
+        "password": {
+          "label": "Parolă",
+          "placeholder": "Introdu parola"
+        },
+        "submit": "Conectează-te"
+      }
+    },
+    "logout": "Deconectează-te",
+    "forgot-password": {
+      "message": "Ai uitat parola?",
+      "form": {
+        "title": "Recuperare parolă",
+        "description": "Introdu email-ul pentru a reseta parola",
+        "email": {
+          "label": "Email",
+          "placeholder": "Introdu email"
+        },
+        "submit": "Trimite link-ul de resetare"
+      }
+    },
+    "register": {
+      "sign-up": "Înregistrează-te",
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "Introdu email"
+        },
+        "password": {
+          "label": "Parolă",
+          "placeholder": "Introdu parola"
+        },
+        "submit": "Înregistrare"
+      }
+    }
+  },
+  "common": {
+    "cancel": "Anulează",
+    "close": "Închide",
+    "confirm": "Confirmă",
+    "create": "Creează",
+    "delete": "Șterge",
+    "delete-confirmation": "Sigur vrei să ștergi acest element?",
+    "delete-confirmation-accept": "Da, șterge",
+    "delete-confirmation-cancel": "Anulează",
+    "delete-confirmation-title": "Confirmă ștergerea",
+    "edit": "Editează",
+    "error": "Eroare",
+    "loading": "Se încarcă...",
+    "no": "Nu",
+    "save": "Salvează",
+    "save-changes": "Salvează modificările",
+    "search": "Caută",
+    "submit": "Trimite",
+    "yes": "Da",
+    "email": "Email",
+    "password": "Parolă",
+    "confirm-password": "Confirmă parola",
+    "new-password": "Parolă nouă",
+    "name": "Nume",
+    "first-name": "Prenume",
+    "last-name": "Nume"
+  },
+  "not-found": {
+    "title": "Pagina nu a fost găsită",
+    "description": "Pagina pe care o cauți nu a putut fi găsită. Este posibil ca aceasta să fi fost mutată, ștearsă sau să nu fi existat.",
+    "action": "Verifică URL-ul sau revino la pagina principală.",
+    "button": "Înapoi la Acasă"
+  },
+  "settings": {
+    "title": "Setări",
+    "profile": {
+      "title": "Profil",
+      "description": "Actualizează informațiile profilului tău.",
+      "avatar-disclaimer": "Poți schimba avatarul pe",
+      "form": {
+        "first-name": {
+          "label": "Prenume",
+          "placeholder": "Introdu prenumele"
+        },
+        "last-name": {
+          "label": "Nume",
+          "placeholder": "Introdu numele de familie"
+        },
+        "custom-instructions": {
+          "label": "Ce preferințe ar trebui să ia în considerare chat-ul în răspunsuri?",
+          "placeholder": "ex. Folosesc chat-ul pentru întrebări despre cod, așa că păstrează răspunsurile concise și la obiect"
+        }
+      }
+    },
+    "preferences": {
+      "title": "Preferințe",
+      "description": "Alege limba preferată pentru experiența de chat.",
+      "language": {
+        "heading": "Schimbă limba"
+      }
+    }
+  },
+  "sidebar": {
+    "agents": "Agenți",
+    "new-chat": "Chat nou",
+    "no-chats": "Momentan nu există chat-uri",
+    "chats": "Chat-uri",
+    "user-menu": {
+      "profile": "Profil",
+      "preferences": "Preferințe"
+    }
+  }
+}

@@ -62,6 +62,7 @@ function languageNameMap(language: SiteLanguage | undefined) {
   const mapping: Record<SiteLanguage, string> = {
     en: 'English',
     de: 'Deutsch',
+    ro: 'Română',
   };
 
   return mapping[language] ?? language;
