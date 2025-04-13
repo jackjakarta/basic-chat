@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 import { getUserFromHeaders } from '../../utils';
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
     const decryptedToken = getUserFromHeaders(req.headers);
     const user = await dbGetUserById({ userId: decryptedToken.id });
@@ -17,6 +17,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ user: obscuredUser }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error }, { status: 500 });
+    return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }
