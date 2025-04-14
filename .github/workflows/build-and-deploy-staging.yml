@@ -59,10 +59,10 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd /home/jack/basic-chat
-            export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
             git pull
+            export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
-            ENVIRONMENT=production op inject -i .env.op -o .env && \
+            ENVIRONMENT=production op inject -f -i .env.op -o .env && \
             docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:staging . && \
             docker push ${{ env.DOCKER_USERNAME }}/el-chat:staging
 
