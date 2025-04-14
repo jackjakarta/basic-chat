@@ -1,0 +1,94 @@
+name: Build and Deploy Staging
+
+on:
+  # push:
+  #   branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  checks:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install PNPM
+        run: npm install -g pnpm@9.15.3
+
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check formatting
+        run: pnpm format:check
+      - name: Check types
+        run: pnpm types
+      - name: Check linter
+        run: pnpm lint
+      - name: Unit tests
+        run: pnpm test
+
+  build:
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: checks
+
+    steps:
+      - name: Load 1password secrets
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          REMOTE_HOST: 'op://chat-app/github-secrets/REMOTE_HOST'
+          REMOTE_USER: 'op://chat-app/github-secrets/REMOTE_USER'
+          SSH_PRIVATE_KEY: 'op://chat-app/github-secrets/SSH_PRIVATE_KEY'
+          DOCKER_USERNAME: 'op://chat-app/github-secrets/DOCKER_USERNAME'
+          DOCKER_PASSWORD: 'op://chat-app/github-secrets/DOCKER_PASSWORD'
+
+      - name: Build and Deploy to remote server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ env.REMOTE_HOST }}
+          username: ${{ env.REMOTE_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/jack/basic-chat
+            export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+            git pull
+
+            ENVIRONMENT=production op inject -i .env.op -o .env && \
+            docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:staging . && \
+            docker push ${{ env.DOCKER_USERNAME }}/el-chat:staging
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: build
+
+    steps:
+      - name: Load 1password secrets
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          REMOTE_HOST: 'op://chat-app/github-secrets/REMOTE_HOST'
+          REMOTE_USER: 'op://chat-app/github-secrets/REMOTE_USER'
+          SSH_PRIVATE_KEY: 'op://chat-app/github-secrets/SSH_PRIVATE_KEY'
+
+      - name: Build and Deploy to remote server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ env.REMOTE_HOST }}
+          username: ${{ env.REMOTE_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/jack/basic-chat
+            docker stack deploy -c docker-compose.staging.yml el-chat-staging && \
+            docker system prune -f
