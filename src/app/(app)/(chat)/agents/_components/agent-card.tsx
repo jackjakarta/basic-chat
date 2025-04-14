@@ -83,7 +83,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
       <AlertDialog
         isOpen={isDeleteModalOpen}
         onOpenChange={() => {
-          setIsDeleteModalOpen(true);
+          setIsDeleteModalOpen((prev) => !prev);
         }}
         title="Delete Agent"
         description={`Are you sure you want to delete the agent "${agent.name}"?`}
