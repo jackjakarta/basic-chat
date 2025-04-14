@@ -1,6 +1,7 @@
+'use client';
+
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -9,6 +10,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import React from 'react';
+
+import { Button } from '../ui/button';
 
 type AlertType = 'destructive' | 'info';
 
@@ -38,9 +41,10 @@ export default function AlertModal({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>
+
+          <Button onClick={onConfirm} variant={type === 'destructive' ? 'destructive' : 'default'}>
             {type === 'destructive' ? 'Confirm' : 'Ok'}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
