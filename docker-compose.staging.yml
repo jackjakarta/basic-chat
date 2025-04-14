@@ -32,7 +32,7 @@ services:
   web:
     image: jackjakarta/el-chat:staging
     deploy:
-      replicas: 2
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 5s
@@ -40,10 +40,10 @@ services:
         condition: on-failure
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.fastapi-app.rule=Host(`chat.codebyalex.dev`)'
-        - 'traefik.http.routers.fastapi-app.entrypoints=websecure'
-        - 'traefik.http.routers.fastapi-app.tls.certresolver=myresolver'
-        - 'traefik.http.services.fastapi-app.loadbalancer.server.port=3000'
+        - 'traefik.http.routers.el-chat.rule=Host(`chat.codebyalex.dev`)'
+        - 'traefik.http.routers.el-chat.entrypoints=websecure'
+        - 'traefik.http.routers.el-chat.tls.certresolver=myresolver'
+        - 'traefik.http.services.el-chat.loadbalancer.server.port=3000'
 
 volumes:
   traefik-lets-encrypt:
