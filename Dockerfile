@@ -13,8 +13,8 @@ RUN pnpm i
 FROM base AS builder
 
 RUN npm install -g pnpm@9.15.3
-COPY --from=deps /app/node_modules ./node_modules
 RUN pnpm add sharp
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm build
 
