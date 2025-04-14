@@ -78,7 +78,6 @@ export async function POST(request: NextRequest) {
       system: systemPrompt,
       messages,
       maxSteps: 5,
-      maxTokens: 48000,
       tools: {
         searchTheWeb: tool({
           description:
