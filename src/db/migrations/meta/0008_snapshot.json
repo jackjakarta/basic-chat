@@ -1,5 +1,5 @@
 {
-  "id": "f67cb5b6-8213-4758-bd44-d454c4db2ab1",
+  "id": "48733a2c-7600-4c4f-ba35-e0901646d722",
   "prevId": "98fb3f60-7e6f-49da-9f5c-a9e2b1267979",
   "version": "7",
   "dialect": "postgresql",
@@ -41,7 +41,7 @@
         },
         "vector_store_id": {
           "name": "vector_store_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -67,8 +67,12 @@
           "tableFrom": "agent",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -77,8 +81,12 @@
           "tableFrom": "agent",
           "tableTo": "vector_store",
           "schemaTo": "app",
-          "columnsFrom": ["vector_store_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "vector_store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -150,8 +158,12 @@
           "tableFrom": "conversation_message",
           "tableTo": "conversation",
           "schemaTo": "app",
-          "columnsFrom": ["conversation_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "conversation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -160,8 +172,12 @@
           "tableFrom": "conversation_message",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -220,8 +236,12 @@
           "tableFrom": "conversation",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -230,8 +250,12 @@
           "tableFrom": "conversation",
           "tableTo": "agent",
           "schemaTo": "app",
-          "columnsFrom": ["agent_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "agent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -297,12 +321,17 @@
         "action_token_token_unique": {
           "name": "action_token_token_unique",
           "nullsNotDistinct": false,
-          "columns": ["token"]
+          "columns": [
+            "token"
+          ]
         },
         "action_token_email_action_unique": {
           "name": "action_token_email_action_unique",
           "nullsNotDistinct": false,
-          "columns": ["email", "action"]
+          "columns": [
+            "email",
+            "action"
+          ]
         }
       }
     },
@@ -383,7 +412,9 @@
         "user_entity_email_unique": {
           "name": "user_entity_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       }
     },
@@ -393,10 +424,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -438,8 +468,12 @@
           "tableFrom": "vector_store",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -452,17 +486,28 @@
     "app.auth_provider": {
       "name": "auth_provider",
       "schema": "app",
-      "values": ["credentials", "github", "google"]
+      "values": [
+        "credentials",
+        "github",
+        "google"
+      ]
     },
     "app.conversation_role": {
       "name": "conversation_role",
       "schema": "app",
-      "values": ["user", "assistant", "system"]
+      "values": [
+        "user",
+        "assistant",
+        "system"
+      ]
     },
     "app.token_action": {
       "name": "token_action",
       "schema": "app",
-      "values": ["verify-email", "reset-password"]
+      "values": [
+        "verify-email",
+        "reset-password"
+      ]
     }
   },
   "schemas": {

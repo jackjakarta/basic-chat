@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "app"."vector_store" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"file_ids" jsonb,
 	"user_id" uuid NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS "app"."vector_store" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "app"."agent" ADD COLUMN "vector_store_id" uuid;--> statement-breakpoint
+ALTER TABLE "app"."agent" ADD COLUMN "vector_store_id" text;--> statement-breakpoint
 ALTER TABLE "app"."agent" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;--> statement-breakpoint
 ALTER TABLE "app"."conversation_message" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;--> statement-breakpoint
 ALTER TABLE "app"."conversation" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;--> statement-breakpoint

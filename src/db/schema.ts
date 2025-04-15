@@ -121,7 +121,7 @@ export const agentTable = appSchema.table('agent', {
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),
-  vectorStoreId: uuid('vector_store_id').references(() => vectorStoreTable.id),
+  vectorStoreId: text('vector_store_id').references(() => vectorStoreTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -132,8 +132,15 @@ export const agentTable = appSchema.table('agent', {
 export type AgentRow = typeof agentTable.$inferSelect;
 export type InsertAgentRow = typeof agentTable.$inferInsert;
 
+const fileSchema = z.object({
+  fileId: z.string(),
+  fileName: z.string(),
+});
+
+type TableFile = z.infer<typeof fileSchema>;
+
 export const vectorStoreTable = appSchema.table('vector_store', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey(),
   name: text('name').notNull(),
   fileIds: jsonb('file_ids').$type<string[]>(),
   userId: uuid('user_id')
