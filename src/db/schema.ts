@@ -2,6 +2,7 @@ import {
   boolean,
   integer,
   json,
+  jsonb,
   pgSchema,
   text,
   timestamp,
@@ -32,6 +33,10 @@ export const userTable = appSchema.table('user_entity', {
   emailVerified: boolean('email_verified').notNull().default(false),
   settings: json('settings').$type<UserSettings>(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type UserRow = typeof userTable.$inferSelect;
@@ -49,6 +54,10 @@ export const tokenTable = appSchema.table(
     token: text('token').unique().notNull(),
     email: text('email'),
     createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
     expiresAt: timestamp('expires_at', { mode: 'date', withTimezone: true }),
   },
   (table) => {
@@ -69,6 +78,10 @@ export const conversationTable = appSchema.table('conversation', {
     .notNull(),
   agentId: uuid('agent_id').references(() => agentTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type ConversationRow = typeof conversationTable.$inferSelect;
@@ -91,6 +104,10 @@ export const conversationMessageTable = appSchema.table('conversation_message', 
   role: conversationRolePgEnum('role').notNull(),
   orderNumber: integer('order_number').notNull(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type ConversationMessageRow = typeof conversationMessageTable.$inferSelect;
@@ -104,8 +121,30 @@ export const agentTable = appSchema.table('agent', {
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),
+  vectorStoreId: uuid('vector_store_id').references(() => vectorStoreTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type AgentRow = typeof agentTable.$inferSelect;
 export type InsertAgentRow = typeof agentTable.$inferInsert;
+
+export const vectorStoreTable = appSchema.table('vector_store', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  fileIds: jsonb('file_ids').$type<string[]>(),
+  userId: uuid('user_id')
+    .references(() => userTable.id)
+    .notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type VectorStoreRow = typeof vectorStoreTable.$inferSelect;
+export type InsertVectorStoreRow = typeof vectorStoreTable.$inferInsert;
