@@ -1,5 +1,5 @@
 {
-  "id": "48733a2c-7600-4c4f-ba35-e0901646d722",
+  "id": "46fe9d52-2ab2-4af5-8da3-f187fa53eaec",
   "prevId": "98fb3f60-7e6f-49da-9f5c-a9e2b1267979",
   "version": "7",
   "dialect": "postgresql",
@@ -434,8 +434,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "file_ids": {
-          "name": "file_ids",
+        "files": {
+          "name": "files",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false

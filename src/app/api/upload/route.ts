@@ -1,5 +1,5 @@
 import { dbAddFileIdsToVectorStore } from '@/db/functions/vector-store';
-import { openai } from '@/openai';
+import { addFileIdsToVectorStore, uploadFile } from '@/openai/files';
 import { getUser } from '@/utils/auth';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -25,18 +25,24 @@ export async function POST(request: Request) {
 
     const validVectorStoreId = parsedVectorStoreId.data;
 
-    const file = await openai.files.create({
+    const file = await uploadFile({
       file: fileField,
-      purpose: 'user_data',
     });
 
-    const fileId = file.id;
+    const fileId = file.fileId;
+    const fileName = file.fileName;
 
-    const updatedVectorStore = await dbAddFileIdsToVectorStore({
-      vectorStoreId: validVectorStoreId,
-      userId: user.id,
-      fileIds: [fileId],
-    });
+    const [, updatedVectorStore] = await Promise.all([
+      addFileIdsToVectorStore({
+        vectorStoreId: validVectorStoreId,
+        fileIds: [fileId],
+      }),
+      dbAddFileIdsToVectorStore({
+        vectorStoreId: validVectorStoreId,
+        userId: user.id,
+        files: [{ fileId, fileName }],
+      }),
+    ]);
 
     if (updatedVectorStore === undefined) {
       return NextResponse.json({ error: 'Failed to update vector store' }, { status: 500 });
@@ -44,7 +50,7 @@ export async function POST(request: Request) {
 
     console.debug({
       vectorStoreId: updatedVectorStore.id,
-      fileIds: updatedVectorStore.fileIds,
+      files: updatedVectorStore.files,
     });
 
     return NextResponse.json({ fileId, fileSize: fileField.size }, { status: 200 });

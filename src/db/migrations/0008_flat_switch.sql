@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS "app"."vector_store" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
-	"file_ids" jsonb,
+	"files" jsonb,
 	"user_id" uuid NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL

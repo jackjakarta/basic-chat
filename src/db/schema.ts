@@ -132,17 +132,17 @@ export const agentTable = appSchema.table('agent', {
 export type AgentRow = typeof agentTable.$inferSelect;
 export type InsertAgentRow = typeof agentTable.$inferInsert;
 
-const fileSchema = z.object({
+export const vectorFileSchema = z.object({
   fileId: z.string(),
   fileName: z.string(),
 });
 
-type TableFile = z.infer<typeof fileSchema>;
+export type VectorFile = z.infer<typeof vectorFileSchema>;
 
 export const vectorStoreTable = appSchema.table('vector_store', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
-  fileIds: jsonb('file_ids').$type<string[]>(),
+  files: jsonb('files').$type<VectorFile[]>(),
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),

@@ -1,5 +1,10 @@
-import { vectorStoreTable, type InsertVectorStoreRow, type VectorStoreRow } from '@/db/schema';
-import { and, eq } from 'drizzle-orm';
+import {
+  vectorStoreTable,
+  type InsertVectorStoreRow,
+  type VectorFile,
+  type VectorStoreRow,
+} from '@/db/schema';
+import { and, eq, sql } from 'drizzle-orm';
 
 import { db } from '..';
 
@@ -27,17 +32,39 @@ export async function dbInsertVectorStore(data: InsertVectorStoreRow) {
 export async function dbAddFileIdsToVectorStore({
   vectorStoreId,
   userId,
-  fileIds,
+  files,
 }: {
   vectorStoreId: string;
   userId: string;
-  fileIds: string[];
+  files: VectorFile[];
 }) {
+  const filesJson = JSON.stringify(files);
+
   const [vectorStore] = await db
     .update(vectorStoreTable)
-    .set({ fileIds })
+    .set({
+      files: sql`
+        COALESCE(${vectorStoreTable.files}, '[]'::jsonb)
+        || ${filesJson}::jsonb
+      `,
+    })
     .where(and(eq(vectorStoreTable.id, vectorStoreId), eq(vectorStoreTable.userId, userId)))
     .returning();
+
+  return vectorStore;
+}
+
+export async function dbGetFilesFromVectorStore({
+  vectorStoreId,
+  userId,
+}: {
+  vectorStoreId: string;
+  userId: string;
+}) {
+  const [vectorStore] = await db
+    .select({ files: vectorStoreTable.files })
+    .from(vectorStoreTable)
+    .where(and(eq(vectorStoreTable.id, vectorStoreId), eq(vectorStoreTable.userId, userId)));
 
   return vectorStore;
 }
