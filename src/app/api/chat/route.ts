@@ -78,91 +78,102 @@ export async function POST(request: NextRequest) {
       system: systemPrompt,
       messages,
       maxSteps: 5,
-      tools: {
-        searchTheWeb: tool({
-          description:
-            'Search the web if the user asks a question that the assistant cannot answer. Or if the user asks the assistant to search the web.',
-          parameters: z.object({
-            searchQuery: z.string().describe('The search query provided by the user.'),
-          }),
-          execute: async ({ searchQuery }) => {
-            try {
-              const toolResults = await openaiSearch({ searchQuery });
-              console.debug({ toolResults });
-
-              if (!toolResults) {
-                return `I could not find any relevant information about '${searchQuery}'.`;
-              }
-
-              return toolResults;
-            } catch (error) {
-              const errorMessage = `An error occurred while searching the web. We are sorry.`;
-
-              if (error instanceof Error) {
-                console.error({ error: error.message });
-                throw new Error(errorMessage);
-              }
-
-              console.error({ error });
-              throw new Error(errorMessage);
-            }
-          },
-        }),
-        generateImage: tool({
-          description: 'Generate an image based on the provided description.',
-          parameters: z.object({
-            imageDescription: z.string().describe('The description of the image to be generated.'),
-          }),
-          execute: async ({ imageDescription }) => {
-            try {
-              const imageUrl = await generateImageFromText({ imageDescription });
-              console.debug({ imageUrl });
-
-              if (imageUrl === undefined) {
-                return 'An error occurred while generating the image.';
-              }
-
-              return imageUrl;
-            } catch (error) {
-              const errorMessage = 'An error occurred while generating the image. We are sorry.';
-
-              if (error instanceof Error) {
-                console.error({ error: error.message });
-                throw new Error(errorMessage);
-              }
-
-              console.error({ error });
-              throw new Error(errorMessage);
-            }
-          },
-        }),
-        getBarcaMatches: tool({
-          description: 'Get information for the FC Barcelona upcoming football matches.',
-          parameters: z.object({}),
-          execute: async () => {
-            try {
-              const matches = await getBarcaMatches();
-              console.debug({ matches });
-
-              if (matches.length === 0) {
-                return 'An error occurred while getting the information.';
-              }
-
-              return matches;
-            } catch (error) {
-              const errorMessage = 'An error occurred while fetching match data. We are sorry.';
-
-              if (error instanceof Error) {
-                console.error({ error: error.message });
-                throw new Error(errorMessage);
-              }
-
-              console.error({ error });
-              throw new Error(errorMessage);
-            }
-          },
-        }),
+      providerOptions: {
+        openai: {
+          tools: [
+            {
+              type: 'file_search',
+              vector_store_ids: ['vs_6800490031e08191bc84506c90fd62c0'],
+              max_num_results: 20,
+            },
+          ],
+        },
       },
+      // tools: {
+      //   searchTheWeb: tool({
+      //     description:
+      //       'Search the web if the user asks a question that the assistant cannot answer. Or if the user asks the assistant to search the web.',
+      //     parameters: z.object({
+      //       searchQuery: z.string().describe('The search query provided by the user.'),
+      //     }),
+      //     execute: async ({ searchQuery }) => {
+      //       try {
+      //         const toolResults = await openaiSearch({ searchQuery });
+      //         console.debug({ toolResults });
+
+      //         if (!toolResults) {
+      //           return `I could not find any relevant information about '${searchQuery}'.`;
+      //         }
+
+      //         return toolResults;
+      //       } catch (error) {
+      //         const errorMessage = `An error occurred while searching the web. We are sorry.`;
+
+      //         if (error instanceof Error) {
+      //           console.error({ error: error.message });
+      //           throw new Error(errorMessage);
+      //         }
+
+      //         console.error({ error });
+      //         throw new Error(errorMessage);
+      //       }
+      //     },
+      //   }),
+      //   generateImage: tool({
+      //     description: 'Generate an image based on the provided description.',
+      //     parameters: z.object({
+      //       imageDescription: z.string().describe('The description of the image to be generated.'),
+      //     }),
+      //     execute: async ({ imageDescription }) => {
+      //       try {
+      //         const imageUrl = await generateImageFromText({ imageDescription });
+      //         console.debug({ imageUrl });
+
+      //         if (imageUrl === undefined) {
+      //           return 'An error occurred while generating the image.';
+      //         }
+
+      //         return imageUrl;
+      //       } catch (error) {
+      //         const errorMessage = 'An error occurred while generating the image. We are sorry.';
+
+      //         if (error instanceof Error) {
+      //           console.error({ error: error.message });
+      //           throw new Error(errorMessage);
+      //         }
+
+      //         console.error({ error });
+      //         throw new Error(errorMessage);
+      //       }
+      //     },
+      //   }),
+      //   getBarcaMatches: tool({
+      //     description: 'Get information for the FC Barcelona upcoming football matches.',
+      //     parameters: z.object({}),
+      //     execute: async () => {
+      //       try {
+      //         const matches = await getBarcaMatches();
+      //         console.debug({ matches });
+
+      //         if (matches.length === 0) {
+      //           return 'An error occurred while getting the information.';
+      //         }
+
+      //         return matches;
+      //       } catch (error) {
+      //         const errorMessage = 'An error occurred while fetching match data. We are sorry.';
+
+      //         if (error instanceof Error) {
+      //           console.error({ error: error.message });
+      //           throw new Error(errorMessage);
+      //         }
+
+      //         console.error({ error });
+      //         throw new Error(errorMessage);
+      //       }
+      //     },
+      //   }),
+      // },
       async onFinish(assistantMessage) {
         await dbInsertChatContent({
           content: assistantMessage.text,

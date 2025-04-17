@@ -5,6 +5,7 @@ import {
   agentTable,
   conversationMessageTable,
   conversationTable,
+  vectorStoreTable,
   type AgentRow,
   type InsertAgentRow,
 } from '../schema';
@@ -94,4 +95,35 @@ export async function dbDeleteAgent({
       .delete(agentTable)
       .where(and(eq(agentTable.id, agentId), eq(agentTable.userId, userId)));
   });
+}
+
+export async function dbSetAgentVectorStoreId({
+  agentId,
+  userId,
+  vectorStoreId,
+}: {
+  agentId: string;
+  userId: string;
+  vectorStoreId: string;
+}): Promise<AgentRow | undefined> {
+  const agent = await db.transaction(async (tx) => {
+    const [vectorStore] = await tx
+      .insert(vectorStoreTable)
+      .values({ id: vectorStoreId, name: `agent-${agentId}-vector-store`, userId })
+      .returning();
+
+    if (vectorStore === undefined) {
+      throw new Error('Failed to create vector store');
+    }
+
+    const [updatedAgent] = await tx
+      .update(agentTable)
+      .set({ vectorStoreId: vectorStore.id })
+      .where(and(eq(agentTable.id, agentId), eq(agentTable.userId, userId)))
+      .returning();
+
+    return updatedAgent;
+  });
+
+  return agent;
 }
