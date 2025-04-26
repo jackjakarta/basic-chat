@@ -1,4 +1,5 @@
 import { env } from '@/env';
+import { tool } from 'ai';
 import { z } from 'zod';
 
 const url = env.utilsApiUrl;
@@ -13,7 +14,38 @@ const apiResponseSchema = z.object({
   matches: z.array(matchSchema),
 });
 
-export async function getBarcaMatches() {
+export function getBarcaMatchesTool() {
+  const getBarcaMatchesTool = tool({
+    description: 'Get information for the FC Barcelona upcoming football matches.',
+    parameters: z.object({}),
+    execute: async () => {
+      try {
+        const matches = await getBarcaMatches();
+        console.debug({ matches });
+
+        if (matches.length === 0) {
+          return 'An error occurred while getting the information.';
+        }
+
+        return matches;
+      } catch (error) {
+        const errorMessage = 'An error occurred while fetching match data. We are sorry.';
+
+        if (error instanceof Error) {
+          console.error({ error: error.message });
+          throw new Error(errorMessage);
+        }
+
+        console.error({ error });
+        throw new Error(errorMessage);
+      }
+    },
+  });
+
+  return getBarcaMatchesTool;
+}
+
+async function getBarcaMatches() {
   console.debug({ url, apiKey });
   const response = await fetch(url, {
     method: 'GET',

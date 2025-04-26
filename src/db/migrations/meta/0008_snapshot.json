@@ -67,12 +67,8 @@
           "tableFrom": "agent",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -81,12 +77,8 @@
           "tableFrom": "agent",
           "tableTo": "vector_store",
           "schemaTo": "app",
-          "columnsFrom": [
-            "vector_store_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["vector_store_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -158,12 +150,8 @@
           "tableFrom": "conversation_message",
           "tableTo": "conversation",
           "schemaTo": "app",
-          "columnsFrom": [
-            "conversation_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["conversation_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -172,12 +160,8 @@
           "tableFrom": "conversation_message",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -236,12 +220,8 @@
           "tableFrom": "conversation",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -250,12 +230,8 @@
           "tableFrom": "conversation",
           "tableTo": "agent",
           "schemaTo": "app",
-          "columnsFrom": [
-            "agent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agent_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -321,17 +297,12 @@
         "action_token_token_unique": {
           "name": "action_token_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         },
         "action_token_email_action_unique": {
           "name": "action_token_email_action_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email",
-            "action"
-          ]
+          "columns": ["email", "action"]
         }
       }
     },
@@ -412,9 +383,7 @@
         "user_entity_email_unique": {
           "name": "user_entity_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       }
     },
@@ -468,12 +437,8 @@
           "tableFrom": "vector_store",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -486,28 +451,17 @@
     "app.auth_provider": {
       "name": "auth_provider",
       "schema": "app",
-      "values": [
-        "credentials",
-        "github",
-        "google"
-      ]
+      "values": ["credentials", "github", "google"]
     },
     "app.conversation_role": {
       "name": "conversation_role",
       "schema": "app",
-      "values": [
-        "user",
-        "assistant",
-        "system"
-      ]
+      "values": ["user", "assistant", "system"]
     },
     "app.token_action": {
       "name": "token_action",
       "schema": "app",
-      "values": [
-        "verify-email",
-        "reset-password"
-      ]
+      "values": ["verify-email", "reset-password"]
     }
   },
   "schemas": {

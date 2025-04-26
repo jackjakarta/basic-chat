@@ -18,10 +18,12 @@
     "pipeline": "chmod +x $(git rev-parse --show-toplevel)/scripts/pipeline.sh && $(git rev-parse --show-toplevel)/scripts/pipeline.sh",
     "db:generate": "drizzle-kit generate --config=./src/db/drizzle.config.ts",
     "db:migrate": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/migrate.ts",
+    "run:search": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/app/api/chat/tools/search-knowledge.ts",
     "db:clear": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/clear.ts",
     "db:studio": "ENVIRONMENT=development op run --env-file=\".env.op\" -- drizzle-kit studio --config=src/db/drizzle.config.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "1.2.10",
     "@ai-sdk/openai": "1.3.3",
     "@ai-sdk/react": "1.2.2",
     "@aws-sdk/client-s3": "3.758.0",
