@@ -13,6 +13,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
         id: '2',
@@ -22,6 +23,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 2,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
         id: '3',
@@ -31,6 +33,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
         orderNumber: 1,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
         id: '4',
@@ -40,6 +43,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
         orderNumber: 3,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
         id: '5',
@@ -49,6 +53,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
     ];
 
@@ -64,6 +69,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
         id: '4',
@@ -73,6 +79,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
         orderNumber: 3,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
     ]);
   });
@@ -87,6 +94,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
         id: '2',
@@ -96,6 +104,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 2,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
     ];
 
@@ -113,6 +122,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
         id: '2',
@@ -122,6 +132,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
         orderNumber: 2,
+        updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
     ];
 

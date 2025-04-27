@@ -1,7 +1,8 @@
 'use server';
 
-import { dbInsertAgent } from '@/db/functions/agent';
+import { dbInsertAgent, dbSetAgentVectorStoreId } from '@/db/functions/agent';
 import { type AgentRow } from '@/db/schema';
+import { createVectorStore } from '@/openai/files';
 import { getUser } from '@/utils/auth';
 import { z } from 'zod';
 
@@ -24,7 +25,21 @@ export async function createAgentAction(body: CreateAgentRequestBody): Promise<A
       throw new Error('Failed to create agent');
     }
 
-    return newAgent;
+    const vectorStore = await createVectorStore({
+      agentId: newAgent.id,
+    });
+
+    const updatedAgent = await dbSetAgentVectorStoreId({
+      agentId: newAgent.id,
+      userId: user.id,
+      vectorStoreId: vectorStore.id,
+    });
+
+    if (updatedAgent === undefined) {
+      throw new Error('Failed to update agent with vector store ID');
+    }
+
+    return updatedAgent;
   } catch (error) {
     console.error({ error });
     throw error;

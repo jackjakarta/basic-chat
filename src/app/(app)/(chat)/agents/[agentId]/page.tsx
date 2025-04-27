@@ -1,5 +1,6 @@
 import PageContainer from '@/components/common/page-container';
 import { dbGetAgentById } from '@/db/functions/agent';
+import { dbGetFilesFromVectorStore } from '@/db/functions/vector-store';
 import { getUser } from '@/utils/auth';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
@@ -27,9 +28,14 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
+  const agentKnowledgeFiles = await dbGetFilesFromVectorStore({
+    vectorStoreId: agent.vectorStoreId ?? '',
+    userId: user.id,
+  });
+
   return (
     <PageContainer className="mx-auto w-full">
-      <EditAgentForm agent={agent} />
+      <EditAgentForm agent={agent} agentFiles={agentKnowledgeFiles?.files} />
     </PageContainer>
   );
 }

@@ -14,6 +14,7 @@ export function obscureUser(user: UserRow): ObscuredUser {
     authProvider: user.authProvider,
     settings: user.settings,
     createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
   };
 }
 

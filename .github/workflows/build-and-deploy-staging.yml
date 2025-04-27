@@ -63,8 +63,8 @@ jobs:
             export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
             ENVIRONMENT=production op inject -f -i .env.op -o .env && \
-            docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:staging . && \
-            docker push ${{ env.DOCKER_USERNAME }}/el-chat:staging
+            docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:staging-v2 . && \
+            docker push ${{ env.DOCKER_USERNAME }}/el-chat:staging-v2
 
   deploy:
     runs-on: ubuntu-latest
@@ -80,6 +80,7 @@ jobs:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           REMOTE_HOST: 'op://chat-app/github-secrets/REMOTE_HOST'
           REMOTE_USER: 'op://chat-app/github-secrets/REMOTE_USER'
+          DOCKER_USERNAME: 'op://chat-app/github-secrets/DOCKER_USERNAME'
           SSH_PRIVATE_KEY: 'op://chat-app/github-secrets/SSH_PRIVATE_KEY'
 
       - name: Build and Deploy to remote server
@@ -89,6 +90,7 @@ jobs:
           username: ${{ env.REMOTE_USER }}
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
+            docker pull ${{ env.DOCKER_USERNAME }}/el-chat:staging-v2
             cd /home/jack/basic-chat
             docker stack deploy -c docker-compose.staging.yml el-chat-staging && \
             docker system prune -f
