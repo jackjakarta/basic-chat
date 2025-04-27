@@ -1,6 +1,6 @@
 'use server';
 
-import { dbInsertAgent, dbSetAgentVectorStoreId, dbUpdateAgent } from '@/db/functions/agent';
+import { dbInsertAgent, dbSetAgentVectorStoreId } from '@/db/functions/agent';
 import { type AgentRow } from '@/db/schema';
 import { createVectorStore } from '@/openai/files';
 import { getUser } from '@/utils/auth';

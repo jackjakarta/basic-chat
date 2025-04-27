@@ -70,7 +70,6 @@ export default function ProfileForm({
   async function onSubmit(data: FormData) {
     try {
       await updateUserSettingsAction({ customInstructions: data.customInstructions ?? '' });
-      console.debug({ data });
       toastSuccess('Account created successfully. Check your email.');
     } catch (error) {
       console.error({ error });

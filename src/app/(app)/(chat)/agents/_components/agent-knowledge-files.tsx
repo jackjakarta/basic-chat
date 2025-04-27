@@ -5,6 +5,7 @@ import { useToast } from '@/components/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { type VectorFile } from '@/db/schema';
 import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 type AgentKnowledgeDisplayProps = {
@@ -19,6 +20,7 @@ export default function AgentKnowledgeDisplay({
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const { toastSuccess, toastError } = useToast();
 
@@ -27,6 +29,7 @@ export default function AgentKnowledgeDisplay({
   }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    router.refresh();
     const file = e.target.files?.[0];
     if (!file) return;
     setSelectedFile(file);
@@ -53,10 +56,7 @@ export default function AgentKnowledgeDisplay({
         body: formData,
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        console.debug({ uploadedFile: `fileId: ${data.fileId}` });
-      } else {
+      if (!res.ok) {
         console.error({ error: `Upload failed with status, ${res.status}` });
       }
 
@@ -93,15 +93,16 @@ export default function AgentKnowledgeDisplay({
       </Button>
 
       <div className="flex flex-wrap items-center gap-2">
-        {files.length === 0 ? (
-          <span className="text-sm text-muted-foreground">No files uploaded yet.</span>
-        ) : (
+        {files.length > 0 && (
           <>
             {files.map((file) => (
               <FileDisplay key={file.fileId} fileName={file.fileName} isUploading={false} />
             ))}
-            {selectedFile && <FileDisplay fileName={selectedFile.name} isUploading={isUploading} />}
           </>
+        )}
+
+        {selectedFile !== null && (
+          <FileDisplay fileName={selectedFile.name} isUploading={isUploading} />
         )}
       </div>
     </div>

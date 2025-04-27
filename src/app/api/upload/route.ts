@@ -48,11 +48,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to update vector store' }, { status: 500 });
     }
 
-    console.debug({
-      vectorStoreId: updatedVectorStore.id,
-      files: updatedVectorStore.files,
-    });
-
     return NextResponse.json({ fileId, fileSize: fileField.size }, { status: 200 });
   } catch (error) {
     console.error('Upload error:', error);
