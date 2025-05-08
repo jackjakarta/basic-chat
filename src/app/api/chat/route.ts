@@ -10,12 +10,13 @@ import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { myProvider } from './models';
+import { allModelsSchema } from './schemas';
 import { constructSystemPrompt } from './system-prompt';
 import { fileSearchTool } from './tools/file-search';
 import { generateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
 import { webSearchTool } from './tools/openai-search';
-import { modelsSchema, type AIModel } from './types';
+import { type AIModel } from './types';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
   } = await request.json();
 
   try {
-    const parsedModelId = modelsSchema.safeParse(modelId);
+    const parsedModelId = allModelsSchema.safeParse(modelId);
 
     if (!parsedModelId.success) {
       return NextResponse.json(
@@ -73,11 +74,11 @@ export async function POST(request: NextRequest) {
     });
 
     const tools = {
-      searchTheWeb: webSearchTool(),
       ...(maybeAgent !== undefined &&
         maybeAgent.vectorStoreId !== null && {
           searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
         }),
+      searchTheWeb: webSearchTool(),
       generateImage: generateImageTool(),
       getBarcaMatches: getBarcaMatchesTool(),
     };

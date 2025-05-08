@@ -23,6 +23,8 @@ export const env = createEnv({
     utilsApiUrl: z.string().url(),
     utilsApiKey: z.string().min(1),
     jwtSecret: z.string().min(1),
+    geminiApiKey: z.string().min(1),
+    anthropicApiKey: z.string().min(1),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
@@ -48,6 +50,8 @@ export const env = createEnv({
     utilsApiUrl: process.env.UTILS_API_URL,
     utilsApiKey: process.env.UTILS_API_KEY,
     jwtSecret: process.env.JWT_SECRET,
+    geminiApiKey: process.env.GEMINI_API_KEY,
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },
 });

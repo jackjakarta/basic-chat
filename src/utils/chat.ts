@@ -1,3 +1,4 @@
+import { AIModel } from '@/app/api/chat/types';
 import { type ConversationMessageRow } from '@/db/schema';
 
 export function filterChatMessages({ chatMessages }: { chatMessages: ConversationMessageRow[] }) {
@@ -32,4 +33,17 @@ export function toolNameMap(inputString: string | undefined): string | undefined
   };
 
   return mapping[inputString] ?? inputString;
+}
+
+export function getModelName(model: AIModel) {
+  const mapping: Record<string, string> = {
+    'gpt-4.1': 'GPT-4.1',
+    'gpt-4.1-mini': 'GPT-4.1 Mini',
+    'gpt-4o': 'GPT-4o',
+    'gpt-4o-mini': 'GPT-4o Mini',
+    'gemini-2.5-pro-exp-03-25': 'Gemini 2.5 Pro',
+    'claude-3-7-sonnet-20250219': 'Claude 3.7 Sonnet',
+  };
+
+  return mapping[model] ?? model;
 }
