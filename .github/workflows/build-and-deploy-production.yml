@@ -16,7 +16,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: production
-    needs: checks
 
     steps:
       - name: Set up Docker image tags
