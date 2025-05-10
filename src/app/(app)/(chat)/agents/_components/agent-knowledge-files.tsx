@@ -60,6 +60,7 @@ export default function AgentKnowledgeDisplay({
 
       if (!res.ok) {
         console.error({ error: `Upload failed with status, ${res.status}` });
+        throw new Error('Upload failed');
       }
 
       toastSuccess('File uploaded successfully');
@@ -118,18 +119,15 @@ export default function AgentKnowledgeDisplay({
       </Button>
 
       <div className="flex flex-wrap items-center gap-2">
-        {files.length > 0 && (
-          <>
-            {files.map((file) => (
-              <FileDisplay
-                key={file.fileId}
-                fileName={file.fileName}
-                isUploading={false}
-                onDelete={() => handleDelete(file.fileId)}
-              />
-            ))}
-          </>
-        )}
+        {files.length > 0 &&
+          files.map((file) => (
+            <FileDisplay
+              key={file.fileId}
+              fileName={file.fileName}
+              isUploading={false}
+              onDelete={() => handleDelete(file.fileId)}
+            />
+          ))}
 
         {selectedFile !== null && (
           <FileDisplay fileName={selectedFile.name} isUploading={isUploading} />

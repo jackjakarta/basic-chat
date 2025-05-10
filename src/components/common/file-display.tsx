@@ -17,6 +17,7 @@ export default function FileDisplay({ fileName, isUploading, onDelete }: SourceT
     >
       {!isUploading && onDelete !== undefined && (
         <button
+          type="button"
           className="absolute -top-1.5 -left-1.5 bg-secondary-foreground/40 hover:bg-secondary-foreground/60 rounded-full p-0.5 transition-colors duration-200"
           onClick={(e) => {
             e.stopPropagation();
