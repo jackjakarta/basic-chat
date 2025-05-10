@@ -72,9 +72,9 @@ jobs:
       - name: Deploy to remote server
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ env.REMOTE_HOST }}
+          username: ${{ env.REMOTE_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd /home/jack/basic-chat
             export $(grep -v '^#' .env | xargs) && \
