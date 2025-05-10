@@ -6,7 +6,7 @@ import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Globe, Globe2 } from 'lucide-react';
+import { Globe2 } from 'lucide-react';
 import React from 'react';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
