@@ -6,6 +6,7 @@ import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
+import { Globe, Globe2 } from 'lucide-react';
 import React from 'react';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
@@ -19,6 +20,7 @@ import ClipboardIcon from '../icons/clipboard';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
+import { Button } from '../ui/button';
 import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
 
@@ -30,9 +32,11 @@ type ChatProps = {
 };
 
 export default function Chat({ id, initialMessages, userFirstName, agentId }: ChatProps) {
-  const { model } = useLlmModel();
+  const { model: modelId } = useLlmModel();
   const { toastError } = useToast();
   const queryClient = useQueryClient();
+
+  const [isWebSearchActive, setIsWebSearchActive] = React.useState(false);
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
@@ -41,20 +45,16 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
       api: '/api/chat',
       experimental_throttle: 100,
       maxSteps: 5,
-      body: { chatId: id, modelId: model, agentId },
+      body: { chatId: id, modelId, agentId, webSearchActive: isWebSearchActive },
       onResponse: () => {
-        if (messages.length > 1) {
-          return;
+        if (messages.length <= 1) {
+          refetchConversations();
         }
-
-        refetchConversations();
       },
       onFinish: () => {
-        if (messages.length > 1) {
-          return;
+        if (messages.length <= 1) {
+          refetchConversations();
         }
-
-        refetchConversations();
       },
     },
   );
@@ -86,6 +86,10 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
         customHandleSubmit(e);
       }
     }
+  }
+
+  function toggleWebSearch() {
+    setIsWebSearchActive((prev) => !prev);
   }
 
   return (
@@ -235,37 +239,51 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
               onSubmit={customHandleSubmit}
               className="bg-sidebar w-full p-1 border focus-within:border-primary border-none rounded-xl"
             >
-              <div className="flex items-center">
-                <AutoResizeTextarea
-                  autoFocus
-                  placeholder="Type your message here..."
-                  className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto p-2"
-                  onChange={handleInputChange}
-                  value={input}
-                  onKeyDown={handleSubmitOnEnter}
-                  maxLength={20000}
-                />
-                {status === 'submitted' || status === 'streaming' ? (
-                  <button
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center py-1 px-3 -ml-1 mt-1.5">
+                  <Button
+                    size="sm"
                     type="button"
-                    title="Stop generating"
-                    onClick={() => stop()}
-                    className="p-1.5 flex items-center justify-center group disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
-                    aria-label="Stop"
+                    className="py-1 transition-colors duration-200 ease-in-out "
+                    variant={isWebSearchActive ? 'active' : 'neutral'}
+                    onClick={toggleWebSearch}
                   >
-                    <StopIcon className="w-6 h-6 text-dark-gray group-disabled:bg-gray-200 group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    title="Send message"
-                    disabled={input.trim().length === 0}
-                    className="flex items-center justify-center group text-secondary disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
-                    aria-label="Send Message"
-                  >
-                    <ArrowRightIcon className="w-7 h-7 text-dark-gray group-disabled:bg-secondary rounded-lg dark:group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
-                  </button>
-                )}
+                    <Globe2 className="h-4 w-4" />
+                    Web Search
+                  </Button>
+                </div>
+                <div className="flex items-center">
+                  <AutoResizeTextarea
+                    autoFocus
+                    placeholder="Type your message here..."
+                    className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto px-3 py-2"
+                    onChange={handleInputChange}
+                    value={input}
+                    onKeyDown={handleSubmitOnEnter}
+                    maxLength={20000}
+                  />
+                  {status === 'submitted' || status === 'streaming' ? (
+                    <button
+                      type="button"
+                      title="Stop generating"
+                      onClick={() => stop()}
+                      className="p-1.5 flex items-center justify-center group disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
+                      aria-label="Stop"
+                    >
+                      <StopIcon className="w-6 h-6 text-dark-gray group-disabled:bg-gray-200 group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      title="Send message"
+                      disabled={input.trim().length === 0}
+                      className="flex items-center justify-center group text-secondary disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
+                      aria-label="Send Message"
+                    >
+                      <ArrowRightIcon className="w-7 h-7 text-dark-gray group-disabled:bg-secondary rounded-lg dark:group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
+                    </button>
+                  )}
+                </div>
               </div>
             </form>
             <span className="text-xs mt-2 font-normal text-main-900 flex self-center">

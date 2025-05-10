@@ -35,3 +35,9 @@ export async function uploadFile({ file }: { file: File }): Promise<VectorFile> 
     fileName: response.filename,
   };
 }
+
+export async function deleteFile({ fileId }: { fileId: string }) {
+  const response = await openai.files.del(fileId);
+
+  return response;
+}

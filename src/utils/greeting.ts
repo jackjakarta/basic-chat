@@ -1,8 +1,3 @@
-/**
- * Time-based greeting generator for German time zones
- * Returns a random but consistent greeting based on the time of day
- */
-
 // Define the types of time periods
 type TimePeriod = 'morning' | 'noon' | 'afternoon' | 'evening' | 'night' | 'anytime';
 
@@ -67,10 +62,8 @@ function seededRandom(max: number, seed: number): number {
  */
 function getTodaySeed(): number {
   const now = new Date();
-  const germanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
-  return (
-    germanTime.getFullYear() * 10000 + (germanTime.getMonth() + 1) * 100 + germanTime.getDate()
-  );
+  // const germanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+  return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
 }
 
 /**

@@ -26,11 +26,13 @@ export async function POST(request: NextRequest) {
     messages,
     modelId,
     agentId,
+    webSearchActive,
   }: {
     chatId: string;
     messages: Message[];
     modelId: AIModel;
     agentId?: string;
+    webSearchActive: boolean;
   } = await request.json();
 
   try {
@@ -71,6 +73,7 @@ export async function POST(request: NextRequest) {
     const systemPrompt = constructSystemPrompt({
       agentInstructions: maybeAgent?.instructions,
       userCustomInstructions: user.settings?.customInstructions,
+      webSearchActive,
     });
 
     const tools = {
@@ -78,9 +81,9 @@ export async function POST(request: NextRequest) {
         maybeAgent.vectorStoreId !== null && {
           searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
         }),
-      searchTheWeb: webSearchTool(),
-      generateImage: generateImageTool(),
-      getBarcaMatches: getBarcaMatchesTool(),
+      ...(webSearchActive && { searchTheWeb: webSearchTool() }),
+      ...(!webSearchActive && { generateImage: generateImageTool() }),
+      ...(!webSearchActive && { getBarcaMatches: getBarcaMatchesTool() }),
     };
 
     const result = streamText({

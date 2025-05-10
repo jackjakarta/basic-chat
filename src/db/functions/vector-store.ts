@@ -68,3 +68,36 @@ export async function dbGetFilesFromVectorStore({
 
   return vectorStore;
 }
+
+export async function dbDeleteFilesFromVectorStore({
+  vectorStoreId,
+  userId,
+  fileIds,
+}: {
+  vectorStoreId: string;
+  userId: string;
+  fileIds: string[];
+}) {
+  const [vectorStore] = await db
+    .select()
+    .from(vectorStoreTable)
+    .where(and(eq(vectorStoreTable.id, vectorStoreId), eq(vectorStoreTable.userId, userId)));
+
+  if (!vectorStore || !vectorStore.files) {
+    return vectorStore;
+  }
+
+  const updatedFiles = vectorStore.files.filter(
+    (file: VectorFile) => !fileIds.includes(file.fileId),
+  );
+
+  const [updatedVectorStore] = await db
+    .update(vectorStoreTable)
+    .set({
+      files: updatedFiles,
+    })
+    .where(and(eq(vectorStoreTable.id, vectorStoreId), eq(vectorStoreTable.userId, userId)))
+    .returning();
+
+  return updatedVectorStore;
+}

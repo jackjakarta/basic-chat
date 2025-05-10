@@ -8,6 +8,8 @@ import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import { deleteAgentFilesAction } from '../[agentId]/actions';
+
 type AgentKnowledgeDisplayProps = {
   vectorStoreId: string | null;
   files: VectorFile[];
@@ -22,7 +24,7 @@ export default function AgentKnowledgeDisplay({
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const { toastSuccess, toastError } = useToast();
+  const { toastSuccess, toastError, toastLoading } = useToast();
 
   function openFileDialog() {
     fileInputRef.current?.click();
@@ -70,6 +72,29 @@ export default function AgentKnowledgeDisplay({
     }
   }
 
+  async function handleDelete(fileId: string) {
+    toastLoading('Deleting file...');
+
+    if (vectorStoreId === null) {
+      console.error({ error: 'Vector store ID is null' });
+      toastError('Failed to delete file');
+      return;
+    }
+
+    try {
+      await deleteAgentFilesAction({
+        vectorStoreId,
+        fileIds: [fileId],
+      });
+      toastSuccess('File deleted successfully');
+    } catch (error) {
+      console.error({ error });
+      toastError('Failed to delete file');
+    } finally {
+      router.refresh();
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <span className="font-semibold text-lg">Knowledge Base:</span>
@@ -96,7 +121,12 @@ export default function AgentKnowledgeDisplay({
         {files.length > 0 && (
           <>
             {files.map((file) => (
-              <FileDisplay key={file.fileId} fileName={file.fileName} isUploading={false} />
+              <FileDisplay
+                key={file.fileId}
+                fileName={file.fileName}
+                isUploading={false}
+                onDelete={() => handleDelete(file.fileId)}
+              />
             ))}
           </>
         )}
