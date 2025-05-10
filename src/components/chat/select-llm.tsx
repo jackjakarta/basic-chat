@@ -40,17 +40,6 @@ export default function SelectLlmModel() {
       <SelectContent>
         <SelectGroup className="flex flex-col gap-1">
           <SelectLabel className="text-xs -mb-2 text-muted-foreground dark:text-secondary-foreground/60">
-            OpenAI
-          </SelectLabel>
-          {openaiModelsSchema.options.map((model) => (
-            <SelectItem key={model} value={model} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model)}</span>
-            </SelectItem>
-          ))}
-        </SelectGroup>
-
-        <SelectGroup className="flex flex-col gap-1">
-          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
             Anthropic
           </SelectLabel>
           {anthropicModelsSchema.options.map((model) => (
@@ -65,6 +54,17 @@ export default function SelectLlmModel() {
             Google Gemini
           </SelectLabel>
           {googleModelsSchema.options.map((model) => (
+            <SelectItem key={model} value={model} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model)}</span>
+            </SelectItem>
+          ))}
+        </SelectGroup>
+
+        <SelectGroup className="flex flex-col gap-1">
+          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            OpenAI
+          </SelectLabel>
+          {openaiModelsSchema.options.map((model) => (
             <SelectItem key={model} value={model} className="me-4 cursor-pointer">
               <span className="me-2">{getModelName(model)}</span>
             </SelectItem>
