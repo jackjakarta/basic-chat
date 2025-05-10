@@ -30,7 +30,7 @@ services:
         condition: on-failure
 
   web:
-    image: jackjakarta/el-chat:staging
+    image: jackjakarta/el-chat:staging-${TAG_VERSION}
     deploy:
       replicas: 2
       update_config:

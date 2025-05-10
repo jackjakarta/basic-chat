@@ -1,5 +1,6 @@
 'use server';
 
+import { dbDeleteAllConversationsByUserId } from '@/db/functions/chat';
 import { dbUpdateUserPassword, dbUpdateUserSettings } from '@/db/functions/user';
 import { getUser } from '@/utils/auth';
 import { passwordSchema } from '@/utils/schemas';
@@ -27,4 +28,9 @@ export async function updateUserSettingsAction({
   const updatedUser = await dbUpdateUserSettings({ userId: user.id, customInstructions });
 
   return updatedUser;
+}
+
+export async function deleteAllConversationsAction() {
+  const user = await getUser();
+  await dbDeleteAllConversationsByUserId({ userId: user.id });
 }

@@ -1,8 +1,9 @@
 import { UICard } from '@/components/common/ui-card';
 import { getUser } from '@/utils/auth';
-import { uiCardClassName } from '@/utils/tailwind';
+import { cw, uiCardClassName } from '@/utils/tailwind';
 
 import ChangePasswordForm from './change-password-form';
+import DeleteAllChatsButton from './delete-all-chats-button';
 import ProfileForm from './profile-form';
 
 export default async function Page() {
@@ -26,6 +27,17 @@ export default async function Page() {
           <ChangePasswordForm />
         </UICard>
       )}
+      <UICard
+        header={<h1 className="text-lg">Delete all chats</h1>}
+        className={cw(uiCardClassName, 'pb-6')}
+      >
+        <DeleteAllChatsButton />
+        <div className="mt-3">
+          <span className="text-sm dark:text-muted-foreground/60">
+            This action will delete all your conversations and cannot be undone.
+          </span>
+        </div>
+      </UICard>
       <div className="mb-16" />
     </>
   );

@@ -150,3 +150,10 @@ export async function dbDeleteConversationById({
       .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)));
   });
 }
+
+export async function dbDeleteAllConversationsByUserId({ userId }: { userId: string }) {
+  await db.transaction(async (tx) => {
+    await tx.delete(conversationMessageTable).where(eq(conversationMessageTable.userId, userId));
+    await tx.delete(conversationTable).where(eq(conversationTable.userId, userId));
+  });
+}

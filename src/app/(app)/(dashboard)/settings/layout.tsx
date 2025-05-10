@@ -5,7 +5,7 @@ import SettingsNav from './_components/settings-nav';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <PageContainer className="mx-auto w-full">
-      <div className="flex flex-col md:flex-row items-start gap-4">
+      <div className="flex flex-col md:flex-row items-start gap-4 max-h-dvh">
         <SettingsNav />
         <div className="flex flex-col flex-1 gap-4">{children}</div>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import AlertDialog from '@/components/common/alert-dialog';
+import AlertDialog from '@/components/common/alert-modal';
 import { useToast } from '@/components/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
