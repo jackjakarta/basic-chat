@@ -7,7 +7,7 @@ import { customProvider } from 'ai';
 import { anthropicModelsSchema, googleModelsSchema, openaiModelsSchema } from './schemas';
 import { type AIModel } from './types';
 
-export const defaultChatModel: AIModel = 'gpt-4o';
+export const defaultChatModel: AIModel = 'gemini-2.5-pro-exp-03-25';
 
 const anthropic = createAnthropic({
   apiKey: env.anthropicApiKey,

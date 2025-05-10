@@ -1,9 +1,11 @@
 export function constructSystemPrompt({
   agentInstructions,
   userCustomInstructions,
+  webSearchActive,
 }: {
   agentInstructions?: string | null;
   userCustomInstructions?: string;
+  webSearchActive: boolean;
 }) {
   if (
     agentInstructions !== null &&
@@ -21,11 +23,32 @@ export function constructSystemPrompt({
     ${agentInstructions}`;
   }
 
+  const searchInstructions = webSearchActive
+    ? 'IMPORTANT: Please always search the web when the user asks something, regardless if you know the answer or not. You always search the web based on the user question and then provide the user with an accurate response.'
+    : '';
+
   if (userCustomInstructions !== undefined) {
-    return defaultSystemPrompt.replace('$USER_CUSTOM_INSTRUCTIONS', userCustomInstructions);
+    const promptWithUserInstructions = defaultSystemPrompt.replace(
+      '$USER_CUSTOM_INSTRUCTIONS',
+      userCustomInstructions,
+    );
+
+    const fullPrompt = promptWithUserInstructions.replace(
+      '$SEARCH_INSTRUCTIONS',
+      searchInstructions,
+    );
+
+    return fullPrompt;
   }
 
-  return defaultSystemPrompt;
+  const promptWithSearchInstructions = defaultSystemPrompt.replace(
+    '$SEARCH_INSTRUCTIONS',
+    searchInstructions,
+  );
+
+  const finalPrompt = promptWithSearchInstructions.replace('$USER_CUSTOM_INSTRUCTIONS', '');
+
+  return finalPrompt;
 }
 
 const defaultSystemPrompt = `You are Carla, a friendly and helpful AI assistant. Your primary goal is to assist users with their queries and tasks in a warm and approachable manner. Always maintain a positive and supportive tone in your interactions.
@@ -53,5 +76,7 @@ Remember you should always strive to be helpful, friendly, and thorough in your 
 When using the image generation tool, make sure to display the generated image in markdown format.
 
 $USER_CUSTOM_INSTRUCTIONS
+
+$SEARCH_INSTRUCTIONS
 
 `;

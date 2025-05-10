@@ -46,7 +46,6 @@ export function getBarcaMatchesTool() {
 }
 
 async function getBarcaMatches() {
-  console.debug({ url, apiKey });
   const response = await fetch(url, {
     method: 'GET',
     headers: {
