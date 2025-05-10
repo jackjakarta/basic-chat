@@ -63,7 +63,7 @@ jobs:
             export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
             ENVIRONMENT=production op inject -f -i .env.op -o .env && \
-            docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:staging . && \
+            docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:staging-${{ env.TAG_VERSION }} . && \
             docker push ${{ env.DOCKER_USERNAME }}/el-chat:staging
 
   deploy:
@@ -91,5 +91,6 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd /home/jack/basic-chat
-            docker stack deploy -c docker-compose.staging.yml el-chat-staging && \
+            export $(grep -v '^#' .env | xargs) && \
+            envsubst < docker-compose.staging.yml | docker stack deploy -c - el-chat-staging && \
             docker system prune -f
