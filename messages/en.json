@@ -149,7 +149,8 @@
     "chats": "Chats",
     "user-menu": {
       "profile": "Profile",
-      "preferences": "Preferences"
+      "preferences": "Preferences",
+      "integrations": "Integrations"
     }
   }
 }

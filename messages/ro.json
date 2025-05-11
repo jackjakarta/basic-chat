@@ -137,9 +137,9 @@
       }
     },
     "integrations": {
-      "title": "Integrations",
-      "description": "Integrations extend the functionality of the chat. You can connect your favorite tools and services to El Chat. You can use these integrations to give the chat access to your own data sources, such as Notion or more coming soon.",
-      "privacy-disclaimer": "We don't store any of your data, nor do we have access to it. We only provide it to the model to generate the response you see in the chat."
+      "title": "Integrări",
+      "description": "Integrările extind funcționalitatea chatului. Poți conecta instrumentele și serviciile tale preferate la El Chat. Aceste integrări permit chatului să acceseze propriile tale surse de date, cum ar fi Notion, iar altele vor fi disponibile în curând.",
+      "privacy-disclaimer": "Nu stocăm datele tale și nu avem acces la ele. Le oferim doar modelului pentru a genera răspunsul pe care îl vezi în chat."
     }
   },
   "sidebar": {
@@ -149,7 +149,8 @@
     "chats": "Chat-uri",
     "user-menu": {
       "profile": "Profil",
-      "preferences": "Preferințe"
+      "preferences": "Preferințe",
+      "integrations": "Integrări"
     }
   }
 }

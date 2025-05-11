@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     });
 
     const baseUrl = getBaseUrlByHeaders();
-    return NextResponse.redirect(`${baseUrl}/settings/integrations?type=all`);
+    return NextResponse.redirect(`${baseUrl}/settings/integrations`);
   } catch (error) {
     console.error('Confluence callback error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
