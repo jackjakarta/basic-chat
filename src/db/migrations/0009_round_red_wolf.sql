@@ -1,0 +1,1 @@
+ALTER TABLE "app"."conversation_message" ADD COLUMN "metadata" json;

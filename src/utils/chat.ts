@@ -30,6 +30,7 @@ export function toolNameMap(inputString: string | undefined): string | undefined
     generateImage: 'Generating image...',
     getBarcaMatches: 'Getting FC Barcelona matches...',
     searchFiles: 'Searching files...',
+    searchNotion: 'Searching Notion...',
   };
 
   return mapping[inputString] ?? inputString;

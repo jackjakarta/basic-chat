@@ -1,7 +1,7 @@
 'use client';
 
 import { cw } from '@/utils/tailwind';
-import { Settings2, User } from 'lucide-react';
+import { Settings2, Unplug, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -20,12 +20,17 @@ export default function SettingsNav() {
   const menuItems: MenuItem[] = [
     {
       label: t('profile.title'),
-      icon: <User className="w-5 h-5" />,
+      icon: <User className="w-[18px] h-[18px]" />,
       href: '/settings/profile',
     },
     {
+      label: 'Integrations',
+      icon: <Unplug className="w-[18px] h-[18px]" />,
+      href: '/settings/integrations',
+    },
+    {
       label: t('preferences.title'),
-      icon: <Settings2 className="w-5 h-5" />,
+      icon: <Settings2 className="w-[18px] h-[18px]" />,
       href: '/settings/preferences',
     },
   ];

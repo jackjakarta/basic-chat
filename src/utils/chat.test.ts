@@ -13,6 +13,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
@@ -23,6 +24,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 2,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
@@ -33,6 +35,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
         orderNumber: 1,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
@@ -43,6 +46,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
         orderNumber: 3,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
@@ -53,6 +57,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
     ];
@@ -69,6 +74,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
@@ -79,6 +85,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
         orderNumber: 3,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
     ]);
@@ -93,6 +100,7 @@ describe('filterChatMessages', () => {
         userId: 'user1',
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
+        metadata: { modelId: 'gpt-4o' },
         orderNumber: 1,
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
@@ -103,6 +111,7 @@ describe('filterChatMessages', () => {
         userId: 'user1',
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
+        metadata: { modelId: 'gpt-4o' },
         orderNumber: 2,
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
@@ -122,6 +131,7 @@ describe('filterChatMessages', () => {
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'user',
         orderNumber: 1,
+        metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },
       {
@@ -131,6 +141,7 @@ describe('filterChatMessages', () => {
         userId: 'user2',
         conversationId: '7cdcf9a0-5481-46f1-86f5-e2b362632856',
         role: 'assistant',
+        metadata: { modelId: 'gpt-4o' },
         orderNumber: 2,
         updatedAt: new Date('2024-03-01T12:00:00Z'),
       },

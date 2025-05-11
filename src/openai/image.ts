@@ -26,7 +26,7 @@ export async function generateImage({
     style,
   });
 
-  const imageUrl = image.data[0]?.url;
+  const imageUrl = image.data?.[0]?.url;
 
   return imageUrl;
 }
