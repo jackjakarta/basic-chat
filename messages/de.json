@@ -139,7 +139,7 @@
     "integrations": {
       "title": "Integrationen",
       "description": "Integrationen erweitern die Funktionalität des Chats. Du kannst deine bevorzugten Tools und Dienste mit El Chat verbinden. Diese Integrationen ermöglichen es dem Chat, auf deine eigenen Datenquellen zuzugreifen, wie zum Beispiel Notion – und weitere folgen bald.",
-      "privacy-disclaimer": "Wir speichern keine deiner Daten und haben auch keinen Zugriff darauf. Wir stellen sie lediglich dem Modell zur Verfügung, um die Antwort im Chat zu generieren."
+      "privacy-disclaimer": "Wir speichern keine deiner Daten. Wir stellen sie lediglich dem Modell zur Verfügung, um die Antwort im Chat zu generieren."
     }
   },
   "sidebar": {
