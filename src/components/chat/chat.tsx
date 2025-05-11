@@ -11,6 +11,7 @@ import React from 'react';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
 import LoadingText from '../common/loading-text';
+import { ButtonTooltip } from '../common/tooltip-button';
 import TTSButton from '../common/tts-button';
 import { useChatOptions } from '../hooks/use-chat-options';
 import { useToast } from '../hooks/use-toast';
@@ -20,7 +21,6 @@ import ClipboardIcon from '../icons/clipboard';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
-import { Button } from '../ui/button';
 import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
 
@@ -240,18 +240,6 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
               className="bg-sidebar w-full p-1 border focus-within:border-primary border-none rounded-xl"
             >
               <div className="flex flex-col gap-1">
-                <div className="flex items-center py-1 px-3 -ml-1 mt-1.5">
-                  <Button
-                    size="sm"
-                    type="button"
-                    className="py-1 transition-colors duration-200 ease-in-out "
-                    variant={isWebSearchActive ? 'active' : 'neutral'}
-                    onClick={toggleWebSearch}
-                  >
-                    <Globe2 className="h-4 w-4" />
-                    Web Search
-                  </Button>
-                </div>
                 <div className="flex items-center">
                   <AutoResizeTextarea
                     autoFocus
@@ -262,6 +250,20 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
                     onKeyDown={handleSubmitOnEnter}
                     maxLength={20000}
                   />
+                </div>
+                <div className="flex items-center justify-between py-1 pl-3 -ml-1 mb-1">
+                  <ButtonTooltip
+                    tooltip={isWebSearchActive ? 'Deactivate web search' : 'Activate web search'}
+                    tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
+                    size="sm"
+                    type="button"
+                    className="py-1 transition-colors duration-200 ease-in-out "
+                    variant={isWebSearchActive ? 'active' : 'neutral'}
+                    onClick={toggleWebSearch}
+                  >
+                    <Globe2 className="h-4 w-4" />
+                    Web Search
+                  </ButtonTooltip>
                   {status === 'submitted' || status === 'streaming' ? (
                     <button
                       type="button"
