@@ -129,6 +129,11 @@
         }
       }
     },
+    "integrations": {
+      "title": "Integrations",
+      "description": "Integrations extend the functionality of the chat. You can connect your favorite tools and services to El Chat. You can use these integrations to give the chat access to your own data sources, such as Notion or more coming soon.",
+      "privacy-disclaimer": "We don't store any of your data, nor do we have access to it. We only provide it to the model to generate the response you see in the chat."
+    },
     "preferences": {
       "title": "Preferences",
       "description": "Set your prefered language for the chat experience.",
@@ -144,7 +149,8 @@
     "chats": "Chats",
     "user-menu": {
       "profile": "Profile",
-      "preferences": "Preferences"
+      "preferences": "Preferences",
+      "integrations": "Integrations"
     }
   }
 }

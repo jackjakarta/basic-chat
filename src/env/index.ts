@@ -25,6 +25,9 @@ export const env = createEnv({
     jwtSecret: z.string().min(1),
     geminiApiKey: z.string().min(1),
     anthropicApiKey: z.string().min(1),
+    notionClientId: z.string().min(1),
+    notionClientSecret: z.string().min(1),
+    notionRedirectUri: z.string().url(),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
@@ -52,6 +55,9 @@ export const env = createEnv({
     jwtSecret: process.env.JWT_SECRET,
     geminiApiKey: process.env.GEMINI_API_KEY,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    notionClientId: process.env.NOTION_CLIENT_ID,
+    notionClientSecret: process.env.NOTION_CLIENT_SECRET,
+    notionRedirectUri: process.env.NOTION_REDIRECT_URI,
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },
 });

@@ -135,6 +135,11 @@
       "language": {
         "heading": "Schimbă limba"
       }
+    },
+    "integrations": {
+      "title": "Integrări",
+      "description": "Integrările extind funcționalitatea chatului. Poți conecta instrumentele și serviciile tale preferate la El Chat. Aceste integrări permit chatului să acceseze propriile tale surse de date, cum ar fi Notion, iar altele vor fi disponibile în curând.",
+      "privacy-disclaimer": "Nu stocăm datele tale și nu avem acces la ele. Le oferim doar modelului pentru a genera răspunsul pe care îl vezi în chat."
     }
   },
   "sidebar": {
@@ -144,7 +149,8 @@
     "chats": "Chat-uri",
     "user-menu": {
       "profile": "Profil",
-      "preferences": "Preferințe"
+      "preferences": "Preferințe",
+      "integrations": "Integrări"
     }
   }
 }

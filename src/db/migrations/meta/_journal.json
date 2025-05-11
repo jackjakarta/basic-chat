@@ -64,6 +64,20 @@
       "when": 1744845005591,
       "tag": "0008_flat_switch",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1746907703580,
+      "tag": "0009_round_red_wolf",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1746913827924,
+      "tag": "0010_dark_tusk",
+      "breakpoints": true
     }
   ]
 }

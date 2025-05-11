@@ -1,4 +1,9 @@
 import {
+  dataSourceIntegrationStateSchema,
+  dataSourceIntegrationTypeSchema,
+  OAuthTokenMetadata,
+} from '@/app/api/auth/notion/types';
+import {
   boolean,
   integer,
   json,
@@ -93,6 +98,9 @@ export const conversationRolePgEnum = appSchema.enum(
   conversationRoleSchema.options,
 );
 export type ConversationRole = z.infer<typeof conversationRoleSchema>;
+export type ConversationMessageMetadata = {
+  modelId?: string;
+};
 
 export const conversationMessageTable = appSchema.table('conversation_message', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -103,6 +111,7 @@ export const conversationMessageTable = appSchema.table('conversation_message', 
   userId: uuid('user_id').references(() => userTable.id),
   role: conversationRolePgEnum('role').notNull(),
   orderNumber: integer('order_number').notNull(),
+  metadata: json('metadata').$type<ConversationMessageMetadata>(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -155,3 +164,53 @@ export const vectorStoreTable = appSchema.table('vector_store', {
 
 export type VectorStoreRow = typeof vectorStoreTable.$inferSelect;
 export type InsertVectorStoreRow = typeof vectorStoreTable.$inferInsert;
+
+export const dataSourceIntegrationStateEnum = appSchema.enum(
+  'data_source_integration_state',
+  dataSourceIntegrationStateSchema.options,
+);
+export const dataSourceIntegrationTypeEnum = appSchema.enum(
+  'data_source_integration_type',
+  dataSourceIntegrationTypeSchema.options,
+);
+
+export const dataSourceIntegrationTable = appSchema.table('data_source_integration', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  description: text('description').notNull(),
+  type: dataSourceIntegrationTypeEnum('type').notNull(),
+  state: dataSourceIntegrationStateEnum('state').notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type DataSourceIntegrationInsertModel = typeof dataSourceIntegrationTable.$inferInsert;
+export type DataSourceIntegrationModel = typeof dataSourceIntegrationTable.$inferSelect;
+
+export const dataSourceIntegrationUserMappingTable = appSchema.table(
+  'data_source_integration_user_mapping',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .references(() => userTable.id)
+      .notNull(),
+    dataSourceIntegrationId: uuid('data_source_integration_id')
+      .references(() => dataSourceIntegrationTable.id)
+      .notNull(),
+    enabled: boolean('enabled').default(false).notNull(),
+    oauthMetadata: json('oauth_metadata').$type<OAuthTokenMetadata>().notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      uniqueIntegrationByUser: unique().on(table.userId, table.dataSourceIntegrationId),
+    };
+  },
+);
+export type DataSourceIntegrationUserMappingInsertModel =
+  typeof dataSourceIntegrationUserMappingTable.$inferInsert;
+export type DataSourceIntegrationUserMappingModel =
+  typeof dataSourceIntegrationUserMappingTable.$inferSelect;

@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
-import { ChevronsUpDown, LogOut, Settings2, User2 } from 'lucide-react';
+import { ChevronsUpDown, LogOut, Settings2, Unplug, User2 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -89,10 +89,12 @@ export function NavUser({
                   {t('profile')}
                 </DropdownMenuItem>
               </Link>
-              {/* <DropdownMenuItem className="cursor-pointer">
-                <CodeXml />
-                API Console
-              </DropdownMenuItem> */}
+              <Link href="/settings/integrations">
+                <DropdownMenuItem className="cursor-pointer">
+                  <Unplug />
+                  {t('integrations')}
+                </DropdownMenuItem>
+              </Link>
               <Link href="/settings/preferences">
                 <DropdownMenuItem className="cursor-pointer">
                   <Settings2 />
