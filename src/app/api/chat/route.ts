@@ -10,7 +10,7 @@ import { getUser } from '@/utils/auth';
 import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { myProvider } from './models';
+import { customModelProvider } from './models';
 import { allModelsSchema } from './schemas';
 import { constructSystemPrompt } from './system-prompt';
 import { fileSearchTool } from './tools/file-search';
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     };
 
     const result = streamText({
-      model: myProvider.languageModel(validModelId),
+      model: customModelProvider.languageModel(validModelId),
       system: systemPrompt,
       messages,
       maxSteps: 5,

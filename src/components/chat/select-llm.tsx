@@ -3,6 +3,7 @@
 import {
   anthropicModelsSchema,
   googleModelsSchema,
+  mistralModelsSchema,
   openaiModelsSchema,
 } from '@/app/api/chat/schemas';
 import { type AIModel } from '@/app/api/chat/types';
@@ -54,6 +55,17 @@ export default function SelectLlmModel() {
             Google Gemini
           </SelectLabel>
           {googleModelsSchema.options.map((model) => (
+            <SelectItem key={model} value={model} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model)}</span>
+            </SelectItem>
+          ))}
+        </SelectGroup>
+
+        <SelectGroup className="flex flex-col gap-1">
+          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            Mistral
+          </SelectLabel>
+          {mistralModelsSchema.options.map((model) => (
             <SelectItem key={model} value={model} className="me-4 cursor-pointer">
               <span className="me-2">{getModelName(model)}</span>
             </SelectItem>
