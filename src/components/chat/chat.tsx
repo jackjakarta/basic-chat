@@ -21,7 +21,6 @@ import ClipboardIcon from '../icons/clipboard';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
-import { Button } from '../ui/button';
 import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
 
