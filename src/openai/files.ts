@@ -18,11 +18,30 @@ export async function addFileIdsToVectorStore({
 }
 
 export async function createVectorStore({ agentId }: { agentId: string }) {
-  const vectorStore = await openai.vectorStores.create({
+  const initialVs = await openai.vectorStores.create({
     name: `agent-${agentId}-vector-store`,
   });
+  const vsId = initialVs.id;
 
-  return vectorStore;
+  let vs = initialVs;
+  const maxRetries = 60;
+  const intervalMs = 1000;
+  let tries = 0;
+
+  while (vs.status !== 'completed') {
+    if (vs.status === 'expired') {
+      throw new Error(`Vector store ${vsId} expired before it could complete.`);
+    }
+    if (++tries > maxRetries) {
+      throw new Error(`Timed out waiting for vector store ${vsId} to complete.`);
+    }
+
+    await new Promise((res) => setTimeout(res, intervalMs));
+
+    vs = await openai.vectorStores.retrieve(vsId);
+  }
+
+  return vs;
 }
 
 export async function deleteVectorStore({
