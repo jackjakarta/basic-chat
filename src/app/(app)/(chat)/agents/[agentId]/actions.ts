@@ -3,7 +3,7 @@
 import { dbDeleteAgent, dbUpdateAgent } from '@/db/functions/agent';
 import { dbDeleteFilesFromVectorStore } from '@/db/functions/vector-store';
 import { type AgentRow } from '@/db/schema';
-import { deleteFile } from '@/openai/files';
+import { deleteFile, deleteVectorStore } from '@/openai/files';
 import { getUser } from '@/utils/auth';
 
 export async function updateAgentAction({
@@ -23,8 +23,19 @@ export async function updateAgentAction({
   return updatedAgent;
 }
 
-export async function deleteAgentAction({ agentId }: { agentId: string }) {
+export async function deleteAgentAction({
+  agentId,
+  vectorStoreId,
+}: {
+  agentId: string;
+  vectorStoreId: string | null;
+}) {
   const user = await getUser();
+
+  if (vectorStoreId !== null) {
+    await deleteVectorStore({ vectorStoreId, userId: user.id });
+  }
+
   await dbDeleteAgent({ agentId, userId: user.id });
 }
 

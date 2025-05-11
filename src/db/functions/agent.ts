@@ -67,6 +67,12 @@ export async function dbDeleteAgent({
   userId: string;
 }): Promise<void> {
   await db.transaction(async (tx) => {
+    const [agent] = await tx.select().from(agentTable).where(eq(agentTable.id, agentId));
+
+    if (agent === undefined) {
+      throw new Error('Agent not found');
+    }
+
     const agentConversations = await tx
       .select()
       .from(conversationTable)
@@ -94,6 +100,14 @@ export async function dbDeleteAgent({
     await tx
       .delete(agentTable)
       .where(and(eq(agentTable.id, agentId), eq(agentTable.userId, userId)));
+
+    if (agent.vectorStoreId !== null) {
+      await tx
+        .delete(vectorStoreTable)
+        .where(
+          and(eq(vectorStoreTable.id, agent.vectorStoreId), eq(vectorStoreTable.userId, userId)),
+        );
+    }
   });
 }
 

@@ -29,7 +29,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
     toastLoading('Deleting agent');
 
     try {
-      await deleteAgentAction({ agentId: agent.id });
+      await deleteAgentAction({ agentId: agent.id, vectorStoreId: agent.vectorStoreId });
       setIsDeleteModalOpen(false);
       toastSuccess('Agent deleted');
       router.refresh();
