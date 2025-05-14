@@ -9,11 +9,3 @@ export type AIModel = z.infer<typeof allModelsSchema>;
 export type NotionIntegration = ActiveIntegration & {
   oauthMetadata: NotionOAuthResponse;
 };
-
-export function getActiveNotionIntegration(
-  integrations: ActiveIntegration[],
-): NotionIntegration | undefined {
-  const maybeIntegration = integrations.find((i) => i.oauthMetadata.type === 'notion');
-
-  return maybeIntegration as NotionIntegration;
-}

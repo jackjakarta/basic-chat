@@ -6,7 +6,6 @@ import {
   mistralModelsSchema,
   openaiModelsSchema,
 } from '@/app/api/chat/schemas';
-import { type AIModel } from '@/app/api/chat/types';
 import {
   Select,
   SelectContent,
@@ -28,7 +27,7 @@ export default function SelectLlmModel() {
   const isChatRoute = pathname === '/' || pathname.includes('/c');
 
   return (
-    <Select value={model} onValueChange={(value) => setModel(value as AIModel)}>
+    <Select value={model} onValueChange={(value) => setModel(value)}>
       <SelectTrigger
         title="Select LLM Model"
         className={cw(

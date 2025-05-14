@@ -1,5 +1,7 @@
-import { AIModel } from '@/app/api/chat/types';
+import { type ToolName } from '@/app/api/chat/tools/types';
+import { type AIModel } from '@/app/api/chat/types';
 import { type ConversationMessageRow } from '@/db/schema';
+import { type Message } from 'ai';
 
 export function filterChatMessages({ chatMessages }: { chatMessages: ConversationMessageRow[] }) {
   const filteredMessages = Array.from(
@@ -33,7 +35,7 @@ export function toolNameMap(inputString: string | undefined): string | undefined
     searchNotion: 'Searching Notion...',
   };
 
-  return mapping[inputString] ?? inputString;
+  return mapping[inputString];
 }
 
 export function getModelName(model: AIModel) {
@@ -47,5 +49,15 @@ export function getModelName(model: AIModel) {
     'pixtral-large-latest': 'Pixtral Large',
   };
 
-  return mapping[model] ?? model;
+  return mapping[model];
+}
+
+export function getUserMessage(messages: Message[]) {
+  const userMessages = messages.filter((message) => message.role === 'user');
+
+  if (userMessages.length === 0) {
+    return '';
+  }
+
+  return userMessages[userMessages.length - 1]?.content;
 }

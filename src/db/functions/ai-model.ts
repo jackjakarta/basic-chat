@@ -1,0 +1,29 @@
+import { db } from '@/db';
+import { and, desc, eq } from 'drizzle-orm';
+
+import { aiModelTable } from '../schema';
+
+export async function dbGetEnabledModels() {
+  const models = await db
+    .select()
+    .from(aiModelTable)
+    .where(and(eq(aiModelTable.isEnabled, true), eq(aiModelTable.type, 'text')))
+    .orderBy(desc(aiModelTable.name));
+
+  return models;
+}
+
+export async function dbGetModelById({ modelId }: { modelId: string }) {
+  const [model] = await db
+    .select()
+    .from(aiModelTable)
+    .where(
+      and(
+        eq(aiModelTable.id, modelId),
+        eq(aiModelTable.isEnabled, true),
+        eq(aiModelTable.type, 'text'),
+      ),
+    );
+
+  return model;
+}

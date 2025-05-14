@@ -214,3 +214,28 @@ export type DataSourceIntegrationUserMappingInsertModel =
   typeof dataSourceIntegrationUserMappingTable.$inferInsert;
 export type DataSourceIntegrationUserMappingModel =
   typeof dataSourceIntegrationUserMappingTable.$inferSelect;
+
+const modelTypeSchema = z.enum(['text', 'image']);
+export const modelTypePgEnum = appSchema.enum('model_type', modelTypeSchema.options);
+export type ModelType = z.infer<typeof modelTypeSchema>;
+
+const aiProviderSchema = z.enum(['openai', 'google', 'anthropic', 'mistral']);
+export const aiProviderPgEnum = appSchema.enum('ai_provider', aiProviderSchema.options);
+export type AIProvider = z.infer<typeof aiProviderSchema>;
+
+export const aiModelTable = appSchema.table('ai_model', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description').notNull(),
+  type: modelTypePgEnum('type').notNull(),
+  provider: aiProviderPgEnum('provider').notNull(),
+  isEnabled: boolean('is_enabled').default(false).notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type AIModelRow = typeof aiModelTable.$inferSelect;
+export type InsertAIModelRow = typeof aiModelTable.$inferInsert;

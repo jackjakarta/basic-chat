@@ -1,4 +1,5 @@
 import { dbGetAgentById } from '@/db/functions/agent';
+import { dbGetModelById } from '@/db/functions/ai-model';
 import {
   dbGetOrCreateConversation,
   dbInsertChatContent,
@@ -7,18 +8,19 @@ import {
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
+import { getUserMessage } from '@/utils/chat';
+import { openai } from '@ai-sdk/openai';
 import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { customModelProvider } from './models';
-import { allModelsSchema } from './schemas';
+import { getModel } from './models';
 import { constructSystemPrompt } from './system-prompt';
 import { fileSearchTool } from './tools/file-search';
 import { generateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
-import { searchNotionTool } from './tools/notion-search';
+import { getActiveNotionIntegration, searchNotionTool } from './tools/notion-search';
 import { webSearchTool } from './tools/openai-search';
-import { getActiveNotionIntegration, type AIModel } from './types';
+import { type AIModel } from './types';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -38,16 +40,14 @@ export async function POST(request: NextRequest) {
   } = await request.json();
 
   try {
-    const parsedModelId = allModelsSchema.safeParse(modelId);
+    const model = await dbGetModelById({ modelId });
 
-    if (!parsedModelId.success) {
+    if (model === undefined) {
       return NextResponse.json(
         { error: 'Invalid model ID provided. Please provide a valid model ID.' },
         { status: 400 },
       );
     }
-
-    const validModelId = parsedModelId.data;
 
     const maybeAgent =
       agentId !== undefined ? await dbGetAgentById({ agentId, userId: user.id }) : undefined;
@@ -62,14 +62,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Could not get or create conversation' }, { status: 500 });
     }
 
-    const userMessage = messages[messages.length - 1]?.content;
+    const userMessage = getUserMessage(messages);
 
     await dbInsertChatContent({
       conversationId: conversation.id,
       content: userMessage ?? '',
       role: 'user',
       userId: user.id,
-      metadata: { modelId: validModelId },
+      metadata: { modelId: model.id },
       orderNumber: messages.length,
     });
 
@@ -97,17 +97,17 @@ export async function POST(request: NextRequest) {
     };
 
     const result = streamText({
-      model: customModelProvider.languageModel(validModelId),
+      model: openai('o3-mini'),
       system: systemPrompt,
       messages,
       maxSteps: 5,
-      tools,
+      // tools,
       async onFinish(assistantMessage) {
         await dbInsertChatContent({
           content: assistantMessage.text,
           role: 'assistant',
           userId: user.id,
-          metadata: { modelId: validModelId },
+          metadata: { modelId: model.id },
           orderNumber: messages.length + 1,
           conversationId: conversation.id,
         });

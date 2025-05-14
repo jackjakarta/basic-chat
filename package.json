@@ -20,6 +20,7 @@
     "db:migrate": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/migrate.ts",
     "run:search": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/app/api/chat/tools/search-knowledge.ts",
     "db:clear": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/clear.ts",
+    "db:seed": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/seed/index.ts",
     "db:studio": "ENVIRONMENT=development op run --env-file=\".env.op\" -- drizzle-kit studio --config=src/db/drizzle.config.ts"
   },
   "dependencies": {
