@@ -10,15 +10,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
     throw new Error('No models found');
   }
 
-  const [firstModel] = models;
-
-  if (firstModel === undefined) {
-    throw new Error('No models found');
-  }
+  const firstModel = models.filter((model) => model.id === 'gpt-4.1')[0];
 
   return (
     <ClientProvider session={session}>
-      <LlmModelProvider defaultModel={firstModel.id}>{children}</LlmModelProvider>
+      <LlmModelProvider defaultModel={firstModel?.id ?? 'gpt-4.1'}>{children}</LlmModelProvider>
     </ClientProvider>
   );
 }
