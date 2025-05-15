@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const toolsSchema = z.enum([
+export const toolsSchema = z.enum([
   'searchTheWeb',
   'generateImage',
   'getBarcaMatches',

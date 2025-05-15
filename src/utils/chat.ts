@@ -1,4 +1,3 @@
-import { type ToolName } from '@/app/api/chat/tools/types';
 import { type AIModel } from '@/app/api/chat/types';
 import { type ConversationMessageRow } from '@/db/schema';
 import { type Message } from 'ai';

@@ -1,6 +1,5 @@
 'use client';
 
-import { ToolName } from '@/app/api/chat/tools/types';
 import { toolNameMap } from '@/utils/chat';
 import { getTimeBasedGreeting } from '@/utils/greeting';
 import { replaceUrl } from '@/utils/navigation';

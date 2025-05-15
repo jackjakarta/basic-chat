@@ -9,7 +9,6 @@ import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-in
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
 import { getUserMessage } from '@/utils/chat';
-import { openai } from '@ai-sdk/openai';
 import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -97,11 +96,11 @@ export async function POST(request: NextRequest) {
     };
 
     const result = streamText({
-      model: openai('o3-mini'),
+      model: getModel(model),
       system: systemPrompt,
       messages,
       maxSteps: 5,
-      // tools,
+      tools,
       async onFinish(assistantMessage) {
         await dbInsertChatContent({
           content: assistantMessage.text,
