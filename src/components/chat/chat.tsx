@@ -130,19 +130,29 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
                       )}
                     >
                       <div>
+                        <LoadingText>
+                          {message?.parts?.[0]?.type === 'reasoning' ? 'Thinking...' : ''}
+                        </LoadingText>
                         {message.content.length > 0 && status !== 'error' ? (
                           <>
+                            {/* {message.parts?.[0]?.type === 'text' && (
+                              <MarkdownDisplay maxWidth={700}>
+                                {message.parts[0].text}
+                              </MarkdownDisplay>
+                            )} */}
                             <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
                             <DisplaySources message={message} status={status} />
                           </>
                         ) : (
-                          <LoadingText>
-                            {toolNameMap(
-                              message?.parts?.[0]?.type === 'tool-invocation'
-                                ? message.parts?.[0].toolInvocation.toolName
-                                : '',
-                            ) ?? ''}
-                          </LoadingText>
+                          <>
+                            <LoadingText>
+                              {toolNameMap(
+                                message?.parts?.[0]?.type === 'tool-invocation'
+                                  ? message.parts?.[0].toolInvocation.toolName
+                                  : '',
+                              ) ?? ''}
+                            </LoadingText>
+                          </>
                         )}
 
                         {finishedAssistantMessage && (

@@ -1,11 +1,10 @@
 'use client';
 
-import { type AIModel } from '@/app/api/chat/types';
 import React from 'react';
 
 type ModelContextType = {
-  model: AIModel;
-  setModel: (model: AIModel) => void;
+  model: string;
+  setModel: (model: string) => void;
 };
 
 const ModelContext = React.createContext<ModelContextType | undefined>(undefined);
@@ -14,10 +13,10 @@ export function LlmModelProvider({
   defaultModel,
   children,
 }: {
-  defaultModel: AIModel;
+  defaultModel: string;
   children: React.ReactNode;
 }) {
-  const [model, setModel] = React.useState<AIModel>(defaultModel);
+  const [model, setModel] = React.useState<string>(defaultModel);
 
   return <ModelContext.Provider value={{ model, setModel }}>{children}</ModelContext.Provider>;
 }

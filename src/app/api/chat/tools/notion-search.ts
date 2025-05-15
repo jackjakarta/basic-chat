@@ -1,3 +1,4 @@
+import { ActiveIntegration } from '@/db/functions/data-source-integrations';
 import { tool } from 'ai';
 import { z } from 'zod';
 
@@ -37,4 +38,12 @@ export async function searchNotionTool({
   });
 
   return finalTool;
+}
+
+export function getActiveNotionIntegration(
+  integrations: ActiveIntegration[],
+): NotionIntegration | undefined {
+  const maybeIntegration = integrations.find((i) => i.oauthMetadata.type === 'notion');
+
+  return maybeIntegration as NotionIntegration;
 }
