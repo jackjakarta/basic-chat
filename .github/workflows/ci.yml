@@ -8,6 +8,7 @@ on:
 
 jobs:
   checks:
+    if: github.event.pull_request.draft == false
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
