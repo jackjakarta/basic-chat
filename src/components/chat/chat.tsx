@@ -1,11 +1,14 @@
 'use client';
 
+import { ImageFile, SuccessLocalFileState, type LocalFileState } from '@/types/files';
 import { toolNameMap } from '@/utils/chat';
 import { getTimeBasedGreeting } from '@/utils/greeting';
 import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
+import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
+import { Attachment } from 'ai';
 import { Globe2 } from 'lucide-react';
 import React from 'react';
 
@@ -38,6 +41,8 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
 
   const [isWebSearchActive, setIsWebSearchActive] = React.useState(false);
 
+  const [files, setFiles] = React.useState<Map<string, LocalFileState>>(new Map());
+
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
       id,
@@ -46,6 +51,8 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
       experimental_throttle: 100,
       maxSteps: 5,
       body: { chatId: id, modelId, agentId, webSearchActive: isWebSearchActive },
+      generateId: generateUUID,
+      sendExtraMessageFields: true,
       onResponse: () => {
         if (messages.length <= 1) {
           refetchConversations();
@@ -69,8 +76,24 @@ export default function Chat({ id, initialMessages, userFirstName, agentId }: Ch
   function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    const imageAttachments: Attachment[] = Array.from(files)
+      .map(([, fileState]) => fileState)
+      .filter(
+        (f): f is SuccessLocalFileState & { file: ImageFile } =>
+          f.status === 'success' && f.file.type === 'image',
+      )
+      .map((image) => ({
+        name: image.file.imageUrl ?? '',
+        url: image.file.imageUrl ?? '',
+        contentType: 'image/png',
+        type: 'image',
+        id: image.id,
+      }));
+
+    setFiles(new Map());
+
     try {
-      handleSubmit(e);
+      handleSubmit(e, { experimental_attachments: [...imageAttachments] });
       replaceUrl(chatPath);
     } catch (error) {
       console.error({ error });

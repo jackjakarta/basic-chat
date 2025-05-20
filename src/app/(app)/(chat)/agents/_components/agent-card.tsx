@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { type AgentRow } from '@/db/schema';
 import { MoreHorizontal } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -20,22 +21,26 @@ import React from 'react';
 import { deleteAgentAction } from '../[agentId]/actions';
 
 export default function AgentCard({ agent }: { agent: AgentRow }) {
+  const t = useTranslations('agents');
+  const tCommon = useTranslations('common');
   const router = useRouter();
-  const { toastSuccess, toastError, toastLoading } = useToast();
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+
+  const { toastSuccess, toastError, toastLoading } = useToast();
 
   async function handleDeleteAgent(e: React.MouseEvent) {
     e.preventDefault();
-    toastLoading('Deleting agent');
+    toastLoading(t('toasts.toast-delete-loading'));
 
     try {
       await deleteAgentAction({ agentId: agent.id, vectorStoreId: agent.vectorStoreId });
       setIsDeleteModalOpen(false);
-      toastSuccess('Agent deleted');
+      toastSuccess(t('toasts.toast-delete-success'));
       router.refresh();
     } catch (error) {
       console.error({ error });
-      toastError('Failed to delete agent');
+      toastError(t('toasts.toast-delete-error'));
     }
   }
 
@@ -64,7 +69,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <Link href={`/agents/${agent.id}`}>
-                <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">{tCommon('edit')}</DropdownMenuItem>
               </Link>
               <DropdownMenuItem
                 onClick={(e) => {
@@ -73,7 +78,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
                 }}
                 className="text-destructive focus:text-destructive cursor-pointer"
               >
-                Delete
+                {tCommon('delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -85,8 +90,8 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
         onOpenChange={() => {
           setIsDeleteModalOpen((prev) => !prev);
         }}
-        title="Delete Agent"
-        description={`Are you sure you want to delete the agent "${agent.name}"?`}
+        title={t('confirmation.delete.title')}
+        description={t('confirmation.delete.description').replace('$AGENT_NAME', agent.name)}
         onConfirm={handleDeleteAgent}
         type="destructive"
       />

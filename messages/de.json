@@ -22,10 +22,19 @@
     "description": "Agenten sind benutzerdefinierte KI-Assistenten, die mit speziellen Anweisungen entwickelt wurden, um bestimmte Aufgaben durchzuführen oder Probleme zu lösen.",
     "no-agents": "Keine Agenten gefunden. Erstellen Sie Ihren ersten Agenten.",
     "title": "Agenten",
+    "confirmation": {
+      "delete": {
+        "title": "Agent löschen",
+        "description": "Sind Sie sicher, dass Sie $AGENT_NAME löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+      }
+    },
     "toasts": {
       "toast-create-error": "Fehler beim Erstellen des Agenten",
       "toast-create-loading": "Agent wird erstellt...",
-      "toast-create-success": "Agent erfolgreich erstellt"
+      "toast-create-success": "Agent erfolgreich erstellt",
+      "toast-delete-error": "Fehler beim Löschen des Agenten",
+      "toast-delete-loading": "Agent wird gelöscht...",
+      "toast-delete-success": "Agent erfolgreich gelöscht"
     }
   },
   "auth": {
@@ -129,17 +138,17 @@
         }
       }
     },
+    "integrations": {
+      "title": "Integrationen",
+      "description": "Integrationen erweitern die Funktionalität des Chats. Du kannst deine bevorzugten Tools und Dienste mit El Chat verbinden. Diese Integrationen ermöglichen es dem Chat, auf deine eigenen Datenquellen zuzugreifen, wie zum Beispiel Notion – und weitere folgen bald.",
+      "privacy-disclaimer": "Wir speichern keine deiner Daten. Wir stellen sie lediglich dem Modell zur Verfügung, um die Antwort im Chat zu generieren."
+    },
     "preferences": {
       "title": "Einstellungen",
       "description": "Wählen Sie Ihre bevorzugte Sprache für den Chat.",
       "language": {
         "heading": "Sprache ändern"
       }
-    },
-    "integrations": {
-      "title": "Integrationen",
-      "description": "Integrationen erweitern die Funktionalität des Chats. Du kannst deine bevorzugten Tools und Dienste mit El Chat verbinden. Diese Integrationen ermöglichen es dem Chat, auf deine eigenen Datenquellen zuzugreifen, wie zum Beispiel Notion – und weitere folgen bald.",
-      "privacy-disclaimer": "Wir speichern keine deiner Daten. Wir stellen sie lediglich dem Modell zur Verfügung, um die Antwort im Chat zu generieren."
     }
   },
   "sidebar": {

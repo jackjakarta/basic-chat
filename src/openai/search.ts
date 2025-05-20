@@ -4,7 +4,7 @@ export async function aiSearch({ searchQuery }: { searchQuery: string }) {
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-search-preview',
     web_search_options: {
-      search_context_size: 'medium',
+      search_context_size: 'high',
     },
     messages: [
       {
