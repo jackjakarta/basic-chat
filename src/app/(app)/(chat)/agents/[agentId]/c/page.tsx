@@ -31,6 +31,13 @@ export default async function Page(context: unknown) {
   }
 
   return (
-    <Chat key={id} id={id} initialMessages={[]} agentId={agent.id} userFirstName={user.firstName} />
+    <Chat
+      key={id}
+      id={id}
+      initialMessages={[]}
+      agentId={agent.id}
+      agentName={agent.name}
+      userFirstName={user.firstName}
+    />
   );
 }

@@ -48,5 +48,13 @@ export default async function Page(context: unknown) {
 
   const filteredMessages = filterChatMessages({ chatMessages });
 
-  return <Chat key={chat.id} id={chat.id} initialMessages={filteredMessages} agentId={agentId} />;
+  return (
+    <Chat
+      key={chat.id}
+      id={chat.id}
+      initialMessages={filteredMessages}
+      agentId={agentId}
+      agentName={agent.name}
+    />
+  );
 }
