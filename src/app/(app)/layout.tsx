@@ -10,11 +10,15 @@ export default async function Layout({ children }: { children: React.ReactNode }
     throw new Error('No models found');
   }
 
-  const firstModel = models.filter((model) => model.id === 'gpt-4.1')[0];
+  const [defaultModel] = models.filter((model) => model.id === 'pixtral-large-latest');
+
+  if (defaultModel === undefined) {
+    throw new Error('No pixtral-large-latest model found');
+  }
 
   return (
     <ClientProvider session={session}>
-      <LlmModelProvider defaultModel={firstModel?.id ?? 'gpt-4.1'}>{children}</LlmModelProvider>
+      <LlmModelProvider defaultModel={defaultModel.id}>{children}</LlmModelProvider>
     </ClientProvider>
   );
 }
