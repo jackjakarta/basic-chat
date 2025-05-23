@@ -1,0 +1,1 @@
+ALTER TYPE "app"."ai_provider" ADD VALUE 'xai';

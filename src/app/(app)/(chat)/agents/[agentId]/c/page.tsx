@@ -1,5 +1,6 @@
 import Chat from '@/components/chat/chat';
 import { dbGetAgentById } from '@/db/functions/agent';
+import { dbGetEnabledModels } from '@/db/functions/ai-model';
 import { getUser } from '@/utils/auth';
 import { generateUUID } from '@/utils/uuid';
 import { notFound } from 'next/navigation';
@@ -24,13 +25,24 @@ export default async function Page(context: unknown) {
 
   const agentId = parsedParams.data.params.agentId;
 
-  const agent = await dbGetAgentById({ agentId, userId: user.id });
+  const [agent, models] = await Promise.all([
+    dbGetAgentById({ agentId, userId: user.id }),
+    dbGetEnabledModels(),
+  ]);
 
   if (agent === undefined) {
     return notFound();
   }
 
   return (
-    <Chat key={id} id={id} initialMessages={[]} agentId={agent.id} userFirstName={user.firstName} />
+    <Chat
+      key={id}
+      id={id}
+      initialMessages={[]}
+      agentId={agent.id}
+      agentName={agent.name}
+      models={models}
+      userFirstName={user.firstName}
+    />
   );
 }

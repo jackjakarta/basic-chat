@@ -4,6 +4,7 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createMistral } from '@ai-sdk/mistral';
 import { createOpenAI } from '@ai-sdk/openai';
+import { createXai } from '@ai-sdk/xai';
 
 const anthropic = createAnthropic({
   apiKey: env.anthropicApiKey,
@@ -19,6 +20,10 @@ const google = createGoogleGenerativeAI({
 
 const mistral = createMistral({
   apiKey: env.mistralApiKey,
+});
+
+const xai = createXai({
+  apiKey: env.xaiApiKey,
 });
 
 export function getModel(model: AIModelRow) {
@@ -39,6 +44,9 @@ export function getModel(model: AIModelRow) {
 
     case 'pixtral-large-latest':
       return mistral(modelId);
+
+    case 'grok-2-vision-1212':
+      return xai(modelId);
 
     default:
       throw new Error(`Model ${modelId} not found`);

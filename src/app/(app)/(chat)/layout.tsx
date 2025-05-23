@@ -1,4 +1,3 @@
-import Header from '@/components/common/header';
 import AppSidebar from '@/components/navigation/sidebar/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { getUser } from '@/utils/auth';
@@ -13,10 +12,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <SidebarProvider>
       <AppSidebar user={user} avatarUrl={avatarUrl} />
-      <SidebarInset>
-        <Header modelsSelect />
-        {children}
-      </SidebarInset>
+      <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );
 }

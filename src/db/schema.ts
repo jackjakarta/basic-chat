@@ -3,6 +3,7 @@ import {
   dataSourceIntegrationTypeSchema,
   OAuthTokenMetadata,
 } from '@/app/api/auth/notion/types';
+import { type Attachment } from 'ai';
 import {
   boolean,
   integer,
@@ -111,6 +112,7 @@ export const conversationMessageTable = appSchema.table('conversation_message', 
   userId: uuid('user_id').references(() => userTable.id),
   role: conversationRolePgEnum('role').notNull(),
   orderNumber: integer('order_number').notNull(),
+  attachments: json('attachments').$type<Attachment[]>(),
   metadata: json('metadata').$type<ConversationMessageMetadata>(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
@@ -219,7 +221,7 @@ const modelTypeSchema = z.enum(['text', 'image']);
 export const modelTypePgEnum = appSchema.enum('model_type', modelTypeSchema.options);
 export type ModelType = z.infer<typeof modelTypeSchema>;
 
-const aiProviderSchema = z.enum(['openai', 'google', 'anthropic', 'mistral']);
+const aiProviderSchema = z.enum(['openai', 'google', 'anthropic', 'mistral', 'xai']);
 export const aiProviderPgEnum = appSchema.enum('ai_provider', aiProviderSchema.options);
 export type AIProvider = z.infer<typeof aiProviderSchema>;
 

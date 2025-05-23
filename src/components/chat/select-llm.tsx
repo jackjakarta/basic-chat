@@ -1,12 +1,6 @@
 'use client';
 
 import {
-  anthropicModelsSchema,
-  googleModelsSchema,
-  mistralModelsSchema,
-  openaiModelsSchema,
-} from '@/app/api/chat/schemas';
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -15,16 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { type AIModelRow } from '@/db/schema';
 import { getModelName } from '@/utils/chat';
 import { cw } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
 
 import { useLlmModel } from '../providers/llm-model';
 
-export default function SelectLlmModel() {
+export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
   const { model, setModel } = useLlmModel();
   const pathname = usePathname();
   const isChatRoute = pathname === '/' || pathname.includes('/c');
+
+  const openaiModels = models.filter((model) => model.provider === 'openai');
+  const googleModels = models.filter((model) => model.provider === 'google');
+  const anthropicModels = models.filter((model) => model.provider === 'anthropic');
+  const mistralModels = models.filter((model) => model.provider === 'mistral');
+  const xaiModels = models.filter((model) => model.provider === 'xai');
 
   return (
     <Select value={model} onValueChange={(value) => setModel(value)}>
@@ -42,9 +43,9 @@ export default function SelectLlmModel() {
           <SelectLabel className="text-xs -mb-2 text-muted-foreground dark:text-secondary-foreground/60">
             Anthropic
           </SelectLabel>
-          {anthropicModelsSchema.options.map((model) => (
-            <SelectItem key={model} value={model} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model)}</span>
+          {anthropicModels.map((model) => (
+            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model.id)}</span>
             </SelectItem>
           ))}
         </SelectGroup>
@@ -53,9 +54,9 @@ export default function SelectLlmModel() {
           <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
             Google Gemini
           </SelectLabel>
-          {googleModelsSchema.options.map((model) => (
-            <SelectItem key={model} value={model} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model)}</span>
+          {googleModels.map((model) => (
+            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model.id)}</span>
             </SelectItem>
           ))}
         </SelectGroup>
@@ -64,9 +65,20 @@ export default function SelectLlmModel() {
           <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
             Mistral
           </SelectLabel>
-          {mistralModelsSchema.options.map((model) => (
-            <SelectItem key={model} value={model} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model)}</span>
+          {mistralModels.map((model) => (
+            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model.id)}</span>
+            </SelectItem>
+          ))}
+        </SelectGroup>
+
+        <SelectGroup className="flex flex-col gap-1">
+          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            xAI
+          </SelectLabel>
+          {xaiModels.map((model) => (
+            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model.id)}</span>
             </SelectItem>
           ))}
         </SelectGroup>
@@ -75,9 +87,9 @@ export default function SelectLlmModel() {
           <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
             OpenAI
           </SelectLabel>
-          {openaiModelsSchema.options.map((model) => (
-            <SelectItem key={model} value={model} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model)}</span>
+          {openaiModels.map((model) => (
+            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model.id)}</span>
             </SelectItem>
           ))}
         </SelectGroup>

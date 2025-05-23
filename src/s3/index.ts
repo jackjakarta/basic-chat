@@ -23,13 +23,13 @@ const s3 = new S3Client({
   },
 });
 
-export const bucketNameSchema = z.literal('generated-images');
+export const bucketNameSchema = z.enum(['chat']);
 export type BucketName = z.infer<typeof bucketNameSchema>;
 
 export async function uploadFileToS3({
   key,
   fileBuffer,
-  bucketName = 'generated-images',
+  bucketName = 'chat',
   contentType = 'image/png',
 }: {
   key: string;
@@ -72,11 +72,11 @@ export async function deleteFileFromS3({
 
 export async function getSignedUrlFromS3Get({
   key,
-  bucketName = 'generated-images',
+  bucketName = 'chat',
   filename,
   contentType,
   attachment = true,
-  duration = 3600,
+  duration = 561600,
 }: {
   key: string;
   bucketName?: BucketName;

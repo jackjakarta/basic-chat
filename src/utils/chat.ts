@@ -1,4 +1,3 @@
-import { type AIModel } from '@/app/api/chat/types';
 import { type ConversationMessageRow } from '@/db/schema';
 import { type Message } from 'ai';
 
@@ -37,8 +36,8 @@ export function toolNameMap(inputString: string | undefined): string | undefined
   return mapping[inputString];
 }
 
-export function getModelName(model: AIModel) {
-  const mapping: Record<AIModel, string> = {
+export function getModelName(model: string) {
+  const mapping: Record<string, string> = {
     'gpt-4.1': 'GPT-4.1',
     'gpt-4.1-mini': 'GPT-4.1 Mini',
     'gpt-4o': 'GPT-4o',
@@ -46,6 +45,7 @@ export function getModelName(model: AIModel) {
     'gemini-2.0-flash': 'Gemini 2.0 Flash',
     'claude-3-7-sonnet-20250219': 'Claude 3.7 Sonnet',
     'pixtral-large-latest': 'Pixtral Large',
+    'grok-2-vision-1212': 'Grok 2',
   };
 
   return mapping[model];
@@ -59,4 +59,10 @@ export function getUserMessage(messages: Message[]) {
   }
 
   return userMessages[userMessages.length - 1]?.content;
+}
+
+export function getUserMessageAttachments(messages: Message[]) {
+  const userMessages = messages.filter((message) => message.role === 'user');
+
+  return userMessages[userMessages.length - 1]?.experimental_attachments;
 }

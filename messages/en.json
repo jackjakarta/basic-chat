@@ -22,10 +22,19 @@
     "description": "Agents are custom AI assistants designed with a specific set of instructions tailored to perform particular tasks or solve particular problems.",
     "no-agents": "No agents found. Create your first agent.",
     "title": "Agents",
+    "confirmation": {
+      "delete": {
+        "title": "Delete Agent",
+        "description": "Are you sure you want to delete $AGENT_NAME ? This action cannot be undone."
+      }
+    },
     "toasts": {
       "toast-create-error": "Error creating agent",
       "toast-create-loading": "Creating agent...",
-      "toast-create-success": "Agent created successfully"
+      "toast-create-success": "Agent created successfully",
+      "toast-delete-error": "Error deleting agent",
+      "toast-delete-loading": "Deleting agent...",
+      "toast-delete-success": "Agent deleted successfully"
     }
   },
   "auth": {
