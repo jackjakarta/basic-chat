@@ -9,14 +9,14 @@ async function seedAIModels({ skip = true }: { skip: boolean }) {
     return;
   }
 
-  const insertedModels = await db.insert(aiModelTable).values(models).returning();
+  for (const model of models) {
+    const insertedModel = await db
+      .insert(aiModelTable)
+      .values(model)
+      .onConflictDoUpdate({ target: aiModelTable.id, set: { id: model.id } });
 
-  if (insertedModels.length === 0) {
-    console.error({ error: 'Failed to insert AI models' });
-    return;
+    console.info({ insertedModel });
   }
-
-  console.info({ insertedModels });
 }
 
 seedAIModels({ skip: false })

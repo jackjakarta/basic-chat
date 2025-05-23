@@ -1,5 +1,6 @@
 import Chat from '@/components/chat/chat';
 import { dbGetAgentById } from '@/db/functions/agent';
+import { dbGetEnabledModels } from '@/db/functions/ai-model';
 import { dbGetConversationById, dbGetCoversationMessages } from '@/db/functions/chat';
 import { getUser } from '@/utils/auth';
 import { filterChatMessages } from '@/utils/chat';
@@ -25,7 +26,10 @@ export default async function Page(context: unknown) {
 
   const { agentId, chatId } = parsedParams.data.params;
 
-  const agent = await dbGetAgentById({ agentId, userId: user.id });
+  const [agent, models] = await Promise.all([
+    dbGetAgentById({ agentId, userId: user.id }),
+    dbGetEnabledModels(),
+  ]);
 
   if (agent === undefined) {
     return notFound();
@@ -54,6 +58,7 @@ export default async function Page(context: unknown) {
       id={chat.id}
       initialMessages={filteredMessages}
       agentId={agentId}
+      models={models}
       agentName={agent.name}
     />
   );

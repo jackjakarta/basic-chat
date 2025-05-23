@@ -1,5 +1,6 @@
 'use client';
 
+import { type AIModelRow } from '@/db/schema';
 import { ImageFile, SuccessLocalFileState, type LocalFileState } from '@/types/files';
 import { toolNameMap } from '@/utils/chat';
 import { getTimeBasedGreeting } from '@/utils/greeting';
@@ -9,7 +10,7 @@ import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Attachment } from 'ai';
-import { Globe2, Paperclip, X } from 'lucide-react';
+import { Globe2, X } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -29,11 +30,13 @@ import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
 import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
+import UploadButton from './upload-button';
 
 type ChatProps = {
   id: string;
   initialMessages: Message[];
   userFirstName?: string;
+  models: AIModelRow[];
   agentId?: string;
   agentName?: string;
 };
@@ -42,6 +45,7 @@ export default function Chat({
   id,
   initialMessages,
   userFirstName,
+  models,
   agentId,
   agentName,
 }: ChatProps) {
@@ -52,8 +56,6 @@ export default function Chat({
   const [isWebSearchActive, setIsWebSearchActive] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
   const [files, setFiles] = React.useState<Map<string, LocalFileState>>(new Map());
-
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const { messages, input, handleInputChange, handleSubmit, status, reload, stop, error } = useChat(
     {
@@ -103,53 +105,6 @@ export default function Chat({
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   }
 
-  function openFileDialog() {
-    fileInputRef.current?.click();
-  }
-
-  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    await handleFileUpload(file);
-    e.target.value = '';
-  }
-
-  async function handleFileUpload(file: File) {
-    setIsUploading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/chat-upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
-        console.error('Upload failed:', err);
-        return;
-      }
-
-      const { fileId, signedURL } = await response.json();
-
-      setFiles((prev) => {
-        const next = new Map(prev);
-        next.set(fileId, {
-          status: 'success',
-          file: { type: 'image', imageUrl: signedURL },
-          id: fileId,
-        });
-        return next;
-      });
-    } catch (error) {
-      console.error('Error uploading photo:', error);
-    } finally {
-      setIsUploading(false);
-    }
-  }
-
   function handleDeattachImage(fileId: string) {
     setFiles((prev) => {
       const next = new Map(prev);
@@ -187,7 +142,7 @@ export default function Chat({
 
   return (
     <>
-      {/* <Header agentName={agentName} models={[]} /> */}
+      <Header agentName={agentName} models={models} />
       <div
         ref={scrollRef}
         className="flex flex-col h-full w-full overflow-y-auto"
@@ -215,6 +170,9 @@ export default function Chat({
                       status !== 'submitted' &&
                       status !== 'streaming';
 
+                    const userimageAttachments =
+                      message.experimental_attachments?.filter((a) => a.type === 'image') ?? [];
+
                     return (
                       <div
                         key={index}
@@ -227,6 +185,21 @@ export default function Chat({
                         <div>
                           {message.content.length > 0 && status !== 'error' ? (
                             <>
+                              {userimageAttachments.length > 0 && (
+                                <div className="flex flex-col gap-2">
+                                  {userimageAttachments.map((attachment) => (
+                                    <Image
+                                      key={attachment.id}
+                                      src={attachment.url}
+                                      alt={`logo-${attachment.id}`}
+                                      width={300}
+                                      height={300}
+                                      className="rounded-lg h-[300px] w-[300px] object-cover mb-4"
+                                    />
+                                  ))}
+                                </div>
+                              )}
+
                               <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
                               <DisplaySources message={message} status={status} />
                             </>
@@ -374,26 +347,7 @@ export default function Chat({
                   </div>
                   <div className="flex items-center justify-between py-1 pl-3 -ml-1 mb-1">
                     <div className="flex items-center gap-2">
-                      <div>
-                        <ButtonTooltip
-                          tooltip="Upload files (images only)"
-                          tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
-                          size="sm"
-                          type="button"
-                          className="py-1 transition-colors duration-200 ease-in-out "
-                          variant="neutral"
-                          onClick={openFileDialog}
-                        >
-                          <Paperclip className="h-4 w-4" />
-                        </ButtonTooltip>
-                        <input
-                          type="file"
-                          ref={fileInputRef}
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          style={{ display: 'none' }}
-                        />
-                      </div>
+                      <UploadButton setFiles={setFiles} setIsUploading={setIsUploading} />
                       <ButtonTooltip
                         tooltip={
                           isWebSearchActive ? 'Deactivate web search' : 'Activate web search'

@@ -9,7 +9,7 @@ const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 10; // 10MB
 const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif'];
 
 export async function POST(req: NextRequest) {
-  await getUser();
+  const user = await getUser();
 
   const formData = await req.formData();
   const file = formData.get('file');
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const fileId = `image_${nanoid()}`;
+  const fileId = `${user.email}/uploaded/image_${nanoid()}`;
   const fileExtension = getFileExtension(file.name);
 
   if (
@@ -44,10 +44,12 @@ export async function POST(req: NextRequest) {
       key: fileId,
       fileBuffer: uint8ArrayToArrayBuffer(processedImageBuffer),
       contentType: processedImageType,
+      bucketName: 'chat',
     });
 
     const signedURL = await getSignedUrlFromS3Get({
       key: fileId,
+      bucketName: 'chat',
       contentType: processedImageType,
       filename: file.name,
       attachment: false,

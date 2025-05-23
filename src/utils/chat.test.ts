@@ -15,6 +15,7 @@ describe('filterChatMessages', () => {
         orderNumber: 1,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
       {
         id: '2',
@@ -26,6 +27,7 @@ describe('filterChatMessages', () => {
         orderNumber: 2,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
       {
         id: '3',
@@ -37,6 +39,7 @@ describe('filterChatMessages', () => {
         orderNumber: 1,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
       {
         id: '4',
@@ -48,6 +51,7 @@ describe('filterChatMessages', () => {
         orderNumber: 3,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
       {
         id: '5',
@@ -59,6 +63,7 @@ describe('filterChatMessages', () => {
         orderNumber: 1,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
     ];
 
@@ -76,6 +81,7 @@ describe('filterChatMessages', () => {
         orderNumber: 1,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
       {
         id: '4',
@@ -87,6 +93,7 @@ describe('filterChatMessages', () => {
         orderNumber: 3,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
     ]);
   });
@@ -103,6 +110,7 @@ describe('filterChatMessages', () => {
         metadata: { modelId: 'gpt-4o' },
         orderNumber: 1,
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
       {
         id: '2',
@@ -114,6 +122,7 @@ describe('filterChatMessages', () => {
         metadata: { modelId: 'gpt-4o' },
         orderNumber: 2,
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
     ];
 
@@ -133,6 +142,7 @@ describe('filterChatMessages', () => {
         orderNumber: 1,
         metadata: { modelId: 'gpt-4o' },
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
       {
         id: '2',
@@ -144,6 +154,7 @@ describe('filterChatMessages', () => {
         metadata: { modelId: 'gpt-4o' },
         orderNumber: 2,
         updatedAt: new Date('2024-03-01T12:00:00Z'),
+        attachments: null,
       },
     ];
 

@@ -58,4 +58,12 @@ export const models: InsertAIModelRow[] = [
     type: 'text',
     isEnabled: true,
   },
+  {
+    id: 'grok-2-vision-1212',
+    name: 'Grok 2',
+    description: 'xAI Grok-2 - A large language model designed for various tasks.',
+    provider: 'xai',
+    type: 'text',
+    isEnabled: true,
+  },
 ];

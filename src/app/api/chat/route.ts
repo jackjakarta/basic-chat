@@ -8,7 +8,7 @@ import {
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
-import { getUserMessage } from '@/utils/chat';
+import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
 import { streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -19,7 +19,6 @@ import { generateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
 import { getActiveNotionIntegration, searchNotionTool } from './tools/notion-search';
 import { webSearchTool } from './tools/openai-search';
-import { type AIModel } from './types';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -33,7 +32,7 @@ export async function POST(request: NextRequest) {
   }: {
     chatId: string;
     messages: Message[];
-    modelId: AIModel;
+    modelId: string;
     agentId?: string;
     webSearchActive: boolean;
   } = await request.json();
@@ -62,12 +61,14 @@ export async function POST(request: NextRequest) {
     }
 
     const userMessage = getUserMessage(messages);
+    const userMessageAttachments = getUserMessageAttachments(messages);
 
     await dbInsertChatContent({
       conversationId: conversation.id,
       content: userMessage ?? '',
       role: 'user',
       userId: user.id,
+      attachments: userMessageAttachments,
       metadata: { modelId: model.id },
       orderNumber: messages.length,
     });
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
           searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
         }),
       ...(webSearchActive && { searchTheWeb: webSearchTool() }),
-      ...(!webSearchActive && { generateImage: generateImageTool() }),
+      ...(!webSearchActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
       ...(!webSearchActive && { getBarcaMatches: getBarcaMatchesTool() }),
       ...(!webSearchActive &&
         notionDataSource !== undefined && {

@@ -1,12 +1,6 @@
 'use client';
 
 import {
-  anthropicModelsSchema,
-  googleModelsSchema,
-  mistralModelsSchema,
-  openaiModelsSchema,
-} from '@/app/api/chat/schemas';
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -31,6 +25,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
   const googleModels = models.filter((model) => model.provider === 'google');
   const anthropicModels = models.filter((model) => model.provider === 'anthropic');
   const mistralModels = models.filter((model) => model.provider === 'mistral');
+  const xaiModels = models.filter((model) => model.provider === 'xai');
 
   return (
     <Select value={model} onValueChange={(value) => setModel(value)}>
@@ -71,6 +66,17 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
             Mistral
           </SelectLabel>
           {mistralModels.map((model) => (
+            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+              <span className="me-2">{getModelName(model.id)}</span>
+            </SelectItem>
+          ))}
+        </SelectGroup>
+
+        <SelectGroup className="flex flex-col gap-1">
+          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            xAI
+          </SelectLabel>
+          {xaiModels.map((model) => (
             <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
               <span className="me-2">{getModelName(model.id)}</span>
             </SelectItem>

@@ -4,7 +4,7 @@ import { tool } from 'ai';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
-export function generateImageTool() {
+export function generateImageTool({ userEmail }: { userEmail: string }) {
   const generateImageTool = tool({
     description: 'Generate an image based on the provided description.',
     parameters: z.object({
@@ -12,7 +12,7 @@ export function generateImageTool() {
     }),
     execute: async ({ imageDescription }) => {
       try {
-        const imageUrl = await generateImageFromText({ imageDescription });
+        const imageUrl = await generateImageFromText({ imageDescription, userEmail });
         console.debug({ imageUrl });
 
         if (imageUrl === undefined) {
@@ -20,16 +20,9 @@ export function generateImageTool() {
         }
 
         return imageUrl;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        const errorMessage = 'An error occurred while generating the image. We are sorry.';
-
-        if (error instanceof Error) {
-          console.error({ error: error.message });
-          throw new Error(errorMessage);
-        }
-
-        console.error({ error });
-        throw new Error(errorMessage);
+        return 'An error occurred while generating the image.';
       }
     },
   });
@@ -37,7 +30,13 @@ export function generateImageTool() {
   return generateImageTool;
 }
 
-async function generateImageFromText({ imageDescription }: { imageDescription: string }) {
+async function generateImageFromText({
+  imageDescription,
+  userEmail,
+}: {
+  imageDescription: string;
+  userEmail: string;
+}) {
   const prompt = `Generate an image based on the following description: ${imageDescription}`;
   const imageUrl = await generateImage({ prompt });
 
@@ -52,17 +51,20 @@ async function generateImageFromText({ imageDescription }: { imageDescription: s
   }
 
   const arrayBuffer = await response.arrayBuffer();
-  const fileName = `${nanoid(10)}.png`;
+  const fileName = `${userEmail}/generated/${nanoid(10)}.png`;
 
-  const s3Key = await uploadFileToS3({
-    key: fileName,
-    fileBuffer: arrayBuffer,
-  });
-
-  const s3Url = await getSignedUrlFromS3Get({
-    key: s3Key,
-    duration: 7200,
-  });
+  const [, s3Url] = await Promise.all([
+    uploadFileToS3({
+      key: fileName,
+      fileBuffer: arrayBuffer,
+      bucketName: 'chat',
+    }),
+    getSignedUrlFromS3Get({
+      key: fileName,
+      duration: 7200,
+      bucketName: 'chat',
+    }),
+  ]);
 
   return s3Url;
 }
