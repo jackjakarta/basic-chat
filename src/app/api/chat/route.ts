@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { getModel } from './models';
 import { constructSystemPrompt } from './system-prompt';
+import { executeCodeTool } from './tools/code-execution';
 import { fileSearchTool } from './tools/file-search';
 import { generateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
@@ -29,12 +30,14 @@ export async function POST(request: NextRequest) {
     modelId,
     agentId,
     webSearchActive,
+    codeExecutionActive,
   }: {
     chatId: string;
     messages: Message[];
     modelId: string;
     agentId?: string;
     webSearchActive: boolean;
+    codeExecutionActive: boolean;
   } = await request.json();
 
   try {
@@ -77,20 +80,24 @@ export async function POST(request: NextRequest) {
       agentInstructions: maybeAgent?.instructions,
       userCustomInstructions: user.settings?.customInstructions,
       webSearchActive,
+      codeExecutionActive,
     });
 
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
     const notionDataSource = getActiveNotionIntegration(activeDataSources);
 
     const tools = {
+      ...(webSearchActive && !codeExecutionActive && { searchTheWeb: webSearchTool() }),
+      ...(!webSearchActive &&
+        !codeExecutionActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
+      ...(!webSearchActive && !codeExecutionActive && { getBarcaMatches: getBarcaMatchesTool() }),
+      ...(!webSearchActive && codeExecutionActive && { executeCode: executeCodeTool() }),
       ...(maybeAgent !== undefined &&
         maybeAgent.vectorStoreId !== null && {
           searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
         }),
-      ...(webSearchActive && { searchTheWeb: webSearchTool() }),
-      ...(!webSearchActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
-      ...(!webSearchActive && { getBarcaMatches: getBarcaMatchesTool() }),
       ...(!webSearchActive &&
+        !codeExecutionActive &&
         notionDataSource !== undefined && {
           searchNotion: await searchNotionTool({ notionDataSource }),
         }),

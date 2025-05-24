@@ -39,60 +39,70 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
         <SelectValue placeholder="Select a model" />
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup className="flex flex-col gap-1">
-          <SelectLabel className="text-xs -mb-2 text-muted-foreground dark:text-secondary-foreground/60">
-            Anthropic
-          </SelectLabel>
-          {anthropicModels.map((model) => (
-            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model.id)}</span>
-            </SelectItem>
-          ))}
-        </SelectGroup>
+        {anthropicModels.length > 0 && (
+          <SelectGroup className="flex flex-col gap-1">
+            <SelectLabel className="text-xs -mb-2 text-muted-foreground dark:text-secondary-foreground/60">
+              Anthropic
+            </SelectLabel>
+            {anthropicModels.map((model) => (
+              <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+                <span className="me-2">{getModelName(model.id)}</span>
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        )}
 
-        <SelectGroup className="flex flex-col gap-1">
-          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
-            Google Gemini
-          </SelectLabel>
-          {googleModels.map((model) => (
-            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model.id)}</span>
-            </SelectItem>
-          ))}
-        </SelectGroup>
+        {googleModels.length > 0 && (
+          <SelectGroup className="flex flex-col gap-1">
+            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+              Google Gemini
+            </SelectLabel>
+            {googleModels.map((model) => (
+              <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+                <span className="me-2">{getModelName(model.id)}</span>
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        )}
 
-        <SelectGroup className="flex flex-col gap-1">
-          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
-            Mistral
-          </SelectLabel>
-          {mistralModels.map((model) => (
-            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model.id)}</span>
-            </SelectItem>
-          ))}
-        </SelectGroup>
+        {mistralModels.length > 0 && (
+          <SelectGroup className="flex flex-col gap-1">
+            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+              Mistral
+            </SelectLabel>
+            {mistralModels.map((model) => (
+              <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+                <span className="me-2">{getModelName(model.id)}</span>
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        )}
 
-        <SelectGroup className="flex flex-col gap-1">
-          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
-            xAI
-          </SelectLabel>
-          {xaiModels.map((model) => (
-            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model.id)}</span>
-            </SelectItem>
-          ))}
-        </SelectGroup>
+        {xaiModels.length > 0 && (
+          <SelectGroup className="flex flex-col gap-1">
+            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+              xAI
+            </SelectLabel>
+            {xaiModels.map((model) => (
+              <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+                <span className="me-2">{getModelName(model.id)}</span>
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        )}
 
-        <SelectGroup className="flex flex-col gap-1">
-          <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
-            OpenAI
-          </SelectLabel>
-          {openaiModels.map((model) => (
-            <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-              <span className="me-2">{getModelName(model.id)}</span>
-            </SelectItem>
-          ))}
-        </SelectGroup>
+        {openaiModels.length > 0 && (
+          <SelectGroup className="flex flex-col gap-1">
+            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+              OpenAI
+            </SelectLabel>
+            {openaiModels.map((model) => (
+              <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
+                <span className="me-2">{getModelName(model.id)}</span>
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        )}
       </SelectContent>
     </Select>
   );
