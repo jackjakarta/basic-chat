@@ -27,27 +27,22 @@ const xai = createXai({
 });
 
 export function getModel(model: AIModelRow) {
-  const { id: modelId } = model;
+  const { id: modelId, provider } = model;
 
-  switch (modelId) {
-    case 'gpt-4.1':
-    case 'gpt-4.1-mini':
-    case 'gpt-4o':
+  switch (provider) {
+    case 'openai':
       return openai(modelId);
 
-    case 'gemini-2.5-pro-preview-05-06':
-    case 'gemini-2.5-flash-preview-05-20':
-    case 'gemini-2.0-flash':
+    case 'google':
       return google(modelId);
 
-    case 'claude-3-7-sonnet-20250219':
-    case 'claude-sonnet-4-20250514':
+    case 'anthropic':
       return anthropic(modelId);
 
-    case 'pixtral-large-latest':
+    case 'mistral':
       return mistral(modelId);
 
-    case 'grok-2-vision-1212':
+    case 'xai':
       return xai(modelId);
 
     default:
