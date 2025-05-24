@@ -35,9 +35,9 @@ export function getModel(model: AIModelRow) {
     case 'gpt-4o':
       return openai(modelId);
 
-    case 'gemini-2.5-pro-exp-03-25':
-    case 'gemini-2.0-flash':
+    case 'gemini-2.5-pro-preview-05-06':
     case 'gemini-2.5-flash-preview-05-20':
+    case 'gemini-2.0-flash':
       return google(modelId);
 
     case 'claude-3-7-sonnet-20250219':
