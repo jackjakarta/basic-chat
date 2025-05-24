@@ -2,30 +2,26 @@
 
 import { cw } from '@/utils/tailwind';
 import { MessageSquarePlus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { Button } from '../ui/button';
 
 type NewChatButtonProps = React.ComponentPropsWithoutRef<typeof Button>;
 
 export default function NewChatButton({ className, ...props }: NewChatButtonProps) {
-  const router = useRouter();
-
-  function handleNewChat() {
-    router.push('/');
-  }
-
   return (
     <Button
+      type="button"
       variant="ghost"
       title="New Chat"
       size="icon"
-      onClick={handleNewChat}
       className={cw('h-7 w-7', className)}
       {...props}
     >
-      <MessageSquarePlus />
-      <span className="sr-only">New Chat</span>
+      <Link href={'/'}>
+        <MessageSquarePlus />
+        <span className="sr-only">New Chat</span>
+      </Link>
     </Button>
   );
 }

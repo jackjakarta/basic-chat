@@ -37,9 +37,11 @@ export function getModel(model: AIModelRow) {
 
     case 'gemini-2.5-pro-exp-03-25':
     case 'gemini-2.0-flash':
+    case 'gemini-2.5-flash-preview-05-20':
       return google(modelId);
 
     case 'claude-3-7-sonnet-20250219':
+    case 'claude-sonnet-4-20250514':
       return anthropic(modelId);
 
     case 'pixtral-large-latest':

@@ -10,7 +10,7 @@ import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Attachment } from 'ai';
-import { Globe2, X } from 'lucide-react';
+import { Code2, Globe2, X } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -28,6 +28,7 @@ import ClipboardIcon from '../icons/clipboard';
 import ReloadIcon from '../icons/reload';
 import StopIcon from '../icons/stop';
 import { useLlmModel } from '../providers/llm-model';
+import DisplayCodeExecution from './display-code-execution';
 import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
 import UploadButton from './upload-button';
@@ -54,6 +55,7 @@ export default function Chat({
   const queryClient = useQueryClient();
 
   const [isWebSearchActive, setIsWebSearchActive] = React.useState(false);
+  const [isCodeToolActive, setIsCodeToolActive] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
   const [files, setFiles] = React.useState<Map<string, LocalFileState>>(new Map());
 
@@ -64,7 +66,13 @@ export default function Chat({
       api: '/api/chat',
       experimental_throttle: 100,
       maxSteps: 5,
-      body: { chatId: id, modelId, agentId, webSearchActive: isWebSearchActive },
+      body: {
+        chatId: id,
+        modelId,
+        agentId,
+        webSearchActive: isWebSearchActive,
+        codeExecutionActive: isCodeToolActive,
+      },
       generateId: generateUUID,
       sendExtraMessageFields: true,
       onResponse: () => {
@@ -138,11 +146,23 @@ export default function Chat({
 
   function toggleWebSearch() {
     setIsWebSearchActive((prev) => !prev);
+
+    if (isCodeToolActive) {
+      setIsCodeToolActive((prev) => !prev);
+    }
+  }
+
+  function toggleCodeTool() {
+    setIsCodeToolActive((prev) => !prev);
+
+    if (isWebSearchActive) {
+      setIsWebSearchActive((prev) => !prev);
+    }
   }
 
   return (
     <>
-      <Header agentName={agentName} models={models} />
+      <Header title={agentName} models={models} isEmptyChat={messages.length <= 0} />
       <div
         ref={scrollRef}
         className="flex flex-col h-full w-full overflow-y-auto"
@@ -201,6 +221,7 @@ export default function Chat({
                               )}
 
                               <MarkdownDisplay maxWidth={700}>{message.content}</MarkdownDisplay>
+                              <DisplayCodeExecution message={message} status={status} />
                               <DisplaySources message={message} status={status} />
                             </>
                           ) : (
@@ -361,6 +382,18 @@ export default function Chat({
                       >
                         <Globe2 className="h-4 w-4" />
                         Web Search
+                      </ButtonTooltip>
+                      <ButtonTooltip
+                        tooltip={isCodeToolActive ? 'Deactivate code tool' : 'Activate code tool'}
+                        tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
+                        size="sm"
+                        type="button"
+                        className="py-1 transition-colors duration-200 ease-in-out "
+                        variant={isCodeToolActive ? 'active' : 'neutral'}
+                        onClick={toggleCodeTool}
+                      >
+                        <Code2 className="h-4 w-4" />
+                        Code execution
                       </ButtonTooltip>
                     </div>
                     {status === 'submitted' || status === 'streaming' ? (

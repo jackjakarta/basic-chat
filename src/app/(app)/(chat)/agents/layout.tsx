@@ -1,3 +1,4 @@
+import Header from '@/components/common/header';
 import { metadataTitle } from '@/utils/metadata';
 import { type Metadata } from 'next';
 
@@ -8,5 +9,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 }

@@ -17,7 +17,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { updateUserSettingsAction } from './actions';
+import { updateUserNameAction, updateUserSettingsAction } from './actions';
 
 const inputFieldClassName =
   'dark:border-muted/50 dark:hover:border-muted dark:focus:border-transparent dark:focus-visible:ring-muted';
@@ -69,11 +69,18 @@ export default function ProfileForm({
 
   async function onSubmit(data: FormData) {
     try {
-      await updateUserSettingsAction({ customInstructions: data.customInstructions ?? '' });
-      toastSuccess('Account created successfully. Check your email.');
+      await Promise.all([
+        updateUserSettingsAction({ customInstructions: data.customInstructions ?? '' }),
+        updateUserNameAction({
+          firstName: data.firstName,
+          lastName: data.lastName,
+        }),
+      ]);
+
+      toastSuccess('Profile updated successfully.');
     } catch (error) {
       console.error({ error });
-      toastError('An error occurred while creating your account');
+      toastError('An error occurred while updating your profile');
     } finally {
       router.refresh();
     }

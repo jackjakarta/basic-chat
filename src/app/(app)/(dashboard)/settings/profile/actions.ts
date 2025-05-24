@@ -1,7 +1,7 @@
 'use server';
 
 import { dbDeleteAllConversationsByUserId } from '@/db/functions/chat';
-import { dbUpdateUserPassword, dbUpdateUserSettings } from '@/db/functions/user';
+import { dbUpdateUserName, dbUpdateUserPassword, dbUpdateUserSettings } from '@/db/functions/user';
 import { getUser } from '@/utils/auth';
 import { passwordSchema } from '@/utils/schemas';
 
@@ -33,4 +33,21 @@ export async function updateUserSettingsAction({
 export async function deleteAllConversationsAction() {
   const user = await getUser();
   await dbDeleteAllConversationsByUserId({ userId: user.id });
+}
+
+export async function updateUserNameAction({
+  firstName,
+  lastName,
+}: {
+  firstName: string;
+  lastName: string;
+}) {
+  const user = await getUser();
+  const updatedUser = await dbUpdateUserName({
+    userId: user.id,
+    firstName,
+    lastName,
+  });
+
+  return updatedUser;
 }

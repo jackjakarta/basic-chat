@@ -9,3 +9,10 @@ export async function streamToBuffer(stream: Readable) {
 
   return Buffer.concat(chunks);
 }
+
+export function uint8ArrayToArrayBuffer(uint8array: Uint8Array): ArrayBuffer {
+  return uint8array.buffer.slice(
+    uint8array.byteOffset,
+    uint8array.byteOffset + uint8array.byteLength,
+  ) as ArrayBuffer;
+}

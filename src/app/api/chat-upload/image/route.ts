@@ -1,5 +1,6 @@
 import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { getUser } from '@/utils/auth';
+import { uint8ArrayToArrayBuffer } from '@/utils/buffer';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -72,11 +73,4 @@ export function getFileExtension(fileName: string) {
   }
 
   return lastPart;
-}
-
-function uint8ArrayToArrayBuffer(uint8array: Uint8Array): ArrayBuffer {
-  return uint8array.buffer.slice(
-    uint8array.byteOffset,
-    uint8array.byteOffset + uint8array.byteLength,
-  ) as ArrayBuffer;
 }

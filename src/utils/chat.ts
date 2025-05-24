@@ -31,6 +31,7 @@ export function toolNameMap(inputString: string | undefined): string | undefined
     getBarcaMatches: 'Getting FC Barcelona matches...',
     searchFiles: 'Searching files...',
     searchNotion: 'Searching Notion...',
+    executeCode: 'Executing code...',
   };
 
   return mapping[inputString];
@@ -43,7 +44,9 @@ export function getModelName(model: string) {
     'gpt-4o': 'GPT-4o',
     'gemini-2.5-pro-exp-03-25': 'Gemini 2.5 Pro',
     'gemini-2.0-flash': 'Gemini 2.0 Flash',
+    'gemini-2.5-flash-preview-05-20': 'Gemini 2.5 Flash',
     'claude-3-7-sonnet-20250219': 'Claude 3.7 Sonnet',
+    'claude-sonnet-4-20250514': 'Claude 4 Sonnet',
     'pixtral-large-latest': 'Pixtral Large',
     'grok-2-vision-1212': 'Grok 2',
   };
