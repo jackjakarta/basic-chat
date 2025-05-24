@@ -72,7 +72,6 @@ export async function POST(request: NextRequest) {
       role: 'user',
       userId: user.id,
       attachments: userMessageAttachments,
-      metadata: { modelId: model.id },
       orderNumber: messages.length,
     });
 
@@ -88,10 +87,10 @@ export async function POST(request: NextRequest) {
 
     const tools = {
       ...(webSearchActive && !codeExecutionActive && { searchTheWeb: webSearchTool() }),
+      ...(!webSearchActive && codeExecutionActive && { executeCode: executeCodeTool() }),
+      ...(!webSearchActive && !codeExecutionActive && { getBarcaMatches: getBarcaMatchesTool() }),
       ...(!webSearchActive &&
         !codeExecutionActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
-      ...(!webSearchActive && !codeExecutionActive && { getBarcaMatches: getBarcaMatchesTool() }),
-      ...(!webSearchActive && codeExecutionActive && { executeCode: executeCodeTool() }),
       ...(maybeAgent !== undefined &&
         maybeAgent.vectorStoreId !== null && {
           searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
