@@ -1,3 +1,4 @@
+import Header from '@/components/common/header';
 import PageContainer from '@/components/common/page-container';
 import { dbGetAgentById } from '@/db/functions/agent';
 import { dbGetFilesFromVectorStore } from '@/db/functions/vector-store';
@@ -34,8 +35,11 @@ export default async function Page(context: unknown) {
   });
 
   return (
-    <PageContainer className="mx-auto w-full">
-      <EditAgentForm agent={agent} agentFiles={agentKnowledgeFiles?.files} />
-    </PageContainer>
+    <>
+      <Header />
+      <PageContainer className="mx-auto w-full">
+        <EditAgentForm agent={agent} agentFiles={agentKnowledgeFiles?.files} />
+      </PageContainer>
+    </>
   );
 }
