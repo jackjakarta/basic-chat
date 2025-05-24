@@ -37,23 +37,6 @@ export function toolNameMap(inputString: string | undefined): string | undefined
   return mapping[inputString];
 }
 
-export function getModelName(model: string) {
-  const mapping: Record<string, string> = {
-    'gpt-4.1': 'GPT-4.1',
-    'gpt-4.1-mini': 'GPT-4.1 Mini',
-    'gpt-4o': 'GPT-4o',
-    'gemini-2.5-pro-exp-03-25': 'Gemini 2.5 Pro',
-    'gemini-2.0-flash': 'Gemini 2.0 Flash',
-    'gemini-2.5-flash-preview-05-20': 'Gemini 2.5 Flash',
-    'claude-3-7-sonnet-20250219': 'Claude 3.7 Sonnet',
-    'claude-sonnet-4-20250514': 'Claude 4 Sonnet',
-    'pixtral-large-latest': 'Pixtral Large',
-    'grok-2-vision-1212': 'Grok 2',
-  };
-
-  return mapping[model];
-}
-
 export function getUserMessage(messages: Message[]) {
   const userMessages = messages.filter((message) => message.role === 'user');
 

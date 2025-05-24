@@ -72,7 +72,7 @@ export async function deleteVectorStore({
   return result;
 }
 
-export async function uploadFile({ file }: { file: File }): Promise<VectorFile> {
+export async function uploadFileToOpenAi({ file }: { file: File }): Promise<VectorFile> {
   const response = await openai.files.create({
     file,
     purpose: 'user_data',

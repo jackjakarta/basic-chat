@@ -18,5 +18,4 @@ export type SuccessLocalFileState = {
 };
 
 export type LocalFileState = PendingLocalFileState | ErrorLocalFileState | SuccessLocalFileState;
-
 export type FileStatus = LocalFileState['status'];

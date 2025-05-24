@@ -1,5 +1,5 @@
 import { dbAddFileIdsToVectorStore } from '@/db/functions/vector-store';
-import { addFileIdsToVectorStore, uploadFile } from '@/openai/files';
+import { addFileIdsToVectorStore, uploadFileToOpenAi } from '@/openai/files';
 import { getUser } from '@/utils/auth';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     const validVectorStoreId = parsedVectorStoreId.data;
 
-    const file = await uploadFile({
+    const file = await uploadFileToOpenAi({
       file: fileField,
     });
 

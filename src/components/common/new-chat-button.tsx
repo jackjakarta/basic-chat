@@ -17,6 +17,7 @@ export default function NewChatButton({ className, ...props }: NewChatButtonProp
       size="icon"
       className={cw('h-7 w-7', className)}
       {...props}
+      asChild
     >
       <Link href={'/'}>
         <MessageSquarePlus />

@@ -10,7 +10,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { type AIModelRow } from '@/db/schema';
-import { getModelName } from '@/utils/chat';
 import { cw } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
 
@@ -46,7 +45,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
             </SelectLabel>
             {anthropicModels.map((model) => (
               <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-                <span className="me-2">{getModelName(model.id)}</span>
+                <span className="me-2">{model.name}</span>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -59,7 +58,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
             </SelectLabel>
             {googleModels.map((model) => (
               <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-                <span className="me-2">{getModelName(model.id)}</span>
+                <span className="me-2">{model.name}</span>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -72,7 +71,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
             </SelectLabel>
             {mistralModels.map((model) => (
               <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-                <span className="me-2">{getModelName(model.id)}</span>
+                <span className="me-2">{model.name}</span>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -85,7 +84,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
             </SelectLabel>
             {xaiModels.map((model) => (
               <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-                <span className="me-2">{getModelName(model.id)}</span>
+                <span className="me-2">{model.name}</span>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -98,7 +97,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
             </SelectLabel>
             {openaiModels.map((model) => (
               <SelectItem key={model.id} value={model.id} className="me-4 cursor-pointer">
-                <span className="me-2">{getModelName(model.id)}</span>
+                <span className="me-2">{model.name}</span>
               </SelectItem>
             ))}
           </SelectGroup>

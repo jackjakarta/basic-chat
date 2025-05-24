@@ -21,6 +21,6 @@ export async function generateTTS({ text }: { text: string }) {
     return audioBuffer;
   } catch (error) {
     console.error('ElevenLabs SDK Error:', error);
-    throw new Error('Failed to generate TTS');
+    throw new Error(error instanceof Error ? error.message : 'Failed to generate TTS');
   }
 }
