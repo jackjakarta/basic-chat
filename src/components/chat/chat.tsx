@@ -162,7 +162,7 @@ export default function Chat({
 
   return (
     <>
-      <Header agentName={agentName} models={models} />
+      <Header title={agentName} models={models} isEmptyChat={messages.length <= 0} />
       <div
         ref={scrollRef}
         className="flex flex-col h-full w-full overflow-y-auto"
