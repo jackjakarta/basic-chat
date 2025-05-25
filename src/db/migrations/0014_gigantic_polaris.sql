@@ -1,0 +1,1 @@
+ALTER TABLE "app"."user_entity" ADD COLUMN "is_super_admin" boolean DEFAULT false NOT NULL;
