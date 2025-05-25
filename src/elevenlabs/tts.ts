@@ -2,7 +2,7 @@ import { streamToBuffer } from '@/utils/buffer';
 
 import { elevenlabs } from '.';
 
-const voiceId = 'xeBpkkuzgxa0IwKt7NTP';
+const voiceId = 'EXAVITQu4vr4xnSDxMaL';
 
 export async function generateTTS({ text }: { text: string }) {
   try {

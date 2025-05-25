@@ -233,6 +233,7 @@ export const aiModelTable = appSchema.table('ai_model', {
   type: modelTypePgEnum('type').notNull(),
   provider: aiProviderPgEnum('provider').notNull(),
   isEnabled: boolean('is_enabled').default(false).notNull(),
+  isDefault: boolean('is_default').default(false).notNull(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()

@@ -1,6 +1,5 @@
+import { getFileExtension } from '@/utils/files';
 import sharp from 'sharp';
-
-import { getFileExtension } from './route';
 
 export async function preprocessImage(
   file: File,

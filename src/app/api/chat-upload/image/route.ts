@@ -1,6 +1,7 @@
 import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { getUser } from '@/utils/auth';
 import { uint8ArrayToArrayBuffer } from '@/utils/buffer';
+import { getFileExtension } from '@/utils/files';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -61,16 +62,4 @@ export async function POST(req: NextRequest) {
     console.error('Error calling files upload route:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
-
-export function getFileExtension(fileName: string) {
-  const parts = fileName.split('.');
-
-  const lastPart = parts[parts.length - 1];
-
-  if (lastPart === undefined) {
-    return fileName;
-  }
-
-  return lastPart;
 }
