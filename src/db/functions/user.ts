@@ -9,6 +9,7 @@ import {
   conversationMessageTable,
   conversationTable,
   userTable,
+  vectorStoreTable,
   type InsertUserRow,
   type UserRow,
 } from '../schema';
@@ -63,7 +64,7 @@ export async function dbGetAuthenticatedUser({
   email: string;
   password: string;
 }): Promise<ObscuredUser | undefined> {
-  const userModel = (await db.select().from(userTable).where(eq(userTable.email, email)))[0];
+  const [userModel] = await db.select().from(userTable).where(eq(userTable.email, email));
 
   if (userModel === undefined) {
     return undefined;
@@ -82,13 +83,13 @@ export async function dbGetAuthenticatedUser({
 }
 
 export async function dbGetUserById({ userId }: { userId: string }): Promise<UserRow | undefined> {
-  const user = (await db.select().from(userTable).where(eq(userTable.id, userId)))[0];
+  const [user] = await db.select().from(userTable).where(eq(userTable.id, userId));
 
   return user;
 }
 
 export async function dbGetUserByEmail({ email }: { email: string }): Promise<UserRow | undefined> {
-  const user = (await db.select().from(userTable).where(eq(userTable.email, email)))[0];
+  const [user] = await db.select().from(userTable).where(eq(userTable.email, email));
 
   return user;
 }
@@ -102,9 +103,11 @@ export async function dbUpdateUserPassword({
 }): Promise<UserRow | undefined> {
   const passwordHash = await hashPassword(password);
 
-  const user = (
-    await db.update(userTable).set({ passwordHash }).where(eq(userTable.email, email)).returning()
-  )[0];
+  const [user] = await db
+    .update(userTable)
+    .set({ passwordHash })
+    .where(eq(userTable.email, email))
+    .returning();
 
   return user;
 }
@@ -114,6 +117,7 @@ export async function dbDeleteUser({ userId }: { userId: string }) {
     await tx.delete(conversationMessageTable).where(eq(conversationMessageTable.userId, userId));
     await tx.delete(conversationTable).where(eq(conversationTable.userId, userId));
     await tx.delete(agentTable).where(eq(agentTable.userId, userId));
+    await tx.delete(vectorStoreTable).where(eq(vectorStoreTable.userId, userId));
     await tx.delete(userTable).where(eq(userTable.id, userId));
   });
 }
@@ -125,13 +129,13 @@ export async function dbUpdateUserSettings({
   userId: string;
   customInstructions: string;
 }): Promise<UserRow | undefined> {
-  const user = await db
+  const [user] = await db
     .update(userTable)
     .set({ settings: { customInstructions } })
     .where(eq(userTable.id, userId))
     .returning();
 
-  return user[0];
+  return user;
 }
 
 export async function dbUpdateUserName({
