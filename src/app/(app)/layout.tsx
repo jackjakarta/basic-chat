@@ -10,10 +10,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
     throw new Error('No models found');
   }
 
-  const [defaultModel] = models.filter((model) => model.id === 'claude-sonnet-4-20250514');
+  const [defaultModel] = models.filter((model) => model.isDefault);
 
   if (defaultModel === undefined) {
-    throw new Error('No pixtral-large-latest model found');
+    throw new Error('No default model found');
   }
 
   return (

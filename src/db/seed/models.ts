@@ -64,6 +64,7 @@ export const models: InsertAIModelRow[] = [
     provider: 'anthropic',
     type: 'text',
     isEnabled: true,
+    isDefault: true,
   },
   {
     id: 'pixtral-large-latest',
