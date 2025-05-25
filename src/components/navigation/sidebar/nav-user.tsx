@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { type ObscuredUser } from '@/utils/user';
-import { ChevronsUpDown, LogOut, Settings2, Unplug, User2 } from 'lucide-react';
+import { ChevronsUpDown, LogOut, Settings2, ShieldUser, Unplug, User2 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -27,6 +27,7 @@ export function NavUser({
   lastName,
   email,
   avatarUrl,
+  isSuperAdmin,
 }: ObscuredUser & { avatarUrl?: string }) {
   const { isMobile } = useSidebar();
   const t = useTranslations('sidebar.user-menu');
@@ -75,14 +76,15 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
+              {isSuperAdmin && (
+                <Link href="/admin">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <ShieldUser />
+                    Admin
+                  </DropdownMenuItem>
+                </Link>
+              )}
               <Link href="/settings/profile">
                 <DropdownMenuItem className="cursor-pointer">
                   <User2 />

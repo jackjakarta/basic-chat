@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
           conversationId: conversation.id,
         });
 
-        if (messages.length === 1 || messages.length === 2 || conversation.name === null) {
+        if (messages.length <= 2 || conversation.name === null) {
           const conversationTitle = await summarizeConversationTitle({
             userMessage: userMessage ?? '',
             assistantMessage: assistantMessage.text,

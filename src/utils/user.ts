@@ -12,6 +12,7 @@ export function obscureUser(user: UserRow): ObscuredUser {
     email: user.email,
     emailVerified: user.emailVerified,
     authProvider: user.authProvider,
+    isSuperAdmin: user.isSuperAdmin,
     settings: user.settings,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
