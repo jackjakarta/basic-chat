@@ -1,4 +1,5 @@
 import ChatLogoIcon from '@/components/icons/logo';
+import { LOGIN_BACKGROUND_URL } from '@/utils/assets';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -17,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
       <div className="relative hidden bg-muted opacity-90 lg:block">
         <Image
-          src="/login-screen.jpg"
+          src={LOGIN_BACKGROUND_URL}
           alt="Image"
           width={1920}
           height={1080}
