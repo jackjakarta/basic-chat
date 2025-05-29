@@ -7,7 +7,7 @@ export const models: InsertAIModelRow[] = [
     description: 'GPT-4.1 model',
     provider: 'openai',
     type: 'text',
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     id: 'gpt-4.1-mini',
@@ -15,7 +15,7 @@ export const models: InsertAIModelRow[] = [
     description: 'GPT-4.1 Mini model',
     provider: 'openai',
     type: 'text',
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     id: 'gpt-4o',
@@ -23,7 +23,7 @@ export const models: InsertAIModelRow[] = [
     description: 'GPT-4o model',
     provider: 'openai',
     type: 'text',
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     id: 'gemini-2.5-pro-preview-05-06',
@@ -47,7 +47,7 @@ export const models: InsertAIModelRow[] = [
     description: 'Gemini 2.0 Flash model',
     provider: 'google',
     type: 'text',
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     id: 'claude-3-7-sonnet-20250219',

@@ -13,7 +13,7 @@ async function seedAIModels({ skip = true }: { skip: boolean }) {
     const insertedModel = await db
       .insert(aiModelTable)
       .values(model)
-      .onConflictDoUpdate({ target: aiModelTable.id, set: { id: model.id } });
+      .onConflictDoNothing({ target: aiModelTable.id });
 
     console.info({ insertedModel });
   }

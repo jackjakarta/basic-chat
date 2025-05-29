@@ -42,3 +42,22 @@ export function getErrorWithStack(error: unknown) {
 
   return { message: getErrorMessage(error) };
 }
+
+type Result<T> = [Error, null] | [null, T];
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function errorifyAsyncFn<F extends (...args: any[]) => Promise<any>>(
+  fn: F,
+): (...args: Parameters<F>) => Promise<Result<Awaited<ReturnType<F>>>> {
+  return async (...args: Parameters<F>) => {
+    try {
+      const value = await fn(...args);
+      return [null, value];
+    } catch (error) {
+      if (error instanceof Error) {
+        return [error, null];
+      }
+      return [new Error(getErrorMessage(error)), null];
+    }
+  };
+}

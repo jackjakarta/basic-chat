@@ -20,6 +20,7 @@
     "db:migrate": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/migrate.ts",
     "db:clear": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/clear.ts",
     "db:seed": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/seed/index.ts",
+    "customers": "ENVIRONMENT=production op run --env-file=\".env.op\" -- tsx ./src/db/create-customers.ts",
     "db:studio": "ENVIRONMENT=development op run --env-file=\".env.op\" -- drizzle-kit studio --config=src/db/drizzle.config.ts"
   },
   "dependencies": {
@@ -79,6 +80,7 @@
     "remark-gfm": "4.0.1",
     "remark-math": "6.0.0",
     "sharp": "0.34.2",
+    "stripe": "18.2.0",
     "tailwind-merge": "2.5.4",
     "tailwindcss-animate": "1.0.7",
     "zod": "3.24.2"

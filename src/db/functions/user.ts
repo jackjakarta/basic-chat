@@ -155,3 +155,19 @@ export async function dbUpdateUserName({
 
   return user;
 }
+
+export async function dbUpdateUserCustomerId({
+  userId,
+  customerId,
+}: {
+  userId: string;
+  customerId: string;
+}): Promise<UserRow | undefined> {
+  const [user] = await db
+    .update(userTable)
+    .set({ customerId })
+    .where(eq(userTable.id, userId))
+    .returning();
+
+  return user;
+}
