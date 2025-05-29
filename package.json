@@ -1,6 +1,6 @@
 {
   "name": "elchat",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "private": true,
   "scripts": {
     "dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next dev --hostname 127.0.0.1",

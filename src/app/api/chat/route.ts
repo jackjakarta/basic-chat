@@ -30,14 +30,12 @@ export async function POST(request: NextRequest) {
     modelId,
     agentId,
     webSearchActive,
-    codeExecutionActive,
   }: {
     chatId: string;
     messages: Message[];
     modelId: string;
     agentId?: string;
     webSearchActive: boolean;
-    codeExecutionActive: boolean;
   } = await request.json();
 
   try {
@@ -79,27 +77,23 @@ export async function POST(request: NextRequest) {
       agentInstructions: maybeAgent?.instructions,
       userCustomInstructions: user.settings?.customInstructions,
       webSearchActive,
-      codeExecutionActive,
     });
 
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
     const notionDataSource = getActiveNotionIntegration(activeDataSources);
 
     const tools = {
-      ...(webSearchActive && !codeExecutionActive && { searchTheWeb: webSearchTool() }),
-      ...(!webSearchActive && codeExecutionActive && { executeCode: executeCodeTool() }),
-      ...(!webSearchActive && !codeExecutionActive && { getBarcaMatches: getBarcaMatchesTool() }),
-      ...(!webSearchActive &&
-        !codeExecutionActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
+      ...(webSearchActive && { searchTheWeb: webSearchTool() }),
+      ...(!webSearchActive && { executeCode: executeCodeTool() }),
+      ...(!webSearchActive && { getBarcaMatches: getBarcaMatchesTool() }),
+      ...(!webSearchActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
       ...(maybeAgent !== undefined &&
         maybeAgent.vectorStoreId !== null && {
           searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
         }),
-      ...(!webSearchActive &&
-        !codeExecutionActive &&
-        notionDataSource !== undefined && {
-          searchNotion: await searchNotionTool({ notionDataSource }),
-        }),
+      ...(notionDataSource !== undefined && {
+        searchNotion: await searchNotionTool({ notionDataSource }),
+      }),
     };
 
     const result = streamText({

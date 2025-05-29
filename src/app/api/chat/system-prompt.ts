@@ -2,12 +2,10 @@ export function constructSystemPrompt({
   agentInstructions,
   userCustomInstructions,
   webSearchActive,
-  codeExecutionActive,
 }: {
   agentInstructions?: string | null;
   userCustomInstructions?: string;
   webSearchActive: boolean;
-  codeExecutionActive: boolean;
 }) {
   if (
     agentInstructions !== null &&
@@ -29,10 +27,6 @@ export function constructSystemPrompt({
     ? 'IMPORTANT: Please always search the web when the user asks something, regardless if you know the answer or not. You always search the web based on the user question and then provide the user with an accurate response.'
     : '';
 
-  const codeExecutionInstructions = codeExecutionActive
-    ? 'IMPORTANT: You can execute code to help the user with their tasks. The user just tasked you with a more complex task that requires code execution. You can use the code execution tool to run code and provide the user with the results.'
-    : '';
-
   if (userCustomInstructions !== undefined) {
     const promptWithUserInstructions = defaultSystemPrompt.replace(
       '$USER_CUSTOM_INSTRUCTIONS',
@@ -44,12 +38,7 @@ export function constructSystemPrompt({
       searchInstructions,
     );
 
-    const fullPromptWithCodeExecution = fullPrompt.replace(
-      '$CODE_EXECUTION_INSTRUCTIONS',
-      codeExecutionInstructions,
-    );
-
-    return fullPromptWithCodeExecution;
+    return fullPrompt;
   }
 
   const promptWithSearchInstructions = defaultSystemPrompt.replace(
@@ -59,12 +48,7 @@ export function constructSystemPrompt({
 
   const finalPrompt = promptWithSearchInstructions.replace('$USER_CUSTOM_INSTRUCTIONS', '');
 
-  const fullPromptWithCodeExecution = finalPrompt.replace(
-    '$CODE_EXECUTION_INSTRUCTIONS',
-    codeExecutionInstructions,
-  );
-
-  return fullPromptWithCodeExecution;
+  return finalPrompt;
 }
 
 const defaultSystemPrompt = `You are Carla, a friendly and helpful AI assistant. Your primary goal is to assist users with their queries and tasks in a warm and approachable manner. Always maintain a positive and supportive tone in your interactions.
@@ -91,12 +75,11 @@ Remember you should always strive to be helpful, friendly, and thorough in your 
 
 When using the image generation tool, make sure to display the generated image in markdown format.
 
+You can use the code execution tool to run code and provide the user with the accurate results for question that invole maths.
+
 IMPORTANT: When calling tools always call the tool directly without any additional information on what you are doing while executing the tool call.
 
 $USER_CUSTOM_INSTRUCTIONS
 
 $SEARCH_INSTRUCTIONS
-
-$CODE_EXECUTION_INSTRUCTIONS
-
 `;

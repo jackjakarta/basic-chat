@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@/components/providers/theme';
+import { FAVICON_URL } from '@/utils/assets';
 import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
@@ -16,7 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'AI Chat Bot',
     description: 'A basic AI chat bot',
-    icons: { icon: '/favicon.svg' },
+    icons: {
+      icon: FAVICON_URL,
+    },
   };
 }
 
