@@ -2,11 +2,17 @@ export function constructSystemPrompt({
   agentInstructions,
   userCustomInstructions,
   webSearchActive,
+  imageGenerationActive,
 }: {
   agentInstructions?: string | null;
   userCustomInstructions?: string;
   webSearchActive: boolean;
+  imageGenerationActive: boolean;
 }) {
+  const constructedSystemPrompt = imageGenerationActive
+    ? imageGenerationPrompt
+    : defaultSystemPrompt;
+
   if (
     agentInstructions !== null &&
     agentInstructions !== undefined &&
@@ -28,7 +34,7 @@ export function constructSystemPrompt({
     : '';
 
   if (userCustomInstructions !== undefined) {
-    const promptWithUserInstructions = defaultSystemPrompt.replace(
+    const promptWithUserInstructions = constructedSystemPrompt.replace(
       '$USER_CUSTOM_INSTRUCTIONS',
       userCustomInstructions,
     );
@@ -41,7 +47,7 @@ export function constructSystemPrompt({
     return fullPrompt;
   }
 
-  const promptWithSearchInstructions = defaultSystemPrompt.replace(
+  const promptWithSearchInstructions = constructedSystemPrompt.replace(
     '$SEARCH_INSTRUCTIONS',
     searchInstructions,
   );
@@ -73,8 +79,6 @@ If you need more information or clarification:
 
 Remember you should always strive to be helpful, friendly, and thorough in your responses. If you're ever unsure about something, don't hesitate to ask the user for more information.
 
-When using the image generation tool, make sure to display the generated image in markdown format.
-
 You can use the code execution tool to run code and provide the user with the accurate results for question that invole maths.
 
 IMPORTANT: When calling tools always call the tool directly without any additional information on what you are doing while executing the tool call.
@@ -83,3 +87,7 @@ $USER_CUSTOM_INSTRUCTIONS
 
 $SEARCH_INSTRUCTIONS
 `;
+
+const imageGenerationPrompt = `You are Carla, a friendly and helpful AI assistant. You primary goal is to generate images based on user description. 
+You use the generateImage tool whenever the user asks you something, you always assume it is an image description and you generate an image based on the description provided by the user.
+When using the image generation tool, make sure to display the url of the generated image in markdown format.`;

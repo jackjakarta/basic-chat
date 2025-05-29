@@ -15,6 +15,7 @@ import {
   unique,
   uuid,
 } from 'drizzle-orm/pg-core';
+import Stripe from 'stripe';
 import { z } from 'zod';
 
 export const appSchema = pgSchema('app');
@@ -38,6 +39,7 @@ export const userTable = appSchema.table('user_entity', {
   authProvider: authProviderPgEnum('auth_provider').notNull(),
   emailVerified: boolean('email_verified').notNull().default(false),
   isSuperAdmin: boolean('is_super_admin').notNull().default(false),
+  customerId: text('customer_id'),
   settings: json('settings').$type<UserSettings>(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
@@ -48,6 +50,20 @@ export const userTable = appSchema.table('user_entity', {
 
 export type UserRow = typeof userTable.$inferSelect;
 export type InsertUserRow = typeof userTable.$inferInsert;
+
+export const customerSubscriptionsStripeTable = appSchema.table('customer_subscriptions_stripe', {
+  customerId: text('customer_id').primaryKey(),
+  subscriptions: json('subscriptions').$type<Stripe.Subscription[]>().notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type CustomerSubscriptionsStripeInsertModel =
+  typeof customerSubscriptionsStripeTable.$inferInsert;
+export type CustomerSubscriptionsStripeModel = typeof customerSubscriptionsStripeTable.$inferSelect;
 
 export const tokenActionSchema = z.enum(['verify-email', 'reset-password']);
 export const tokenActionPgEnum = appSchema.enum('token_action', tokenActionSchema.options);
@@ -243,3 +259,16 @@ export const aiModelTable = appSchema.table('ai_model', {
 
 export type AIModelRow = typeof aiModelTable.$inferSelect;
 export type InsertAIModelRow = typeof aiModelTable.$inferInsert;
+
+export const conversationUsageTrackingTable = appSchema.table('conversation_usage_tracking', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  modelId: text('model_id').notNull(),
+  conversationId: uuid('conversation_id').notNull(),
+  userId: uuid('user_id').notNull(),
+  completionTokens: integer('completion_tokens').notNull(),
+  promptTokens: integer('prompt_tokens').notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+});
+
+export type ConversationUsageTrackingRow = typeof conversationUsageTrackingTable.$inferSelect;
+export type InsertConversationUsageTrackingRow = typeof conversationUsageTrackingTable.$inferInsert;

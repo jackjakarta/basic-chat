@@ -7,7 +7,7 @@
  * @returns          Clean markdown string, e.g. ```python … ```
  */
 export function codeResultToMarkdown(raw: string, language: string = 'python'): string {
-  if (!raw) return '';
+  if (raw.trim().length === 0) return '';
 
   const deChunked = raw
     .split('\n')

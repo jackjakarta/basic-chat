@@ -1,6 +1,7 @@
-import { dbCreateNewUser } from '@/db/functions/user';
+import { dbCreateNewUser, dbUpdateUserCustomerId } from '@/db/functions/user';
 import { authProviderSchema } from '@/db/schema';
 import { sendUserActionEmail } from '@/email/send';
+import { createCustomerByEmailStripe } from '@/stripe/customer';
 import { isDevMode } from '@/utils/dev-mode';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
 import { NextRequest, NextResponse } from 'next/server';
@@ -30,6 +31,16 @@ export async function POST(request: NextRequest) {
     if (maybeUser === undefined) {
       return NextResponse.json({ success: false, error: 'Failed to create user' }, { status: 500 });
     }
+
+    const stripeCustomer = await createCustomerByEmailStripe({
+      email: maybeUser.email,
+      userId: maybeUser.id,
+    });
+
+    await dbUpdateUserCustomerId({
+      userId: maybeUser.id,
+      customerId: stripeCustomer.id,
+    });
 
     if (!isDevMode) {
       await sendUserActionEmail({

@@ -6,10 +6,11 @@ import {
   dbUpdateConversationTitle,
 } from '@/db/functions/chat';
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
+import { dbInsertConversationUsage } from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
 import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
-import { streamText, type Message } from 'ai';
+import { smoothStream, streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getModel } from './models';
@@ -30,12 +31,14 @@ export async function POST(request: NextRequest) {
     modelId,
     agentId,
     webSearchActive,
+    imageGenerationActive,
   }: {
     chatId: string;
     messages: Message[];
     modelId: string;
     agentId?: string;
     webSearchActive: boolean;
+    imageGenerationActive: boolean;
   } = await request.json();
 
   try {
@@ -77,23 +80,27 @@ export async function POST(request: NextRequest) {
       agentInstructions: maybeAgent?.instructions,
       userCustomInstructions: user.settings?.customInstructions,
       webSearchActive,
+      imageGenerationActive,
     });
 
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
     const notionDataSource = getActiveNotionIntegration(activeDataSources);
 
     const tools = {
-      ...(webSearchActive && { searchTheWeb: webSearchTool() }),
-      ...(!webSearchActive && { executeCode: executeCodeTool() }),
-      ...(!webSearchActive && { getBarcaMatches: getBarcaMatchesTool() }),
-      ...(!webSearchActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
-      ...(maybeAgent !== undefined &&
+      ...(webSearchActive && !imageGenerationActive && { searchTheWeb: webSearchTool() }),
+      ...(!imageGenerationActive && { executeCode: executeCodeTool() }),
+      ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
+      ...(imageGenerationActive &&
+        !webSearchActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
+      ...(!imageGenerationActive &&
+        maybeAgent !== undefined &&
         maybeAgent.vectorStoreId !== null && {
           searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
         }),
-      ...(notionDataSource !== undefined && {
-        searchNotion: await searchNotionTool({ notionDataSource }),
-      }),
+      ...(!imageGenerationActive &&
+        notionDataSource !== undefined && {
+          searchNotion: await searchNotionTool({ notionDataSource }),
+        }),
     };
 
     const result = streamText({
@@ -101,16 +108,27 @@ export async function POST(request: NextRequest) {
       system: systemPrompt,
       messages,
       maxSteps: 5,
+      experimental_transform: smoothStream({ delayInMs: 20 }),
       tools,
       async onFinish(assistantMessage) {
-        await dbInsertChatContent({
-          content: assistantMessage.text,
-          role: 'assistant',
-          userId: user.id,
-          metadata: { modelId: model.id },
-          orderNumber: messages.length + 1,
-          conversationId: conversation.id,
-        });
+        await Promise.all([
+          dbInsertChatContent({
+            content: assistantMessage.text,
+            role: 'assistant',
+            userId: user.id,
+            metadata: { modelId: model.id },
+            orderNumber: messages.length + 1,
+            conversationId: conversation.id,
+          }),
+
+          dbInsertConversationUsage({
+            conversationId: conversation.id,
+            userId: user.id,
+            modelId: model.id,
+            promptTokens: assistantMessage.usage.promptTokens,
+            completionTokens: assistantMessage.usage.completionTokens,
+          }),
+        ]);
 
         if (messages.length <= 2 || conversation.name === null) {
           const conversationTitle = await summarizeConversationTitle({

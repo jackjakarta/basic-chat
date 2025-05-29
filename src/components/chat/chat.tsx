@@ -10,7 +10,7 @@ import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Attachment } from 'ai';
-import { Globe2, X } from 'lucide-react';
+import { Globe2, Image as ImageIcon, X } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -55,6 +55,8 @@ export default function Chat({
   const queryClient = useQueryClient();
 
   const [isWebSearchActive, setIsWebSearchActive] = React.useState(false);
+  const [isImageGenerationActive, setIsImageGenerationActive] = React.useState(false);
+
   const [isUploading, setIsUploading] = React.useState(false);
   const [files, setFiles] = React.useState<Map<string, LocalFileState>>(new Map());
 
@@ -70,6 +72,7 @@ export default function Chat({
         modelId,
         agentId,
         webSearchActive: isWebSearchActive,
+        imageGenerationActive: isImageGenerationActive,
       },
       generateId: generateUUID,
       sendExtraMessageFields: true,
@@ -79,6 +82,10 @@ export default function Chat({
         }
       },
       onFinish: () => {
+        if (isImageGenerationActive) {
+          setIsImageGenerationActive(false);
+        }
+
         if (messages.length <= 1) {
           refetchConversations();
         }
@@ -144,6 +151,18 @@ export default function Chat({
 
   function toggleWebSearch() {
     setIsWebSearchActive((prev) => !prev);
+
+    if (!isWebSearchActive) {
+      setIsImageGenerationActive(false);
+    }
+  }
+
+  function toggleImageGeneration() {
+    setIsImageGenerationActive((prev) => !prev);
+
+    if (!isImageGenerationActive) {
+      setIsWebSearchActive(false);
+    }
   }
 
   return (
@@ -368,6 +387,22 @@ export default function Chat({
                       >
                         <Globe2 className="h-4 w-4" />
                         Web Search
+                      </ButtonTooltip>
+                      <ButtonTooltip
+                        tooltip={
+                          isImageGenerationActive
+                            ? 'Deactivate image generation'
+                            : 'Activate image generation'
+                        }
+                        tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
+                        size="sm"
+                        type="button"
+                        className="py-1 transition-colors duration-200 ease-in-out "
+                        variant={isImageGenerationActive ? 'active' : 'neutral'}
+                        onClick={toggleImageGeneration}
+                      >
+                        <ImageIcon className="h-4 w-4" />
+                        Image Generation
                       </ButtonTooltip>
                     </div>
                     {status === 'submitted' || status === 'streaming' ? (

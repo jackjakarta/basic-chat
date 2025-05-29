@@ -30,10 +30,13 @@ export const env = createEnv({
     notionClientId: z.string().min(1),
     notionClientSecret: z.string().min(1),
     notionRedirectUri: z.string().url(),
+    stripeSecretKey: z.string().min(1),
+    stripeWebhookSecret: z.string().min(1),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
     NEXT_PUBLIC_passwordValidator: passwordValidatorSchema,
+    NEXT_PUBLIC_stripePublishableKey: z.string().min(1),
   },
   runtimeEnv: {
     databaseUrl: process.env.DATABASE_URL,
@@ -62,6 +65,9 @@ export const env = createEnv({
     notionClientId: process.env.NOTION_CLIENT_ID,
     notionClientSecret: process.env.NOTION_CLIENT_SECRET,
     notionRedirectUri: process.env.NOTION_REDIRECT_URI,
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    NEXT_PUBLIC_stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },
 });

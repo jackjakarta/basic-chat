@@ -1,6 +1,12 @@
-import { dbCreateNewUser, dbGetAuthenticatedUser, dbGetUserByEmail } from '@/db/functions/user';
+import {
+  dbCreateNewUser,
+  dbGetAuthenticatedUser,
+  dbGetUserByEmail,
+  dbUpdateUserCustomerId,
+} from '@/db/functions/user';
 import { type UserRow } from '@/db/schema';
 import { env } from '@/env';
+import { createCustomerByEmailStripe } from '@/stripe/customer';
 import { type AuthOptions } from 'next-auth';
 import credentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
@@ -64,6 +70,16 @@ export const authOptions = {
             password: '',
             emailVerified: true,
             authProvider: account?.provider === 'github' ? 'github' : 'google',
+          });
+
+          const stripeCustomer = await createCustomerByEmailStripe({
+            email: dbUser.email,
+            userId: dbUser.id,
+          });
+
+          await dbUpdateUserCustomerId({
+            userId: dbUser.id,
+            customerId: stripeCustomer.id,
           });
         }
         return { user: dbUser };
