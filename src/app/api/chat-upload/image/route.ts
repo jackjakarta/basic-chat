@@ -7,8 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { preprocessImage } from './utils';
 
-const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 10; // 10MB
-const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif'];
+const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 10;
+const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 export async function POST(req: NextRequest) {
   const user = await getUser();
@@ -30,10 +30,8 @@ export async function POST(req: NextRequest) {
   const fileId = `${user.email}/uploaded/image_${nanoid()}`;
   const fileExtension = getFileExtension(file.name);
 
-  if (
-    !SUPPORTED_IMAGE_EXTENSIONS.some((supportedExtension) => supportedExtension == fileExtension)
-  ) {
-    return NextResponse.json({ error: `${fileExtension} is not supported` }, { status: 400 });
+  if (!SUPPORTED_IMAGE_EXTENSIONS.includes(fileExtension.toLowerCase())) {
+    return NextResponse.json({ error: `${fileExtension} is not supported` }, { status: 418 });
   }
 
   try {
