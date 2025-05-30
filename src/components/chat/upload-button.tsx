@@ -5,6 +5,7 @@ import { Paperclip } from 'lucide-react';
 import React from 'react';
 
 import { ButtonTooltip } from '../common/tooltip-button';
+import { useToast } from '../hooks/use-toast';
 
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
@@ -13,6 +14,7 @@ type UploadButtonProps = {
 
 export default function UploadButton({ setFiles, setIsUploading }: UploadButtonProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { toastError } = useToast();
 
   function openFileDialog() {
     fileInputRef.current?.click();
@@ -20,6 +22,7 @@ export default function UploadButton({ setFiles, setIsUploading }: UploadButtonP
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
+
     if (!file) return;
     await handleFileUpload(file);
     e.target.value = '';
@@ -37,9 +40,15 @@ export default function UploadButton({ setFiles, setIsUploading }: UploadButtonP
         body: formData,
       });
 
+      if (response.status === 418) {
+        toastError('Invalid file type. Only images are supported.');
+        return;
+      }
+
       if (!response.ok) {
-        const err = await response.json();
-        console.error('Upload failed:', err);
+        const error = await response.json();
+        console.error({ error });
+        toastError('An error occurred while uploading the file');
         return;
       }
 
@@ -52,10 +61,12 @@ export default function UploadButton({ setFiles, setIsUploading }: UploadButtonP
           file: { type: 'image', imageUrl: signedURL },
           id: fileId,
         });
+
         return next;
       });
     } catch (error) {
       console.error('Error uploading photo:', error);
+      toastError('An error occurred while uploading the file');
     } finally {
       setIsUploading(false);
     }

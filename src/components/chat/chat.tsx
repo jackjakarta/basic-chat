@@ -50,13 +50,13 @@ export default function Chat({
   agentId,
   agentName,
 }: ChatProps) {
+  const queryClient = useQueryClient();
+
   const { model: modelId } = useLlmModel();
   const { toastError } = useToast();
-  const queryClient = useQueryClient();
 
   const [isWebSearchActive, setIsWebSearchActive] = React.useState(false);
   const [isImageGenerationActive, setIsImageGenerationActive] = React.useState(false);
-
   const [isUploading, setIsUploading] = React.useState(false);
   const [files, setFiles] = React.useState<Map<string, LocalFileState>>(new Map());
 
@@ -82,10 +82,6 @@ export default function Chat({
         }
       },
       onFinish: () => {
-        if (isImageGenerationActive) {
-          setIsImageGenerationActive(false);
-        }
-
         if (messages.length <= 1) {
           refetchConversations();
         }
@@ -131,7 +127,7 @@ export default function Chat({
     setFiles(new Map());
 
     try {
-      handleSubmit(e, { experimental_attachments: [...imageAttachments] });
+      handleSubmit(e, { experimental_attachments: imageAttachments });
       replaceUrl(chatPath);
     } catch (error) {
       console.error({ error });
