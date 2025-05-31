@@ -14,12 +14,6 @@ corepack enable && corepack prepare # set package manager
 pnpm i # install dependencies
 ```
 
-Run this script to fetch the env vars from aws secrets manager (use 'prod' instead for prod env vars):
-
-```sh
-pnpm fetchenv:local
-```
-
 You can start a local postgres instance using docker compose:
 
 ```sh
