@@ -42,7 +42,10 @@ export async function getUser(): Promise<UserAndContext> {
 
   return {
     ...user,
-    subscription: getSubscriptionStateBySubscriptions({ subscriptions }),
+    subscription: getSubscriptionStateBySubscriptions({
+      subscriptions,
+      hasFreeTrial: user.customFreeTrial,
+    }),
   };
 }
 

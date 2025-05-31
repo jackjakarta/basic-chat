@@ -7,9 +7,14 @@ export type SubscriptionState = 'premium' | 'free' | 'trialing';
 
 export function getSubscriptionStateBySubscriptions({
   subscriptions,
+  hasFreeTrial,
 }: {
   subscriptions: Stripe.Subscription[];
+  hasFreeTrial: boolean;
 }): SubscriptionState {
+  if (hasFreeTrial) {
+    return 'premium';
+  }
   const activeSubscription = subscriptions.find((s) => s.status === 'active');
 
   if (activeSubscription !== undefined) {

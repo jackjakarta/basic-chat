@@ -1,0 +1,1 @@
+ALTER TABLE "app"."user_entity" ADD COLUMN "custom_free_trial" boolean DEFAULT false NOT NULL;

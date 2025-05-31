@@ -14,6 +14,7 @@ export function obscureUser(user: UserRow): ObscuredUser {
     authProvider: user.authProvider,
     customerId: user.customerId,
     isSuperAdmin: user.isSuperAdmin,
+    customFreeTrial: user.customFreeTrial,
     settings: user.settings,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,

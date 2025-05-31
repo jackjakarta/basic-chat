@@ -1,10 +1,11 @@
 'use server';
 
-import { dbCreateNewUser } from '@/db/functions/user';
+import { dbCreateNewUser, dbUpdateUserCustomerId } from '@/db/functions/user';
 import { authProviderSchema } from '@/db/schema';
 import { sendTestEmail } from '@/email/local';
 import { sendUserActionEmail } from '@/email/send';
 import { emailTemplateHtml } from '@/email/templates/verify-email';
+import { createCustomerByEmailStripe } from '@/stripe/customer';
 import { isDevMode } from '@/utils/dev-mode';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
 import { z } from 'zod';
@@ -36,20 +37,30 @@ export async function registerNewUserAction(body: RegisterUserRequestBody) {
     authProvider,
   });
 
+  const stripeCustomer = await createCustomerByEmailStripe({
+    email: newUser.email,
+    userId: newUser.id,
+  });
+
+  await dbUpdateUserCustomerId({
+    userId: newUser.id,
+    customerId: stripeCustomer.id,
+  });
+
   if (authProvider === 'credentials' && !isDevMode) {
     await sendUserActionEmail({
       to: newUser.email,
       action: 'verify-email',
     });
-
-    return newUser;
   }
 
-  await sendTestEmail({
-    email: newUser.email,
-    subject: 'Verify your email',
-    html: emailTemplateHtml.replace('$REGISTER_CODE', 'K4AYJD'),
-  });
+  if (authProvider === 'credentials' && isDevMode) {
+    await sendTestEmail({
+      email: newUser.email,
+      subject: 'Verify your email',
+      html: emailTemplateHtml.replace('$REGISTER_CODE', 'K4AYJD'),
+    });
+  }
 
   return newUser;
 }
