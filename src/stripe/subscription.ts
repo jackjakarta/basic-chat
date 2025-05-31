@@ -1,18 +1,7 @@
+import { dbGetSubscriptionPlanById } from '@/db/functions/subscription-plan';
+import { SubscriptionPlanRow } from '@/db/schema';
 import { stripe } from '@/stripe';
 import Stripe from 'stripe';
-
-export type SubscriptionLimits = {
-  tokenLimit: number;
-  messagesLimit?: number;
-};
-
-export type SubscriptionPlan = {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  limits: SubscriptionLimits;
-};
 
 export type SubscriptionState = 'premium' | 'free' | 'trialing';
 
@@ -55,38 +44,16 @@ export async function getStripeSubscriptionsByCustomerId({
   }
 }
 
-export function getSubscriptionPlanBySubscriptionState(
+export async function getSubscriptionPlanBySubscriptionState(
   subscriptionState: SubscriptionState,
-): SubscriptionPlan {
+): Promise<SubscriptionPlanRow | undefined> {
   switch (subscriptionState) {
     case 'premium':
-      return PREMIUM_PLAN;
     case 'trialing':
-      return PREMIUM_PLAN;
+      return await dbGetSubscriptionPlanById({ planId: 'premium' });
+
     case 'free':
     default:
-      return FREE_PLAN;
+      return await dbGetSubscriptionPlanById({ planId: 'free' });
   }
 }
-
-export const FREE_PLAN: SubscriptionPlan = {
-  id: 'free',
-  name: 'Free Plan',
-  price: 0,
-  description: 'Enjoy our free plan with limited features.',
-  limits: {
-    tokenLimit: 100000,
-    messagesLimit: 5,
-  },
-};
-
-export const PREMIUM_PLAN: SubscriptionPlan = {
-  id: 'premium',
-  name: 'Premium Plan',
-  price: 999, // in cents
-  description: 'Unlock premium features with our subscription plan.',
-  limits: {
-    tokenLimit: 800000,
-    messagesLimit: undefined,
-  },
-};

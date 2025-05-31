@@ -1,4 +1,4 @@
-import { SubscriptionLimits } from '@/stripe/subscription';
+import { type SubscriptionLimits } from '@/db/schema';
 import { UserAndContext } from '@/utils/auth';
 
 export type ExtentedUser = UserAndContext & {

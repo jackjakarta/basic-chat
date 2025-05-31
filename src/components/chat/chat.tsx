@@ -1,7 +1,6 @@
 'use client';
 
-import { type AIModelRow } from '@/db/schema';
-import { type SubscriptionLimits, type SubscriptionState } from '@/stripe/subscription';
+import { type AIModelRow, type SubscriptionLimits } from '@/db/schema';
 import { ImageFile, SuccessLocalFileState, type LocalFileState } from '@/types/files';
 import { getTimeBasedGreeting } from '@/utils/greeting';
 import { replaceUrl } from '@/utils/navigation';
@@ -24,7 +23,6 @@ import LoadingDisplay from './loading-display';
 type ChatProps = {
   id: string;
   initialMessages: Message[];
-  userSubscription: SubscriptionState;
   userLimits: SubscriptionLimits;
   userFirstName?: string;
   models: AIModelRow[];
@@ -120,7 +118,8 @@ export default function Chat({
     }
   }
 
-  const chatDisabled = tokensUsed >= userLimits.tokenLimit && userLimits.tokenLimit > 0;
+  const tokenLimit = userLimits.tokenLimit ?? 0;
+  const hasReachedLimit = tokenLimit > 0 && tokensUsed >= tokenLimit;
 
   return (
     <>
@@ -162,7 +161,7 @@ export default function Chat({
             setIsWebSearchActive={setIsWebSearchActive}
             isImageGenerationActive={isImageGenerationActive}
             setIsImageGenerationActive={setIsImageGenerationActive}
-            chatDisabled={chatDisabled}
+            chatDisabled={hasReachedLimit}
             stop={stop}
           />
         </div>

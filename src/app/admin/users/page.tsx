@@ -27,7 +27,14 @@ export default async function Page() {
 
       const avatarUrl = getUserAvatarUrl(user);
       const subscription = getSubscriptionStateBySubscriptions({ subscriptions });
-      const { limits } = getSubscriptionPlanBySubscriptionState(subscription);
+      const subscriptionPlan = await getSubscriptionPlanBySubscriptionState(subscription);
+
+      if (subscriptionPlan === undefined) {
+        console.error('No subscription plan found for user:', user.id);
+        throw new Error('No subscription plan found');
+      }
+
+      const { limits } = subscriptionPlan;
 
       const fullUser: ExtentedUser = { ...user, tokensUsed, avatarUrl, subscription, limits };
 
