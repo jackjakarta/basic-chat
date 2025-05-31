@@ -6,6 +6,7 @@ import {
   getSubscriptionPlanBySubscriptionState,
   getSubscriptionStateBySubscriptions,
 } from '@/stripe/subscription';
+import { getUser } from '@/utils/auth';
 import { getUserAvatarUrl } from '@/utils/user';
 
 import { type ExtentedUser } from './types';
@@ -14,7 +15,7 @@ import UsersTable from './users-table';
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const users = await dbGetAllUsers();
+  const [user, users] = await Promise.all([getUser(), dbGetAllUsers()]);
 
   const usersWithTokensAvatar: ExtentedUser[] = await Promise.all(
     users.map(async (user) => {
@@ -26,7 +27,10 @@ export default async function Page() {
       ]);
 
       const avatarUrl = getUserAvatarUrl(user);
-      const subscription = getSubscriptionStateBySubscriptions({ subscriptions });
+      const subscription = getSubscriptionStateBySubscriptions({
+        subscriptions,
+        hasFreeTrial: user.customFreeTrial,
+      });
       const subscriptionPlan = await getSubscriptionPlanBySubscriptionState(subscription);
 
       if (subscriptionPlan === undefined) {
@@ -46,7 +50,7 @@ export default async function Page() {
     <PageContainer className="mx-auto w-full">
       <div className="flex flex-col gap-6">
         <h1 className="text-2xl font-semibold">User Management</h1>
-        <UsersTable users={usersWithTokensAvatar} />
+        <UsersTable users={usersWithTokensAvatar} currentUserId={user.id} />
       </div>
     </PageContainer>
   );

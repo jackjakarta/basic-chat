@@ -182,3 +182,19 @@ export async function dbGetAllUsers(): Promise<UserRow[]> {
 
   return users;
 }
+
+export async function dbSetUserCustomFreeTrial({
+  userId,
+  customFreeTrial,
+}: {
+  userId: string;
+  customFreeTrial: boolean;
+}): Promise<UserRow | undefined> {
+  const [user] = await db
+    .update(userTable)
+    .set({ customFreeTrial })
+    .where(eq(userTable.id, userId))
+    .returning();
+
+  return user;
+}

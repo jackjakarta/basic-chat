@@ -40,6 +40,7 @@ export const userTable = appSchema.table('user_entity', {
   emailVerified: boolean('email_verified').notNull().default(false),
   isSuperAdmin: boolean('is_super_admin').notNull().default(false),
   customerId: text('customer_id'),
+  customFreeTrial: boolean('custom_free_trial').default(false).notNull(),
   settings: json('settings').$type<UserSettings>(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
