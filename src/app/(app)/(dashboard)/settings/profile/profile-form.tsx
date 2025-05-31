@@ -70,7 +70,9 @@ export default function ProfileForm({
   async function onSubmit(data: FormData) {
     try {
       await Promise.all([
-        updateUserSettingsAction({ customInstructions: data.customInstructions ?? '' }),
+        updateUserSettingsAction({
+          settings: { customInstructions: data.customInstructions },
+        }),
         updateUserNameAction({
           firstName: data.firstName,
           lastName: data.lastName,

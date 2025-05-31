@@ -3,6 +3,7 @@ import { dbGetAgentById } from '@/db/functions/agent';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
 import { dbGetConversationById, dbGetCoversationMessages } from '@/db/functions/chat';
 import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
+import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { filterChatMessages } from '@/utils/chat';
 import { notFound } from 'next/navigation';
@@ -53,6 +54,7 @@ export default async function Page(context: unknown) {
   });
 
   const filteredMessages = filterChatMessages({ chatMessages });
+  const { limits } = getSubscriptionPlanBySubscriptionState(user.subscription);
 
   return (
     <Chat
@@ -61,7 +63,9 @@ export default async function Page(context: unknown) {
       initialMessages={filteredMessages}
       agentId={agentId}
       models={models}
+      userSubscription={user.subscription}
       tokensUsed={tokensUsed}
+      userLimits={limits}
       agentName={agent.name}
     />
   );

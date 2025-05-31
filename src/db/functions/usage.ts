@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { db } from '..';
@@ -16,7 +16,13 @@ export async function dbGetAmountOfTokensUsedByUserId({ userId }: { userId: stri
       totalTokens: sql`SUM(${conversationUsageTrackingTable.promptTokens} + ${conversationUsageTrackingTable.completionTokens})`,
     })
     .from(conversationUsageTrackingTable)
-    .where(eq(conversationUsageTrackingTable.userId, userId));
+    .where(
+      and(
+        eq(conversationUsageTrackingTable.userId, userId),
+        sql`EXTRACT(MONTH FROM ${conversationUsageTrackingTable.createdAt}) = EXTRACT(MONTH FROM CURRENT_DATE)`,
+        sql`EXTRACT(YEAR FROM ${conversationUsageTrackingTable.createdAt}) = EXTRACT(YEAR FROM CURRENT_DATE)`,
+      ),
+    );
 
   const parsedNumber = z.number().safeParse(Number(amount?.totalTokens));
 

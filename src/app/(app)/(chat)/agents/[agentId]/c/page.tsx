@@ -2,6 +2,7 @@ import Chat from '@/components/chat/chat';
 import { dbGetAgentById } from '@/db/functions/agent';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
 import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
+import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { generateUUID } from '@/utils/uuid';
 import { notFound } from 'next/navigation';
@@ -32,6 +33,8 @@ export default async function Page(context: unknown) {
     dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
   ]);
 
+  const { limits } = getSubscriptionPlanBySubscriptionState(user.subscription);
+
   if (agent === undefined) {
     return notFound();
   }
@@ -41,10 +44,12 @@ export default async function Page(context: unknown) {
       key={id}
       id={id}
       initialMessages={[]}
+      userSubscription={user.subscription}
       agentId={agent.id}
       agentName={agent.name}
       models={models}
       tokensUsed={tokensUsed}
+      userLimits={limits}
       userFirstName={user.firstName}
     />
   );

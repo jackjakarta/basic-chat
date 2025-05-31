@@ -1,6 +1,7 @@
 'use client';
 
 import { type AIModelRow } from '@/db/schema';
+import { type SubscriptionLimits, type SubscriptionState } from '@/stripe/subscription';
 import { ImageFile, SuccessLocalFileState, type LocalFileState } from '@/types/files';
 import { getTimeBasedGreeting } from '@/utils/greeting';
 import { replaceUrl } from '@/utils/navigation';
@@ -23,6 +24,8 @@ import LoadingDisplay from './loading-display';
 type ChatProps = {
   id: string;
   initialMessages: Message[];
+  userSubscription: SubscriptionState;
+  userLimits: SubscriptionLimits;
   userFirstName?: string;
   models: AIModelRow[];
   tokensUsed: number;
@@ -37,6 +40,7 @@ export default function Chat({
   models,
   agentId,
   tokensUsed,
+  userLimits,
   agentName,
 }: ChatProps) {
   const queryClient = useQueryClient();
@@ -116,7 +120,7 @@ export default function Chat({
     }
   }
 
-  const chatDisabled = tokensUsed >= 18000;
+  const chatDisabled = tokensUsed >= userLimits.tokenLimit && userLimits.tokenLimit > 0;
 
   return (
     <>

@@ -2,6 +2,7 @@
 
 import { dbDeleteAllConversationsByUserId } from '@/db/functions/chat';
 import { dbUpdateUserName, dbUpdateUserPassword, dbUpdateUserSettings } from '@/db/functions/user';
+import { type UserSettings } from '@/db/schema';
 import { getUser } from '@/utils/auth';
 import { passwordSchema } from '@/utils/schemas';
 
@@ -19,13 +20,12 @@ export async function updateUserPasswordAction({ newPassword }: { newPassword: s
   return updatedUser;
 }
 
-export async function updateUserSettingsAction({
-  customInstructions,
-}: {
-  customInstructions: string;
-}) {
+export async function updateUserSettingsAction({ settings }: { settings: UserSettings }) {
   const user = await getUser();
-  const updatedUser = await dbUpdateUserSettings({ userId: user.id, customInstructions });
+  const updatedUser = await dbUpdateUserSettings({
+    userId: user.id,
+    settings,
+  });
 
   return updatedUser;
 }

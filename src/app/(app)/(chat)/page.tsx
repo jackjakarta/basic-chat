@@ -1,16 +1,24 @@
 import Chat from '@/components/chat/chat';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
 import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
+import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { generateUUID } from '@/utils/uuid';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
+  const user = await getUser();
   const id = generateUUID();
 
-  const [user, models] = await Promise.all([getUser(), dbGetEnabledModels()]);
-  const tokensUsed = await dbGetAmountOfTokensUsedByUserId({ userId: user.id });
+  const [models, tokensUsed] = await Promise.all([
+    dbGetEnabledModels(),
+    dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
+  ]);
+
+  const { limits } = getSubscriptionPlanBySubscriptionState(user.subscription);
+
+  console.debug({ subscription: user.subscription, limits });
 
   return (
     <Chat
@@ -20,6 +28,8 @@ export default async function Page() {
       userFirstName={user.firstName}
       models={models}
       tokensUsed={tokensUsed}
+      userLimits={limits}
+      userSubscription={user.subscription}
     />
   );
 }

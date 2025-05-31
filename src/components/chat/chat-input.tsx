@@ -43,6 +43,7 @@ export default function ChatInput({
   isImageGenerationActive,
   setIsImageGenerationActive,
   status,
+  chatDisabled,
   stop,
 }: ChatInputProps) {
   const [isUploading, setIsUploading] = React.useState(false);
@@ -122,7 +123,7 @@ export default function ChatInput({
             </div>
             <div className="flex items-center">
               <AutoResizeTextarea
-                // disabled={chatDisabled}
+                disabled={chatDisabled}
                 autoFocus
                 placeholder={
                   isImageGenerationActive
@@ -140,7 +141,11 @@ export default function ChatInput({
             </div>
             <div className="flex items-center justify-between py-1 pl-3 -ml-1 mb-1">
               <div className="flex items-center gap-2">
-                <UploadButton setFiles={setFiles} setIsUploading={setIsUploading} />
+                <UploadButton
+                  setFiles={setFiles}
+                  setIsUploading={setIsUploading}
+                  disabled={chatDisabled}
+                />
                 <ButtonTooltip
                   tooltip={isWebSearchActive ? 'Deactivate web search' : 'Activate web search'}
                   tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
@@ -149,6 +154,7 @@ export default function ChatInput({
                   className="py-1 transition-colors duration-200 ease-in-out "
                   variant={isWebSearchActive ? 'active' : 'neutral'}
                   onClick={toggleWebSearch}
+                  disabled={chatDisabled}
                 >
                   <Globe2 className="h-4 w-4" />
                   Web Search
@@ -162,9 +168,10 @@ export default function ChatInput({
                   tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
                   size="sm"
                   type="button"
-                  className="py-1 transition-colors duration-200 ease-in-out "
+                  className="py-1 transition-colors duration-200 ease-in-out disabled:cursor-not-allowed"
                   variant={isImageGenerationActive ? 'active' : 'neutral'}
                   onClick={toggleImageGeneration}
+                  disabled={chatDisabled}
                 >
                   <ImageIcon className="h-4 w-4" />
                   Image Generation
