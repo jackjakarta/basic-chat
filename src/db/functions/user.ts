@@ -8,10 +8,12 @@ import {
   agentTable,
   conversationMessageTable,
   conversationTable,
+  conversationUsageTrackingTable,
   userTable,
   vectorStoreTable,
   type InsertUserRow,
   type UserRow,
+  type UserSettings,
 } from '../schema';
 
 export async function dbCreateNewUser({
@@ -118,20 +120,23 @@ export async function dbDeleteUser({ userId }: { userId: string }) {
     await tx.delete(conversationTable).where(eq(conversationTable.userId, userId));
     await tx.delete(agentTable).where(eq(agentTable.userId, userId));
     await tx.delete(vectorStoreTable).where(eq(vectorStoreTable.userId, userId));
+    await tx
+      .delete(conversationUsageTrackingTable)
+      .where(eq(conversationUsageTrackingTable.userId, userId));
     await tx.delete(userTable).where(eq(userTable.id, userId));
   });
 }
 
 export async function dbUpdateUserSettings({
   userId,
-  customInstructions,
+  settings,
 }: {
   userId: string;
-  customInstructions: string;
+  settings: UserSettings;
 }): Promise<UserRow | undefined> {
   const [user] = await db
     .update(userTable)
-    .set({ settings: { customInstructions } })
+    .set({ settings })
     .where(eq(userTable.id, userId))
     .returning();
 
@@ -170,4 +175,10 @@ export async function dbUpdateUserCustomerId({
     .returning();
 
   return user;
+}
+
+export async function dbGetAllUsers(): Promise<UserRow[]> {
+  const users = await db.select().from(userTable);
+
+  return users;
 }

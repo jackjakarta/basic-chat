@@ -41,7 +41,7 @@ export default function ModelsTable({ models: initialModels }: ModelsTableProps)
 
   return (
     <>
-      <div className="border rounded-lg p-4 bg-accent-foreground/10">
+      <div className="border rounded-lg p-4 bg-sidebar-border/10">
         <Table>
           <TableHeader>
             <TableRow>

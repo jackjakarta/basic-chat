@@ -6,7 +6,7 @@ import { getSubscriptionStateBySubscriptions, SubscriptionState } from '@/stripe
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-type UserAndContext = UserRow & {
+export type UserAndContext = UserRow & {
   subscription: SubscriptionState;
 };
 

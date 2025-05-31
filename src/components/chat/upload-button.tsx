@@ -10,9 +10,10 @@ import { useToast } from '../hooks/use-toast';
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
   setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
+  disabled?: boolean;
 };
 
-export default function UploadButton({ setFiles, setIsUploading }: UploadButtonProps) {
+export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { toastError } = useToast();
 
@@ -82,6 +83,7 @@ export default function UploadButton({ setFiles, setIsUploading }: UploadButtonP
         className="py-1 transition-colors duration-200 ease-in-out "
         variant="neutral"
         onClick={openFileDialog}
+        disabled={disabled}
       >
         <Paperclip className="h-4 w-4" />
       </ButtonTooltip>
