@@ -1,7 +1,7 @@
 import {
   dataSourceIntegrationStateSchema,
   dataSourceIntegrationTypeSchema,
-  OAuthTokenMetadata,
+  type OAuthTokenMetadata,
 } from '@/app/api/auth/notion/types';
 import { type Attachment } from 'ai';
 import {
@@ -273,38 +273,31 @@ export const conversationUsageTrackingTable = appSchema.table('conversation_usag
 export type ConversationUsageTrackingRow = typeof conversationUsageTrackingTable.$inferSelect;
 export type InsertConversationUsageTrackingRow = typeof conversationUsageTrackingTable.$inferInsert;
 
-// export const subscriptionLimitsSchema = z.object({
-//   tokenLimit: z.number().int().min(0),
-//   maxAgents: z.number().int().min(0),
-//   maxVectorStores: z.number().int().min(0),
-//   maxDataSourceIntegrations: z.number().int().min(0),
-// });
+export const subscriptionLimitsSchema = z.object({
+  tokenLimit: z.number().nullable(),
+  messagesLimit: z.number().nullable(),
+});
 
-// export const subscriptionFeaturesSchema = z.object({
-//   webSearch: z.boolean().default(false),
-//   imageGeneration: z.boolean().default(false),
-//   vectorStore: z.boolean().default(false),
-//   dataSourceIntegration: z.boolean().default(false),
-// });
+export type SubscriptionLimits = z.infer<typeof subscriptionLimitsSchema>;
 
-// export type SubscriptionFeatures = z.infer<typeof subscriptionFeaturesSchema>;
-// export type SubscriptionLimits = z.infer<typeof subscriptionLimitsSchema>;
+export const subscriptionPlanIdSchema = z.enum(['free', 'premium']);
+export const subscriptionPlanIdPgEnum = appSchema.enum(
+  'subscription_id',
+  subscriptionPlanIdSchema.options,
+);
 
-// export const subscriptionPlanTable = appSchema.table('subscription_plan', {
-//   id: uuid('id').defaultRandom().primaryKey(),
-//   name: text('name').unique().notNull(),
-//   displayName: text('display_name').notNull(),
-//   description: text('description').notNull(),
-//   monthlyPriceId: text('price_id').notNull(),
-//   yearlyPriceId: text('yearly_price_id').notNull(),
-//   limits: json('limits').$type<SubscriptionLimits>().notNull(),
-//   features: json('features').$type<SubscriptionFeatures>().notNull(),
-//   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
-//   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
-//     .defaultNow()
-//     .notNull()
-//     .$onUpdate(() => new Date()),
-// });
+export const subscriptionPlanTable = appSchema.table('subscription_plan', {
+  id: subscriptionPlanIdPgEnum('id').primaryKey(),
+  name: text('name').notNull(),
+  price: integer('price').notNull(),
+  description: text('description').notNull(),
+  limits: json('limits').$type<SubscriptionLimits>().notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
 
-// export type SubscriptionPlanRow = typeof subscriptionPlanTable.$inferSelect;
-// export type InsertSubscriptionPlanRow = typeof subscriptionPlanTable.$inferInsert;
+export type SubscriptionPlanRow = typeof subscriptionPlanTable.$inferSelect;
+export type InsertSubscriptionPlanRow = typeof subscriptionPlanTable.$inferInsert;

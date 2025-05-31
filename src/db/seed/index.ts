@@ -1,7 +1,18 @@
 import { db } from '@/db';
 
-import { aiModelTable } from '../schema';
+import { aiModelTable, subscriptionPlanTable } from '../schema';
 import { models } from './models';
+import { subscriptionPlans } from './subscription-plans';
+
+Promise.all([seedAIModels({ skip: false }), seedSubscriptionPlans({ skip: false })])
+  .then(() => {
+    console.info({ info: 'Seeding completed' });
+    process.exit(0);
+  })
+  .catch((error: unknown) => {
+    console.error({ error: 'Seeding failed', details: error });
+    process.exit(1);
+  });
 
 async function seedAIModels({ skip = true }: { skip: boolean }) {
   if (skip) {
@@ -19,12 +30,18 @@ async function seedAIModels({ skip = true }: { skip: boolean }) {
   }
 }
 
-seedAIModels({ skip: false })
-  .then(() => {
-    console.info({ info: 'AI models seeding completed' });
-    process.exit(0);
-  })
-  .catch((error: unknown) => {
-    console.error({ error: 'AI models seeding failed', details: error });
-    process.exit(1);
-  });
+async function seedSubscriptionPlans({ skip = true }: { skip: boolean }) {
+  if (skip) {
+    console.info({ info: 'Skipping subscription plans seeding' });
+    return;
+  }
+
+  for (const plan of subscriptionPlans) {
+    const insertedPlan = await db
+      .insert(subscriptionPlanTable)
+      .values(plan)
+      .onConflictDoNothing({ target: subscriptionPlanTable.id });
+
+    console.info({ insertedPlan });
+  }
+}

@@ -28,11 +28,19 @@ export default async function Page(context: unknown) {
 
   const { agentId, chatId } = parsedParams.data.params;
 
-  const [models, agent, tokensUsed] = await Promise.all([
+  const [models, agent, tokensUsed, subscriptionPlan] = await Promise.all([
     dbGetEnabledModels(),
     dbGetAgentById({ agentId, userId: user.id }),
     dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
+    getSubscriptionPlanBySubscriptionState(user.subscription),
   ]);
+
+  if (subscriptionPlan === undefined) {
+    console.error('No subscription plan found for user:', user.id);
+    throw new Error('No subscription plan found');
+  }
+
+  const { limits } = subscriptionPlan;
 
   if (agent === undefined) {
     return notFound();
@@ -54,7 +62,6 @@ export default async function Page(context: unknown) {
   });
 
   const filteredMessages = filterChatMessages({ chatMessages });
-  const { limits } = getSubscriptionPlanBySubscriptionState(user.subscription);
 
   return (
     <Chat
@@ -63,7 +70,6 @@ export default async function Page(context: unknown) {
       initialMessages={filteredMessages}
       agentId={agentId}
       models={models}
-      userSubscription={user.subscription}
       tokensUsed={tokensUsed}
       userLimits={limits}
       agentName={agent.name}

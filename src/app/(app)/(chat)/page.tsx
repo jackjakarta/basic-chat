@@ -11,13 +11,18 @@ export default async function Page() {
   const user = await getUser();
   const id = generateUUID();
 
-  const [models, tokensUsed] = await Promise.all([
+  const [models, tokensUsed, subscriptionPlan] = await Promise.all([
     dbGetEnabledModels(),
     dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
+    getSubscriptionPlanBySubscriptionState(user.subscription),
   ]);
 
-  const { limits } = getSubscriptionPlanBySubscriptionState(user.subscription);
+  if (subscriptionPlan === undefined) {
+    console.error('No subscription plan found for user:', user.id);
+    throw new Error('No subscription plan found');
+  }
 
+  const { limits } = subscriptionPlan;
   console.debug({ subscription: user.subscription, limits });
 
   return (
@@ -29,7 +34,6 @@ export default async function Page() {
       models={models}
       tokensUsed={tokensUsed}
       userLimits={limits}
-      userSubscription={user.subscription}
     />
   );
 }
