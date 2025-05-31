@@ -21,8 +21,7 @@
     "db:clear": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/clear.ts",
     "db:seed": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/seed/index.ts",
     "db:studio": "ENVIRONMENT=development op run --env-file=\".env.op\" -- drizzle-kit studio --config=src/db/drizzle.config.ts",
-    "customers": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/create-customers.ts",
-    "image": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/app/api/chat/tools/generate-image.ts"
+    "customers": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/create-customers.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "1.2.10",

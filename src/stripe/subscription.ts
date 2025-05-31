@@ -1,4 +1,5 @@
 import { dbGetSubscriptionPlanById } from '@/db/functions/subscription-plan';
+import { SubscriptionPlanRow } from '@/db/schema';
 import { stripe } from '@/stripe';
 import Stripe from 'stripe';
 
@@ -43,7 +44,9 @@ export async function getStripeSubscriptionsByCustomerId({
   }
 }
 
-export async function getSubscriptionPlanBySubscriptionState(subscriptionState: SubscriptionState) {
+export async function getSubscriptionPlanBySubscriptionState(
+  subscriptionState: SubscriptionState,
+): Promise<SubscriptionPlanRow | undefined> {
   switch (subscriptionState) {
     case 'premium':
     case 'trialing':
