@@ -12,6 +12,7 @@ import { ButtonTooltip } from '../common/tooltip-button';
 import SpinnerLoading from '../icons/animated/spinner';
 import ArrowRightIcon from '../icons/arrow-right';
 import StopIcon from '../icons/stop';
+import { type ChatResponseStatus } from './types';
 import UploadButton from './upload-button';
 
 type ChatInputProps = {
@@ -25,7 +26,7 @@ type ChatInputProps = {
   setIsWebSearchActive: React.Dispatch<React.SetStateAction<boolean>>;
   isImageGenerationActive: boolean;
   setIsImageGenerationActive: React.Dispatch<React.SetStateAction<boolean>>;
-  status: 'ready' | 'submitted' | 'streaming' | 'error';
+  status: ChatResponseStatus;
   chatDisabled: boolean;
   stop: () => void;
 };
@@ -42,7 +43,6 @@ export default function ChatInput({
   isImageGenerationActive,
   setIsImageGenerationActive,
   status,
-  chatDisabled,
   stop,
 }: ChatInputProps) {
   const [isUploading, setIsUploading] = React.useState(false);
@@ -122,10 +122,16 @@ export default function ChatInput({
             </div>
             <div className="flex items-center">
               <AutoResizeTextarea
-                readOnly={chatDisabled}
+                // disabled={chatDisabled}
                 autoFocus
-                placeholder="Type your message here..."
-                className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto px-3 py-2"
+                placeholder={
+                  isImageGenerationActive
+                    ? 'Describe your image...'
+                    : isWebSearchActive
+                      ? 'Search the web...'
+                      : 'Type your message here...'
+                }
+                className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto px-3 py-2 disabled:cursor-not-allowed"
                 onChange={handleInputChange}
                 value={input}
                 onKeyDown={handleSubmitOnEnter}
