@@ -1,5 +1,6 @@
-import { generateImage } from '@/openai/image';
+import { generateImageGemini } from '@/google/image';
 import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
+import { uint8ArrayToArrayBuffer } from '@/utils/buffer';
 import { tool } from 'ai';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
@@ -20,8 +21,7 @@ export function generateImageTool({ userEmail }: { userEmail: string }) {
         }
 
         return imageUrl;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
+      } catch {
         return 'An error occurred while generating the image.';
       }
     },
@@ -37,20 +37,10 @@ async function generateImageFromText({
   imageDescription: string;
   userEmail: string;
 }) {
-  const prompt = `Generate an image based on the following description: ${imageDescription}`;
-  const imageUrl = await generateImage({ prompt });
+  const imagePrompt = `Generate an image based on the following description: ${imageDescription}`;
+  const imageBuffer = await generateImageGemini({ imagePrompt });
 
-  if (imageUrl === undefined) {
-    return undefined;
-  }
-
-  const response = await fetch(imageUrl);
-
-  if (!response.ok) {
-    return undefined;
-  }
-
-  const arrayBuffer = await response.arrayBuffer();
+  const arrayBuffer = uint8ArrayToArrayBuffer(imageBuffer);
   const fileName = `${userEmail}/generated/${nanoid(10)}.png`;
 
   const [, s3Url] = await Promise.all([

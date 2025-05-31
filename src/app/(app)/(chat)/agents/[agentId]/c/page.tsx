@@ -1,6 +1,7 @@
 import Chat from '@/components/chat/chat';
 import { dbGetAgentById } from '@/db/functions/agent';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
+import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { getUser } from '@/utils/auth';
 import { generateUUID } from '@/utils/uuid';
 import { notFound } from 'next/navigation';
@@ -17,17 +18,18 @@ const pageContextSchema = z.object({
 export default async function Page(context: unknown) {
   const user = await getUser();
   const parsedParams = pageContextSchema.safeParse(context);
-  const id = generateUUID();
 
   if (!parsedParams.success) {
     return notFound();
   }
 
-  const agentId = parsedParams.data.params.agentId;
+  const id = generateUUID();
+  const { agentId } = parsedParams.data.params;
 
-  const [agent, models] = await Promise.all([
-    dbGetAgentById({ agentId, userId: user.id }),
+  const [models, agent, tokensUsed] = await Promise.all([
     dbGetEnabledModels(),
+    dbGetAgentById({ agentId, userId: user.id }),
+    dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
   ]);
 
   if (agent === undefined) {
@@ -42,6 +44,7 @@ export default async function Page(context: unknown) {
       agentId={agent.id}
       agentName={agent.name}
       models={models}
+      tokensUsed={tokensUsed}
       userFirstName={user.firstName}
     />
   );

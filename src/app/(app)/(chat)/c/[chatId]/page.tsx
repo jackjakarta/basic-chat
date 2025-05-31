@@ -1,6 +1,7 @@
 import Chat from '@/components/chat/chat';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
 import { dbGetConversationById, dbGetCoversationMessages } from '@/db/functions/chat';
+import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { getUser } from '@/utils/auth';
 import { filterChatMessages } from '@/utils/chat';
 import { notFound } from 'next/navigation';
@@ -23,9 +24,10 @@ export default async function Page(context: unknown) {
   }
 
   const { chatId } = parsedParams.data.params;
-  const [chat, models] = await Promise.all([
-    dbGetConversationById({ conversationId: chatId, userId: user.id }),
+  const [models, chat, tokensUsed] = await Promise.all([
     dbGetEnabledModels(),
+    dbGetConversationById({ conversationId: chatId, userId: user.id }),
+    dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
   ]);
 
   if (chat === undefined) {
@@ -45,6 +47,12 @@ export default async function Page(context: unknown) {
   }));
 
   return (
-    <Chat key={chat.id} id={chat.id} initialMessages={messagesWithAttachments} models={models} />
+    <Chat
+      key={chat.id}
+      id={chat.id}
+      initialMessages={messagesWithAttachments}
+      tokensUsed={tokensUsed}
+      models={models}
+    />
   );
 }

@@ -10,7 +10,7 @@ import { dbInsertConversationUsage } from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getUser } from '@/utils/auth';
 import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
-import { smoothStream, streamText, type Message } from 'ai';
+import { convertToCoreMessages, smoothStream, streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getModel } from './models';
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     const result = streamText({
       model: getModel(model),
       system: systemPrompt,
-      messages,
+      messages: convertToCoreMessages(messages),
       maxSteps: 5,
       experimental_transform: smoothStream({ delayInMs: 20 }),
       tools,

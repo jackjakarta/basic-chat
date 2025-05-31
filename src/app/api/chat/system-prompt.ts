@@ -9,9 +9,9 @@ export function constructSystemPrompt({
   webSearchActive: boolean;
   imageGenerationActive: boolean;
 }) {
-  const constructedSystemPrompt = imageGenerationActive
-    ? imageGenerationPrompt
-    : defaultSystemPrompt;
+  if (imageGenerationActive) {
+    return imageGenerationPrompt;
+  }
 
   if (
     agentInstructions !== null &&
@@ -34,7 +34,7 @@ export function constructSystemPrompt({
     : '';
 
   if (userCustomInstructions !== undefined) {
-    const promptWithUserInstructions = constructedSystemPrompt.replace(
+    const promptWithUserInstructions = defaultSystemPrompt.replace(
       '$USER_CUSTOM_INSTRUCTIONS',
       userCustomInstructions,
     );
@@ -47,7 +47,7 @@ export function constructSystemPrompt({
     return fullPrompt;
   }
 
-  const promptWithSearchInstructions = constructedSystemPrompt.replace(
+  const promptWithSearchInstructions = defaultSystemPrompt.replace(
     '$SEARCH_INSTRUCTIONS',
     searchInstructions,
   );
@@ -90,4 +90,4 @@ $SEARCH_INSTRUCTIONS
 
 const imageGenerationPrompt = `You are Carla, a friendly and helpful AI assistant. You primary goal is to generate images based on user description. 
 You use the generateImage tool whenever the user asks you something, you always assume it is an image description and you generate an image based on the description provided by the user.
-When using the image generation tool, make sure to display the url of the generated image in markdown format.`;
+When using the image generation tool, make sure to display the url of the generated image in markdown format so that the user can see the image directly in the chat.`;
