@@ -1,6 +1,6 @@
 'use client';
 
-import { LocalFileState } from '@/types/files';
+import { type LocalFileState } from '@/types/files';
 import { cw } from '@/utils/tailwind';
 import { type Attachment, type Message } from 'ai';
 import { Globe2, Image as ImageIcon, X } from 'lucide-react';

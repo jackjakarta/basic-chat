@@ -13,25 +13,34 @@ export function constructSystemPrompt({
     return imageGenerationPrompt;
   }
 
+  const searchInstructions = webSearchActive
+    ? 'IMPORTANT: Please always search the web when the user asks something, regardless if you know the answer or not. You always search the web based on the user question and then provide the user with an accurate response.'
+    : '';
+
   if (
     agentInstructions !== null &&
     agentInstructions !== undefined &&
     agentInstructions.length > 0
   ) {
-    return `Below are custom instructions provided by the user that you must strictly follow: 
+    const agentSystemPrompt = `Below are custom instructions provided by the user that you must strictly follow: 
 
     Your task is to help the user with special kind of tasks based on 
     the instructions that are provided below. You will assume the role the the 
     user provided in the instructions. 
+
+    $SEARCH_INSTRUCTIONS
     
     These are the instructions provided by the user: 
     
     ${agentInstructions}`;
-  }
 
-  const searchInstructions = webSearchActive
-    ? 'IMPORTANT: Please always search the web when the user asks something, regardless if you know the answer or not. You always search the web based on the user question and then provide the user with an accurate response.'
-    : '';
+    const promptWithSearchInstructions = agentSystemPrompt.replace(
+      '$SEARCH_INSTRUCTIONS',
+      searchInstructions,
+    );
+
+    return promptWithSearchInstructions;
+  }
 
   if (userCustomInstructions !== undefined) {
     const promptWithUserInstructions = defaultSystemPrompt.replace(
@@ -79,7 +88,7 @@ If you need more information or clarification:
 
 Remember you should always strive to be helpful, friendly, and thorough in your responses. If you're ever unsure about something, don't hesitate to ask the user for more information.
 
-You can use the code execution tool to run code and provide the user with the accurate results for question that invole maths.
+You can use the code execution tool to run code and provide the user with the accurate results for question that invole more complex maths.
 
 IMPORTANT: When calling tools always call the tool directly without any additional information on what you are doing while executing the tool call.
 
