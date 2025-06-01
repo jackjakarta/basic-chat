@@ -1,5 +1,6 @@
 'use client';
 
+import { type SubscriptionState } from '@/stripe/subscription';
 import { cw } from '@/utils/tailwind';
 import { Settings2, Unplug, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -13,9 +14,10 @@ type MenuItem = {
   href: string;
 };
 
-export default function SettingsNav() {
+export default function SettingsNav({ userSubscription }: { userSubscription: SubscriptionState }) {
   const pathname = usePathname();
   const t = useTranslations('settings');
+  const hasPremiumAccess = userSubscription !== 'free';
 
   const menuItems: MenuItem[] = [
     {
@@ -23,11 +25,15 @@ export default function SettingsNav() {
       icon: <User className="w-[18px] h-[18px]" />,
       href: '/settings/profile',
     },
-    {
-      label: 'Integrations',
-      icon: <Unplug className="w-[18px] h-[18px]" />,
-      href: '/settings/integrations',
-    },
+    ...(hasPremiumAccess
+      ? [
+          {
+            label: 'Integrations',
+            icon: <Unplug className="w-[18px] h-[18px]" />,
+            href: '/settings/integrations',
+          },
+        ]
+      : []),
     {
       label: t('preferences.title'),
       icon: <Settings2 className="w-[18px] h-[18px]" />,
