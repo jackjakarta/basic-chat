@@ -6,15 +6,22 @@ import {
 import { getUser } from '@/utils/auth';
 import { cw, uiCardClassName } from '@/utils/tailwind';
 import { getTranslations } from 'next-intl/server';
+import { redirect } from 'next/navigation';
 
 import IntegrationCard from './integration-card';
 
 export default async function Page() {
   const user = await getUser();
-  const t = await getTranslations('settings.integrations');
 
-  const allDataSourceIntegrations = await dbGetAllDataSourceIntegrations();
-  const activeIntegrationsByUser = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
+  if (user.subscription === 'free') {
+    redirect('/billing');
+  }
+
+  const [t, allDataSourceIntegrations, activeIntegrationsByUser] = await Promise.all([
+    getTranslations('settings.integrations'),
+    dbGetAllDataSourceIntegrations(),
+    dbGetAllActiveDataSourcesByUserId({ userId: user.id }),
+  ]);
 
   const availableIntegrations = allDataSourceIntegrations.filter((i) => i.state === 'active');
 
