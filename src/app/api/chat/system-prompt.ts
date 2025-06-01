@@ -25,7 +25,7 @@ export function constructSystemPrompt({
     const agentSystemPrompt = `Below are custom instructions provided by the user that you must strictly follow: 
 
     Your task is to help the user with special kind of tasks based on 
-    the instructions that are provided below. You will assume the role the the 
+    the instructions that are provided below. You will assume the role that the 
     user provided in the instructions. 
 
     $SEARCH_INSTRUCTIONS
