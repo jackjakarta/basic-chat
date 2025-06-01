@@ -2,7 +2,7 @@
 
 import { toolNameMap } from '@/utils/chat';
 import { cw } from '@/utils/tailwind';
-import { Message } from 'ai';
+import { type Message } from 'ai';
 import Image from 'next/image';
 
 import LoadingText from '../common/loading-text';
@@ -10,9 +10,11 @@ import TTSButton from '../common/tts-button';
 import ReloadIcon from '../icons/reload';
 import CopyButton from './copy-button';
 import DisplayCodeExecution from './display-code-execution';
+import DisplayPdfFile from './display-pdf-file';
 import DisplaySources from './display-sources';
 import MarkdownDisplay from './markdown-display/markdown-display';
-import { ChatResponseStatus } from './types';
+import { type ChatResponseStatus } from './types';
+import { extractFileNameFromSignedUrl } from './utils';
 
 type ChatMessagesProps = {
   messages: Message[];
@@ -28,8 +30,11 @@ export default function ChatMessages({ messages, status, reload }: ChatMessagesP
         const finishedAssistantMessage =
           message.role === 'assistant' && status !== 'submitted' && status !== 'streaming';
 
-        const userimageAttachments =
+        const userImageAttachments =
           message.experimental_attachments?.filter((a) => a.type === 'image') ?? [];
+
+        const userFileAttachments =
+          message.experimental_attachments?.filter((a) => a.type === 'file') ?? [];
 
         return (
           <div
@@ -43,9 +48,21 @@ export default function ChatMessages({ messages, status, reload }: ChatMessagesP
             <div>
               {message.content.length > 0 && status !== 'error' ? (
                 <>
-                  {userimageAttachments.length > 0 && (
+                  {userFileAttachments.length > 0 && (
+                    <div className="flex items-center flex-wrap gap-x-2">
+                      {userFileAttachments.map((attachment) => (
+                        <DisplayPdfFile
+                          key={attachment.id}
+                          fileName={extractFileNameFromSignedUrl(attachment.name)}
+                          className="w-[100px] bg-sidebar mb-4"
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {userImageAttachments.length > 0 && (
                     <div className="flex flex-col gap-2">
-                      {userimageAttachments.map((attachment) => (
+                      {userImageAttachments.map((attachment) => (
                         <Image
                           key={attachment.id}
                           src={attachment.url}

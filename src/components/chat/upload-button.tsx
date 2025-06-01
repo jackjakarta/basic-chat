@@ -6,6 +6,7 @@ import React from 'react';
 
 import { ButtonTooltip } from '../common/tooltip-button';
 import { useToast } from '../hooks/use-toast';
+import { useLlmModel } from '../providers/llm-model';
 
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
@@ -16,6 +17,7 @@ type UploadButtonProps = {
 export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { toastError } = useToast();
+  const { model: modelId } = useLlmModel();
 
   function openFileDialog() {
     fileInputRef.current?.click();
@@ -36,12 +38,14 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/chat-upload/image', {
+      const imageOrFile = file.type.startsWith('image/') ? 'image' : 'file';
+
+      const response = await fetch(`/api/chat-upload/${imageOrFile}`, {
         method: 'POST',
         body: formData,
       });
 
-      if (response.status === 418) {
+      if (response.status === 420) {
         toastError('Invalid file type. Only images are supported.');
         return;
       }
@@ -59,7 +63,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
         const next = new Map(prev);
         next.set(fileId, {
           status: 'success',
-          file: { type: 'image', imageUrl: signedURL },
+          file: { type: imageOrFile, imageUrl: signedURL },
           id: fileId,
         });
 
@@ -73,10 +77,13 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
     }
   }
 
+  const canUploadFiles = modelId !== 'pixtral-large-latest' && modelId !== 'grok-2-vision-1212';
+  const toolTipMessage = canUploadFiles ? '(images and pdfs only)' : ' (images only)';
+
   return (
     <div>
       <ButtonTooltip
-        tooltip="Upload files (images only)"
+        tooltip={`Upload files ${toolTipMessage}`}
         tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
         size="sm"
         type="button"
@@ -90,7 +97,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
       <input
         type="file"
         ref={fileInputRef}
-        accept="image/*"
+        accept={`image/*, ${canUploadFiles && 'application/pdf'}`}
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />

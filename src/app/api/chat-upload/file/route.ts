@@ -27,10 +27,8 @@ export async function POST(req: NextRequest) {
   const fileId = `${user.email}/uploaded/files/file_${nanoid()}`;
   const fileExtension = getFileExtension(file.name);
 
-  if (
-    !SUPPORTED_FILE_EXTENSIONS.some((supportedExtension) => supportedExtension == fileExtension)
-  ) {
-    return NextResponse.json({ error: `${fileExtension} is not supported` }, { status: 400 });
+  if (!SUPPORTED_FILE_EXTENSIONS.includes(fileExtension.toLowerCase())) {
+    return NextResponse.json({ error: `${fileExtension} is not supported` }, { status: 420 });
   }
 
   try {

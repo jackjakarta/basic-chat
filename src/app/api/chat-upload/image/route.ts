@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   const fileExtension = getFileExtension(file.name);
 
   if (!SUPPORTED_IMAGE_EXTENSIONS.includes(fileExtension.toLowerCase())) {
-    return NextResponse.json({ error: `${fileExtension} is not supported` }, { status: 418 });
+    return NextResponse.json({ error: `${fileExtension} is not supported` }, { status: 420 });
   }
 
   try {

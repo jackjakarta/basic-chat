@@ -1,4 +1,4 @@
-export type FileFile = { type: 'file'; fileObject: File };
+export type FileFile = { type: 'file'; imageUrl: string | undefined };
 export type ImageFile = { type: 'image'; imageUrl: string | undefined };
 
 export type PendingLocalFileState = {

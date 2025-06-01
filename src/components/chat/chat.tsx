@@ -1,7 +1,7 @@
 'use client';
 
 import { type AIModelRow, type SubscriptionLimits } from '@/db/schema';
-import { ImageFile, SuccessLocalFileState, type LocalFileState } from '@/types/files';
+import { FileFile, ImageFile, SuccessLocalFileState, type LocalFileState } from '@/types/files';
 import { getTimeBasedGreeting } from '@/utils/greeting';
 import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
@@ -99,6 +99,24 @@ export default function Chat({
     [files],
   );
 
+  const fileAttachments = React.useMemo<Attachment[]>(
+    () =>
+      Array.from(files)
+        .map(([, fileState]) => fileState)
+        .filter(
+          (f): f is SuccessLocalFileState & { file: FileFile } =>
+            f.status === 'success' && f.file.type === 'file',
+        )
+        .map((file) => ({
+          name: file.file.imageUrl ?? '',
+          url: file.file.imageUrl ?? '',
+          contentType: 'application/pdf',
+          type: 'file',
+          id: file.id,
+        })),
+    [files],
+  );
+
   function refetchConversations() {
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   }
@@ -110,7 +128,7 @@ export default function Chat({
     setFiles(new Map());
 
     try {
-      handleSubmit(e, { experimental_attachments: imageAttachments });
+      handleSubmit(e, { experimental_attachments: [...imageAttachments, ...fileAttachments] });
       replaceUrl(chatPath);
     } catch (error) {
       console.error({ error });
@@ -153,6 +171,7 @@ export default function Chat({
             messages={messages}
             customHandleSubmit={customHandleSubmit}
             imageAttachments={imageAttachments}
+            fileAttachments={fileAttachments}
             handleInputChange={handleInputChange}
             input={input}
             setFiles={setFiles}
