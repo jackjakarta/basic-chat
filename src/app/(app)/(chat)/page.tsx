@@ -23,7 +23,6 @@ export default async function Page() {
   }
 
   const { limits } = subscriptionPlan;
-  console.debug({ subscription: user.subscription, limits });
 
   return (
     <Chat

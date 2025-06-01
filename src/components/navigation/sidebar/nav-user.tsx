@@ -16,8 +16,18 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { SubscriptionState } from '@/stripe/subscription';
 import { type ObscuredUser } from '@/utils/user';
-import { ChevronsUpDown, LogOut, Settings2, ShieldUser, Unplug, User2 } from 'lucide-react';
+import {
+  ChevronsUpDown,
+  LogOut,
+  Settings2,
+  ShieldUser,
+  Sparkles,
+  Unplug,
+  User2,
+  Wallet,
+} from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -28,7 +38,9 @@ export function NavUser({
   email,
   avatarUrl,
   isSuperAdmin,
-}: ObscuredUser & { avatarUrl?: string }) {
+  customFreeTrial,
+  subscription,
+}: ObscuredUser & { avatarUrl?: string; subscription: SubscriptionState }) {
   const { isMobile } = useSidebar();
   const t = useTranslations('sidebar.user-menu');
   const tAuth = useTranslations('auth');
@@ -75,9 +87,22 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            {subscription === 'free' && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <Link href="/billing">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Sparkles />
+                      {t('upgrade')}
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuGroup>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {isSuperAdmin && (
+              {!isSuperAdmin && (
                 <Link href="/admin">
                   <DropdownMenuItem className="cursor-pointer">
                     <ShieldUser />
@@ -91,12 +116,22 @@ export function NavUser({
                   {t('profile')}
                 </DropdownMenuItem>
               </Link>
-              <Link href="/settings/integrations">
-                <DropdownMenuItem className="cursor-pointer">
-                  <Unplug />
-                  {t('integrations')}
-                </DropdownMenuItem>
-              </Link>
+              {subscription !== 'free' && (
+                <Link href="/settings/integrations">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Unplug />
+                    {t('integrations')}
+                  </DropdownMenuItem>
+                </Link>
+              )}
+              {subscription !== 'free' && !customFreeTrial && (
+                <Link href="/billing">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Wallet />
+                    {t('billing')}
+                  </DropdownMenuItem>
+                </Link>
+              )}
               <Link href="/settings/preferences">
                 <DropdownMenuItem className="cursor-pointer">
                   <Settings2 />

@@ -40,12 +40,15 @@ export async function getUser(): Promise<UserAndContext> {
     customerId: user.customerId,
   });
 
+  const subscription = getSubscriptionStateBySubscriptions({
+    subscriptions,
+    hasFreeTrial: user.customFreeTrial,
+  });
+  console.debug({ subscription });
+
   return {
     ...user,
-    subscription: getSubscriptionStateBySubscriptions({
-      subscriptions,
-      hasFreeTrial: user.customFreeTrial,
-    }),
+    subscription,
   };
 }
 

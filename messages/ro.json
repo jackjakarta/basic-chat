@@ -159,7 +159,9 @@
     "user-menu": {
       "profile": "Profil",
       "preferences": "Preferințe",
-      "integrations": "Integrări"
+      "integrations": "Integrări",
+      "upgrade": "Upgrade la Pro",
+      "billing": "Facturare"
     }
   }
 }

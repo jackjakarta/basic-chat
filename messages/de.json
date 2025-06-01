@@ -159,7 +159,9 @@
     "user-menu": {
       "profile": "Profil",
       "preferences": "Einstellungen",
-      "integrations": "Integrationen"
+      "integrations": "Integrationen",
+      "upgrade": "Auf Pro upgraden",
+      "billing": "Abrechnung"
     }
   }
 }
