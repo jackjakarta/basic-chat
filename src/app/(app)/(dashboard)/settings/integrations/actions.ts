@@ -1,9 +1,7 @@
 'use server';
 
-import { db } from '@/db';
-import { dataSourceIntegrationUserMappingTable } from '@/db/schema';
+import { dbDeleteActiveIntegration } from '@/db/functions/data-source-integrations';
 import { getUser } from '@/utils/auth';
-import { and, eq } from 'drizzle-orm';
 
 export async function removeDataSourceIntegrationAction({
   dataSourceIntegrationId,
@@ -12,15 +10,26 @@ export async function removeDataSourceIntegrationAction({
 }) {
   const user = await getUser();
 
-  const [deleted] = await db
-    .delete(dataSourceIntegrationUserMappingTable)
-    .where(
-      and(
-        eq(dataSourceIntegrationUserMappingTable.userId, user.id),
-        eq(dataSourceIntegrationUserMappingTable.dataSourceIntegrationId, dataSourceIntegrationId),
-      ),
-    )
-    .returning();
+  try {
+    const deleted = await dbDeleteActiveIntegration({
+      userId: user.id,
+      dataSourceIntegrationId,
+    });
 
-  return deleted;
+    if (deleted === undefined) {
+      return {
+        success: false,
+        error: 'Data source integration not found or already deleted.',
+      };
+    }
+
+    return { success: true, message: 'Data source integration deleted successfully.' };
+  } catch (error) {
+    console.error('Error deleting data source integration:', error);
+
+    return {
+      success: false,
+      error: 'Data source integration not found or already deleted.',
+    };
+  }
 }

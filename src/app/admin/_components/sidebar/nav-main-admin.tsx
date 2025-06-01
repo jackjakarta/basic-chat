@@ -39,13 +39,12 @@ export function NavMainAdmin({ onClickMobile }: NavMainProps) {
             onClick={onClickMobile}
             className={cw(
               'cursor-pointer',
-              pathname.startsWith('/admin/users') &&
-                'bg-sidebar-accent text-sidebar-accent-foreground',
+              pathname === '/admin/models' && 'bg-sidebar-accent text-sidebar-accent-foreground',
             )}
           >
-            <Link href="/admin/users" className="flex items-center gap-2">
-              <Users />
-              <span>Users</span>
+            <Link href="/admin/models" className="flex items-center gap-2">
+              <Bot />
+              <span>Models</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -56,12 +55,13 @@ export function NavMainAdmin({ onClickMobile }: NavMainProps) {
             onClick={onClickMobile}
             className={cw(
               'cursor-pointer',
-              pathname === '/admin/models' && 'bg-sidebar-accent text-sidebar-accent-foreground',
+              pathname.startsWith('/admin/users') &&
+                'bg-sidebar-accent text-sidebar-accent-foreground',
             )}
           >
-            <Link href="/admin/models" className="flex items-center gap-2">
-              <Bot />
-              <span>Models</span>
+            <Link href="/admin/users" className="flex items-center gap-2">
+              <Users />
+              <span>Users</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
