@@ -23,7 +23,10 @@ export async function removeDataSourceIntegrationAction({
       };
     }
 
-    return { success: true, message: 'Data source integration deleted successfully.' };
+    return {
+      success: true,
+      message: 'Data source integration deleted successfully.',
+    };
   } catch (error) {
     console.error('Error deleting data source integration:', error);
 
