@@ -5,7 +5,7 @@ import {
   getMaybeCustomerIdFromStripeEvent,
   stripeWebhooksConstructEventWithResult,
 } from '@/stripe/webhook';
-import { type NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get('stripe-signature');
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       undefined,
     );
 
-    return Response.json({ error: 'Signature check failed.' }, { status: 400 });
+    return Response.json('Signature check failed.', { status: 400 });
   }
 
   const eventText = await req.text();
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       undefined,
     );
 
-    return Response.json({ error: 'Failed to construct webhook event' }, { status: 400 });
+    return Response.json('Failed to construct webhook event', { status: 400 });
   }
 
   const customerId = getMaybeCustomerIdFromStripeEvent({ event });

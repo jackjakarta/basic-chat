@@ -1,7 +1,7 @@
 import { errorifyAsyncFn } from '@/utils/error';
 
 import { stripe } from '.';
-import { paymentMethodTypes } from './const';
+import { NUMBER_OF_TRIAL_DAYS, paymentMethodTypes } from './const';
 
 export const stripeCreateCheckoutSessionWithResult = errorifyAsyncFn(stripeCreateCheckoutSession);
 
@@ -29,7 +29,7 @@ export async function stripeCreateCheckoutSession({
     locale: 'en',
     subscription_data: hasFreeTrial
       ? {
-          trial_period_days: trialDays ?? 7,
+          trial_period_days: trialDays ?? NUMBER_OF_TRIAL_DAYS,
           trial_settings: {
             end_behavior: {
               missing_payment_method: 'cancel',

@@ -7,6 +7,7 @@ import {
   SidebarHeader,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { SubscriptionState } from '@/stripe/subscription';
 import { type ObscuredUser } from '@/utils/user';
 import React from 'react';
 
@@ -17,7 +18,7 @@ import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
 
 type SidebarProps = React.ComponentProps<typeof Sidebar> & {
-  user: ObscuredUser;
+  user: ObscuredUser & { subscription: SubscriptionState };
   avatarUrl?: string;
 };
 
