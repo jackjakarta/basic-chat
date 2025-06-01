@@ -41,15 +41,16 @@ export default function IntegrationCard({
         dataSourceIntegrationId: dataSourceIntegration.id,
       });
 
-      if (deleted !== undefined) {
+      if (deleted.success) {
         toastSuccess(
           `The integration with ${activeIntegration.name} was successfully disconnected.`,
         );
       } else {
-        toastSuccess(
+        toastError(
           `Something went wrong with the separation of the ${activeIntegration.name} integration.`,
         );
       }
+
       router.refresh();
     }
   }
