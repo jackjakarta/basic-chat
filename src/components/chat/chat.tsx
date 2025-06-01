@@ -1,14 +1,19 @@
 'use client';
 
 import { type AIModelRow, type SubscriptionLimits } from '@/db/schema';
-import { FileFile, ImageFile, SuccessLocalFileState, type LocalFileState } from '@/types/files';
+import {
+  type FileFile,
+  type ImageFile,
+  type LocalFileState,
+  type SuccessLocalFileState,
+} from '@/types/files';
 import { getTimeBasedGreeting } from '@/utils/greeting';
 import { replaceUrl } from '@/utils/navigation';
 import { cw } from '@/utils/tailwind';
 import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Attachment } from 'ai';
+import { type Attachment } from 'ai';
 import React from 'react';
 
 import Header from '../common/header';
@@ -24,9 +29,9 @@ type ChatProps = {
   id: string;
   initialMessages: Message[];
   userLimits: SubscriptionLimits;
-  userFirstName?: string;
   models: AIModelRow[];
   tokensUsed: number;
+  userFirstName?: string;
   agentId?: string;
   agentName?: string;
 };
@@ -34,11 +39,11 @@ type ChatProps = {
 export default function Chat({
   id,
   initialMessages,
-  userFirstName,
-  models,
-  agentId,
-  tokensUsed,
   userLimits,
+  models,
+  tokensUsed,
+  userFirstName,
+  agentId,
   agentName,
 }: ChatProps) {
   const queryClient = useQueryClient();

@@ -19,6 +19,9 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
   const { toastError } = useToast();
   const { model: modelId } = useLlmModel();
 
+  const canUploadFiles = modelId !== 'pixtral-large-latest' && modelId !== 'grok-2-vision-1212';
+  const toolTipMessage = canUploadFiles ? 'images and pdfs' : 'images';
+
   function openFileDialog() {
     fileInputRef.current?.click();
   }
@@ -46,14 +49,20 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
       });
 
       if (response.status === 420) {
-        toastError('Invalid file type. Only images are supported.');
+        toastError(`Only ${toolTipMessage} are supported with this model`);
+        return;
+      }
+
+      if (response.status === 413) {
+        const res = await response.json();
+        toastError(res.error || 'File size exceeds the limit');
         return;
       }
 
       if (!response.ok) {
         const error = await response.json();
-        console.error({ error });
         toastError('An error occurred while uploading the file');
+        console.error({ error });
         return;
       }
 
@@ -77,13 +86,10 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
     }
   }
 
-  const canUploadFiles = modelId !== 'pixtral-large-latest' && modelId !== 'grok-2-vision-1212';
-  const toolTipMessage = canUploadFiles ? '(images and pdfs only)' : ' (images only)';
-
   return (
     <div>
       <ButtonTooltip
-        tooltip={`Upload files ${toolTipMessage}`}
+        tooltip={`Upload files (${toolTipMessage} only)`}
         tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
         size="sm"
         type="button"

@@ -4,7 +4,7 @@ import { getFileExtension } from '@/utils/files';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
-// const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 10; // 10MB
+const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 2;
 const SUPPORTED_FILE_EXTENSIONS = ['pdf'];
 
 export async function POST(req: NextRequest) {
@@ -28,7 +28,17 @@ export async function POST(req: NextRequest) {
   const fileExtension = getFileExtension(file.name);
 
   if (!SUPPORTED_FILE_EXTENSIONS.includes(fileExtension.toLowerCase())) {
-    return NextResponse.json({ error: `${fileExtension} is not supported` }, { status: 420 });
+    return NextResponse.json(
+      { error: `Extension ${fileExtension} is not supported` },
+      { status: 420 },
+    );
+  }
+
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return NextResponse.json(
+      { error: `File size exceeds the limit of ${MAX_FILE_SIZE_BYTES / 1024 / 1024} MB` },
+      { status: 413 },
+    );
   }
 
   try {
