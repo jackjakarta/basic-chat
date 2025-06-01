@@ -12,13 +12,16 @@ import { ButtonTooltip } from '../common/tooltip-button';
 import SpinnerLoading from '../icons/animated/spinner';
 import ArrowRightIcon from '../icons/arrow-right';
 import StopIcon from '../icons/stop';
+import DisplayPdfFile from './display-pdf-file';
 import { type ChatResponseStatus } from './types';
 import UploadButton from './upload-button';
+import { extractFileNameFromSignedUrl } from './utils';
 
 type ChatInputProps = {
   messages: Message[];
   customHandleSubmit: (e: React.FormEvent) => void;
   imageAttachments: Attachment[];
+  fileAttachments: Attachment[];
   handleInputChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   input: string;
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
@@ -35,6 +38,7 @@ export default function ChatInput({
   messages,
   customHandleSubmit,
   imageAttachments,
+  fileAttachments,
   handleInputChange,
   input,
   setFiles,
@@ -74,7 +78,7 @@ export default function ChatInput({
     }
   }
 
-  function handleDeattachImage(fileId: string) {
+  function handleDeattachFile(fileId: string) {
     setFiles((prev) => {
       const next = new Map(prev);
       next.delete(fileId);
@@ -100,7 +104,7 @@ export default function ChatInput({
                 <div
                   key={f.id}
                   className="relative cursor-pointer group"
-                  onClick={() => handleDeattachImage(f.id)}
+                  onClick={() => handleDeattachFile(f.id)}
                 >
                   <Image
                     src={f.url}
@@ -110,6 +114,21 @@ export default function ChatInput({
                     className="my-2 group-hover:opacity-50 rounded-lg h-[60px]"
                   />
                   <div className="absolute invisible group-hover:visible top-6 right-4 text-muted-foreground rounded-full p-1">
+                    <X className="w-5 h-5" />
+                  </div>
+                </div>
+              ))}
+              {fileAttachments.map((f) => (
+                <div
+                  key={f.id}
+                  className="relative cursor-pointer group"
+                  onClick={() => handleDeattachFile(f.id)}
+                >
+                  <DisplayPdfFile
+                    fileName={extractFileNameFromSignedUrl(f.name) ?? undefined}
+                    className="my-2 group-hover:opacity-50"
+                  />
+                  <div className="absolute invisible group-hover:visible top-4 right-4 text-muted-foreground rounded-full p-1">
                     <X className="w-5 h-5" />
                   </div>
                 </div>
