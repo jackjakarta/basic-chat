@@ -11,6 +11,11 @@ import PricingCards from './pricing-cards';
 
 export default async function Page() {
   const [user, plans] = await Promise.all([getUser(), dbGetSubscriptionPlans()]);
+
+  if (user.customFreeTrial) {
+    redirect('/');
+  }
+
   const customerId = user.customerId;
 
   if (customerId === null) {

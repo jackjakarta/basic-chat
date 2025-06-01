@@ -1,5 +1,5 @@
 import { type OAuthTokenMetadata } from '@/app/api/auth/notion/types';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import { db } from '..';
 import {
@@ -79,4 +79,24 @@ export async function dbUpdateActiveIntegration(
   } catch (error) {
     console.error({ error });
   }
+}
+
+export async function dbDeleteActiveIntegration({
+  userId,
+  dataSourceIntegrationId,
+}: {
+  userId: string;
+  dataSourceIntegrationId: string;
+}) {
+  const [deleted] = await db
+    .delete(dataSourceIntegrationUserMappingTable)
+    .where(
+      and(
+        eq(dataSourceIntegrationUserMappingTable.userId, userId),
+        eq(dataSourceIntegrationUserMappingTable.dataSourceIntegrationId, dataSourceIntegrationId),
+      ),
+    )
+    .returning();
+
+  return deleted;
 }

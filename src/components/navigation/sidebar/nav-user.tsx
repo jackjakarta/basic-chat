@@ -102,7 +102,7 @@ export function NavUser({
             )}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {!isSuperAdmin && (
+              {isSuperAdmin && (
                 <Link href="/admin">
                   <DropdownMenuItem className="cursor-pointer">
                     <ShieldUser />
