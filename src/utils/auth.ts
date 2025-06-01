@@ -44,7 +44,6 @@ export async function getUser(): Promise<UserAndContext> {
     subscriptions,
     hasFreeTrial: user.customFreeTrial,
   });
-  console.debug({ subscription });
 
   return {
     ...user,

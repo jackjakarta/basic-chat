@@ -6,8 +6,9 @@ import {
   dbUpdateConversationTitle,
 } from '@/db/functions/chat';
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
-import { dbInsertConversationUsage } from '@/db/functions/usage';
+import { dbGetAmountOfTokensUsedByUserId, dbInsertConversationUsage } from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
+import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
 import { convertToCoreMessages, smoothStream, streamText, type Message } from 'ai';
@@ -25,23 +26,42 @@ import { webSearchTool } from './tools/openai-search';
 export async function POST(request: NextRequest) {
   const user = await getUser();
 
-  const {
-    chatId,
-    messages,
-    modelId,
-    agentId,
-    webSearchActive,
-    imageGenerationActive,
-  }: {
-    chatId: string;
-    messages: Message[];
-    modelId: string;
-    agentId?: string;
-    webSearchActive: boolean;
-    imageGenerationActive: boolean;
-  } = await request.json();
-
   try {
+    const subscriptionPlan = await getSubscriptionPlanBySubscriptionState(user.subscription);
+
+    if (subscriptionPlan === undefined) {
+      return NextResponse.json(
+        { error: 'Invalid subscription state. Please check your subscription.' },
+        { status: 400 },
+      );
+    }
+
+    const tokenUsed = await dbGetAmountOfTokensUsedByUserId({ userId: user.id });
+    const { limits } = subscriptionPlan;
+
+    if (limits.tokenLimit !== null && tokenUsed >= limits.tokenLimit) {
+      return NextResponse.json(
+        { error: 'Token limit exceeded. Please upgrade your subscription.' },
+        { status: 402 },
+      );
+    }
+
+    const {
+      chatId,
+      messages,
+      modelId,
+      agentId,
+      webSearchActive,
+      imageGenerationActive,
+    }: {
+      chatId: string;
+      messages: Message[];
+      modelId: string;
+      agentId?: string;
+      webSearchActive: boolean;
+      imageGenerationActive: boolean;
+    } = await request.json();
+
     const model = await dbGetModelById({ modelId });
 
     if (model === undefined) {
