@@ -27,6 +27,9 @@ export default function SpeechToTextButton({
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (!response.ok) {

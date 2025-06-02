@@ -17,10 +17,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const buffer = await file.arrayBuffer();
-    const newFile = new File([buffer], file.name, { type: file.type });
-
-    const transcribedAudio = await transcribeAudio(newFile);
+    const transcribedAudio = await transcribeAudio(file);
     return NextResponse.json({ transcript: transcribedAudio }, { status: 200 });
   } catch (error) {
     console.error('Error processing request:', error);
