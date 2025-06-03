@@ -12,41 +12,41 @@ async function createCustomers({ skip = true }: { skip: boolean }) {
   }
 
   const users = await db.select().from(userTable).where(isNull(userTable.customerId));
-  const userEmailsWithIds = users.map((user) => ({
-    email: user.email,
-    userId: user.id,
-  }));
 
-  for (const user of userEmailsWithIds) {
+  if (users.length === 0) {
+    console.info({ info: 'No users found without customerId' });
+    return;
+  }
+
+  for (const user of users) {
     const customer = await createCustomerByEmailStripe({
       email: user.email,
-      userId: user.userId,
+      userId: user.id,
     });
 
     if (customer === undefined) {
-      console.error(`Failed to create customer for email: ${user.email}`);
+      console.error({ error: `Failed to create customer for email: ${user.email}` });
       continue;
     }
 
     const newCustomer = await dbUpdateUserCustomerId({
-      userId: user.userId,
+      userId: user.id,
       customerId: customer.id,
     });
 
     if (newCustomer === undefined) {
-      console.error(`Failed to update user with email: ${user.email}`);
-    } else {
-      console.log(`Successfully created customer for user: ${newCustomer.id}`);
+      console.error({ error: `Failed to update user with email: ${user.email}` });
+      continue;
     }
+
+    console.info({ info: `Successfully created customer for user: ${newCustomer.id}` });
   }
 }
 
 createCustomers({ skip: false })
   .then(() => {
-    console.info({ info: 'Customers created' });
     process.exit(0);
   })
   .catch((error: unknown) => {
-    console.error({ error: 'AI models seeding failed', details: error });
     process.exit(1);
   });

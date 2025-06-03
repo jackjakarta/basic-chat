@@ -38,7 +38,7 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
     const code = sanitizeCode(_code);
 
     try {
-      await verifyEmailCodeAction({ token: code });
+      await verifyEmailCodeAction({ code });
       window.location.reload();
     } catch (error) {
       console.error({ error });
