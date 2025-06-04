@@ -23,7 +23,7 @@ export async function dbGetEnabledModels() {
   return models;
 }
 
-export async function dbGetModelById({ modelId }: { modelId: string }) {
+export async function dbGetEnabledModelById({ modelId }: { modelId: string }) {
   const [model] = await db
     .select()
     .from(aiModelTable)

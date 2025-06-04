@@ -1,5 +1,5 @@
 import { dbGetAgentById } from '@/db/functions/agent';
-import { dbGetModelById } from '@/db/functions/ai-model';
+import { dbGetEnabledModelById } from '@/db/functions/ai-model';
 import {
   dbGetOrCreateConversation,
   dbInsertChatContent,
@@ -62,11 +62,14 @@ export async function POST(request: NextRequest) {
       imageGenerationActive: boolean;
     } = await request.json();
 
-    const model = await dbGetModelById({ modelId });
+    const model = await dbGetEnabledModelById({ modelId });
 
     if (model === undefined) {
       return NextResponse.json(
-        { error: 'Invalid model ID provided. Please provide a valid model ID.' },
+        {
+          error:
+            'Invalid model ID provided. Please provide a valid model ID or enable it from the dashboard.',
+        },
         { status: 400 },
       );
     }

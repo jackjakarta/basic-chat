@@ -40,6 +40,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   async function onSubmit(data: LoginFormData) {
     const { email: _email, password } = data;
     const email = _email.trim().toLowerCase();
+
     const result = await signIn('credentials', {
       email,
       password,
@@ -48,14 +49,15 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
     const loginSuccess = result === undefined || result.ok;
 
-    if (loginSuccess) {
-      router.push('/');
-    } else {
+    if (!loginSuccess) {
       setError('root', {
         type: 'manual',
         message: 'Wrong email or password',
       });
+      return;
     }
+
+    router.push('/');
   }
 
   async function handleGithubSignIn() {

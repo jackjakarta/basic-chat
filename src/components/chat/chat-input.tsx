@@ -146,10 +146,10 @@ export default function ChatInput({
                 autoFocus
                 placeholder={
                   isImageGenerationActive
-                    ? 'Describe your image...'
+                    ? 'Describe an image...'
                     : isWebSearchActive
                       ? 'Search the web...'
-                      : 'Type your message here...'
+                      : 'Ask anything...'
                 }
                 className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto px-3 py-2 disabled:cursor-not-allowed"
                 onChange={handleInputChange}

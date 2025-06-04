@@ -46,12 +46,15 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
   });
 
   async function onSubmit(data: RegistrationFormData) {
+    const { firstName, lastName, email: _email, password } = data;
+    const email = _email.trim().toLowerCase();
+
     try {
       const newUser = await registerNewUserAction({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email.toLowerCase(),
-        password: data.password,
+        firstName,
+        lastName,
+        email,
+        password,
         authProvider: 'credentials',
       });
 
