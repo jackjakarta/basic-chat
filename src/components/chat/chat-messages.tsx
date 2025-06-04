@@ -1,17 +1,16 @@
 'use client';
 
-import { toolNameMap } from '@/utils/chat';
 import { cw } from '@/utils/tailwind';
 import { type Message } from 'ai';
 import Image from 'next/image';
 
-import LoadingText from '../common/loading-text';
 import TTSButton from '../common/tts-button';
 import ReloadIcon from '../icons/reload';
 import CopyButton from './copy-button';
 import DisplayCodeExecution from './display-code-execution';
 import DisplayPdfFile from './display-pdf-file';
 import DisplaySources from './display-sources';
+import LoadingTool from './loading-tool';
 import MarkdownDisplay from './markdown-display/markdown-display';
 import { type ChatResponseStatus } from './types';
 import { extractFileNameFromSignedUrl } from './utils';
@@ -80,13 +79,7 @@ export default function ChatMessages({ messages, status, reload }: ChatMessagesP
                   <DisplaySources message={message} status={status} />
                 </>
               ) : (
-                <LoadingText>
-                  {toolNameMap(
-                    message?.parts?.[0]?.type === 'tool-invocation'
-                      ? message.parts?.[0].toolInvocation.toolName
-                      : '',
-                  ) ?? ''}
-                </LoadingText>
+                <LoadingTool message={message} />
               )}
 
               {finishedAssistantMessage && (

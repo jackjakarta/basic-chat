@@ -48,5 +48,6 @@ createCustomers({ skip: false })
     process.exit(0);
   })
   .catch((error: unknown) => {
+    console.error({ error: 'Error creating customers', details: error });
     process.exit(1);
   });
