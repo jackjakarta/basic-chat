@@ -17,9 +17,9 @@ export async function addFileIdsToVectorStore({
   return result;
 }
 
-export async function createVectorStore({ agentId }: { agentId: string }) {
+export async function createVectorStore({ assistantId }: { assistantId: string }) {
   const initialVs = await openai.vectorStores.create({
-    name: `agent-${agentId}-vector-store`,
+    name: `assistant-${assistantId}-vector-store`,
   });
   const vsId = initialVs.id;
 
