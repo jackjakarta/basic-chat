@@ -1,6 +1,6 @@
 import Chat from '@/components/chat/chat';
-import { dbGetAgentById } from '@/db/functions/agent';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
+import { dbGetAssistantById } from '@/db/functions/assistant';
 import { dbGetConversationById, dbGetCoversationMessages } from '@/db/functions/chat';
 import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 
 const pageContextSchema = z.object({
   params: z.object({
-    agentId: z.string().uuid(),
+    assistantId: z.string().uuid(),
     chatId: z.string().uuid(),
   }),
 });
@@ -26,11 +26,11 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
-  const { agentId, chatId } = parsedParams.data.params;
+  const { assistantId, chatId } = parsedParams.data.params;
 
-  const [models, agent, tokensUsed, subscriptionPlan] = await Promise.all([
+  const [models, assistant, tokensUsed, subscriptionPlan] = await Promise.all([
     dbGetEnabledModels(),
-    dbGetAgentById({ agentId, userId: user.id }),
+    dbGetAssistantById({ assistantId, userId: user.id }),
     dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
     getSubscriptionPlanBySubscriptionState(user.subscription),
   ]);
@@ -42,14 +42,14 @@ export default async function Page(context: unknown) {
 
   const { limits } = subscriptionPlan;
 
-  if (agent === undefined) {
+  if (assistant === undefined) {
     return notFound();
   }
 
   const chat = await dbGetConversationById({
     conversationId: chatId,
     userId: user.id,
-    agentId: agent.id,
+    assistantId: assistant.id,
   });
 
   if (chat === undefined) {
@@ -68,11 +68,11 @@ export default async function Page(context: unknown) {
       key={chat.id}
       id={chat.id}
       initialMessages={filteredMessages}
-      agentId={agentId}
+      assistantId={assistantId}
       models={models}
       tokensUsed={tokensUsed}
       userLimits={limits}
-      agentName={agent.name}
+      assistantName={assistant.name}
     />
   );
 }

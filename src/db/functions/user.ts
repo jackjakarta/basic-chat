@@ -5,7 +5,7 @@ import { db } from '..';
 import { hashPassword, verifyPassword } from '../crypto';
 import { DatabaseError } from '../error';
 import {
-  agentTable,
+  assistantTable,
   conversationMessageTable,
   conversationTable,
   conversationUsageTrackingTable,
@@ -118,7 +118,7 @@ export async function dbDeleteUser({ userId }: { userId: string }) {
   await db.transaction(async (tx) => {
     await tx.delete(conversationMessageTable).where(eq(conversationMessageTable.userId, userId));
     await tx.delete(conversationTable).where(eq(conversationTable.userId, userId));
-    await tx.delete(agentTable).where(eq(agentTable.userId, userId));
+    await tx.delete(assistantTable).where(eq(assistantTable.userId, userId));
     await tx.delete(vectorStoreTable).where(eq(vectorStoreTable.userId, userId));
     await tx
       .delete(conversationUsageTrackingTable)

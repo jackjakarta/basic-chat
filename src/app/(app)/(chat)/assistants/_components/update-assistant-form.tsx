@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { type AgentRow, type VectorFile } from '@/db/schema';
+import { type AssistantRow, type VectorFile } from '@/db/schema';
 import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -15,22 +15,22 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { updateAgentAction } from '../[agentId]/actions';
-import AgentKnowledgeDisplay from './agent-knowledge-files';
+import { updateAssistantAction } from '../[assistantId]/actions';
+import AssistantKnowledgeDisplay from './assistant-knowledge-display';
 
-const editAgentSchema = z.object({
+const editAssistantSchema = z.object({
   name: z.string().optional(),
   instructions: z.string().optional(),
 });
 
-type FormData = z.infer<typeof editAgentSchema>;
+type FormData = z.infer<typeof editAssistantSchema>;
 
-export default function EditAgentForm({
-  agent,
-  agentFiles,
+export default function EditAssistantForm({
+  assistant,
+  assistantFiles,
 }: {
-  agent: AgentRow;
-  agentFiles?: VectorFile[] | null;
+  assistant: AssistantRow;
+  assistantFiles?: VectorFile[] | null;
 }) {
   const router = useRouter();
   const { toastSuccess, toastLoading, toastError } = useToast();
@@ -40,22 +40,22 @@ export default function EditAgentForm({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    resolver: zodResolver(editAgentSchema),
+    resolver: zodResolver(editAssistantSchema),
     defaultValues: {
-      name: agent.name,
-      instructions: agent.instructions ?? undefined,
+      name: assistant.name,
+      instructions: assistant.instructions ?? undefined,
     },
   });
 
   async function onSubmit(data: FormData) {
-    toastLoading('Updating agent...');
+    toastLoading('Updating assistant...');
 
     try {
-      await updateAgentAction({ agentId: agent.id, data });
-      toastSuccess('Agent updated successfully');
+      await updateAssistantAction({ assistantId: assistant.id, data });
+      toastSuccess('Assistant updated successfully');
     } catch (error) {
       console.error({ error });
-      toastError('Failed to update agent');
+      toastError('Failed to update assistant');
     } finally {
       router.refresh();
     }
@@ -65,8 +65,8 @@ export default function EditAgentForm({
     <div className="flex flex-col w-full mx-auto py-8 px-4">
       <Card className="border-border/40 shadow-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Update Agent</CardTitle>
-          <CardDescription>Customize your agent's details and behavior</CardDescription>
+          <CardTitle className="text-2xl font-bold">Update Assistant</CardTitle>
+          <CardDescription>Customize your assistant's details and behavior</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -82,7 +82,7 @@ export default function EditAgentForm({
                     'resize-none transition-colors',
                     errors.name ? inputFieldErrorClassName : 'border-input',
                   )}
-                  placeholder="Enter agent name"
+                  placeholder="Enter assistant name"
                 />
                 {errors.name && (
                   <p className={inputFieldErrorMessageClassName}>{errors.name.message}</p>
@@ -102,21 +102,24 @@ export default function EditAgentForm({
                   'resize-none transition-colors',
                   errors.instructions ? inputFieldErrorClassName : 'border-input',
                 )}
-                placeholder="Provide detailed instructions for your agent..."
+                placeholder="Provide detailed instructions for your assistant..."
               />
               {errors.instructions && (
                 <p className={inputFieldErrorMessageClassName}>{errors.instructions.message}</p>
               )}
             </div>
-            <AgentKnowledgeDisplay vectorStoreId={agent.vectorStoreId} files={agentFiles ?? []} />
+            <AssistantKnowledgeDisplay
+              vectorStoreId={assistant.vectorStoreId}
+              files={assistantFiles ?? []}
+            />
             <Button type="submit" disabled={isSubmitting} className="w-full mt-6 transition-all">
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating agent...
+                  Updating assistant...
                 </>
               ) : (
-                'Update Agent'
+                'Update assistant'
               )}
             </Button>
           </form>

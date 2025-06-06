@@ -38,15 +38,15 @@ export function NavMain({ onClickMobile }: NavMainProps) {
             onClick={onClickMobile}
             className={cw(
               'cursor-pointer',
-              pathname.includes('/agents') &&
+              pathname.includes('/assistants') &&
                 !pathname.includes('/c') &&
                 'bg-sidebar-accent text-sidebar-accent-foreground',
             )}
             asChild
           >
-            <Link href="/agents" className="flex items-center gap-2">
+            <Link href="/assistants" className="flex items-center gap-2">
               <Bot />
-              <span>{t('agents')}</span>
+              <span>{t('assistants')}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>

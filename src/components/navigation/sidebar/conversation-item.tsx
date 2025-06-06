@@ -127,8 +127,8 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
               <Link
                 onClick={onClickMobile}
                 href={
-                  conversation.agentId !== null
-                    ? `/agents/${conversation.agentId}/c/${conversation.id}`
+                  conversation.assistantId !== null
+                    ? `/assistants/${conversation.assistantId}/c/${conversation.id}`
                     : `/c/${conversation.id}`
                 }
                 className="flex-1 truncate"

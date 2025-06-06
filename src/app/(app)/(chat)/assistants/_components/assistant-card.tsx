@@ -11,17 +11,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { type AgentRow } from '@/db/schema';
+import { type AssistantRow } from '@/db/schema';
 import { MoreHorizontal } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { deleteAgentAction } from '../[agentId]/actions';
+import { deleteAssistantAction } from '../[assistantId]/actions';
 
-export default function AgentCard({ agent }: { agent: AgentRow }) {
-  const t = useTranslations('agents');
+export default function AssistantCard({ assistant }: { assistant: AssistantRow }) {
+  const t = useTranslations('assistants');
   const tCommon = useTranslations('common');
   const router = useRouter();
 
@@ -29,12 +29,15 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
 
   const { toastSuccess, toastError, toastLoading } = useToast();
 
-  async function handleDeleteAgent(e: React.MouseEvent) {
+  async function handleDeleteAssistant(e: React.MouseEvent) {
     e.preventDefault();
     toastLoading(t('toasts.toast-delete-loading'));
 
     try {
-      await deleteAgentAction({ agentId: agent.id, vectorStoreId: agent.vectorStoreId });
+      await deleteAssistantAction({
+        assistantId: assistant.id,
+        vectorStoreId: assistant.vectorStoreId,
+      });
       setIsDeleteModalOpen(false);
       toastSuccess(t('toasts.toast-delete-success'));
       router.refresh();
@@ -46,17 +49,17 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
 
   return (
     <>
-      <Link href={`/agents/${agent.id}/c`}>
+      <Link href={`/assistants/${assistant.id}/c`}>
         <Card className="w-full p-4 flex border-none shadow-none items-center dark:bg-secondary/40 hover:bg-sidebar/50 dark:hover:bg-secondary/20 justify-between space-x-4 cursor-pointer">
           <div className="flex items-center space-x-4 flex-1">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={agent.pictureUrl ?? undefined} alt={agent.name} />
-              <AvatarFallback>{agent.name.charAt(0)}</AvatarFallback>
+              <AvatarImage src={assistant.pictureUrl ?? undefined} alt={assistant.name} />
+              <AvatarFallback>{assistant.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col min-w-0 space-y-1">
-              <h3 className="font-medium leading-none">{agent.name}</h3>
+              <h3 className="font-medium leading-none">{assistant.name}</h3>
               <p className="text-sm text-muted-foreground truncate max-w-[180px] sm:max-w-[110px] lg:max-w-[270px]">
-                {agent.instructions}
+                {assistant.instructions}
               </p>
             </div>
           </div>
@@ -68,7 +71,7 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <Link href={`/agents/${agent.id}`}>
+              <Link href={`/assistants/${assistant.id}`}>
                 <DropdownMenuItem className="cursor-pointer">{tCommon('edit')}</DropdownMenuItem>
               </Link>
               <DropdownMenuItem
@@ -91,8 +94,11 @@ export default function AgentCard({ agent }: { agent: AgentRow }) {
           setIsDeleteModalOpen((prev) => !prev);
         }}
         title={t('confirmation.delete.title')}
-        description={t('confirmation.delete.description').replace('$AGENT_NAME', agent.name)}
-        onConfirm={handleDeleteAgent}
+        description={t('confirmation.delete.description').replace(
+          '$ASSISTANT_NAME',
+          assistant.name,
+        )}
+        onConfirm={handleDeleteAssistant}
         type="destructive"
       />
     </>

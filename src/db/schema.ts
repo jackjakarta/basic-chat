@@ -100,7 +100,7 @@ export const conversationTable = appSchema.table('conversation', {
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),
-  agentId: uuid('agent_id').references(() => agentTable.id),
+  assistantId: uuid('assistant_id').references(() => assistantTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -142,7 +142,7 @@ export const conversationMessageTable = appSchema.table('conversation_message', 
 export type ConversationMessageRow = typeof conversationMessageTable.$inferSelect;
 export type InsertConversationMessageRow = typeof conversationMessageTable.$inferInsert;
 
-export const agentTable = appSchema.table('agent', {
+export const assistantTable = appSchema.table('assistant', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   instructions: text('instructions'),
@@ -158,8 +158,8 @@ export const agentTable = appSchema.table('agent', {
     .$onUpdate(() => new Date()),
 });
 
-export type AgentRow = typeof agentTable.$inferSelect;
-export type InsertAgentRow = typeof agentTable.$inferInsert;
+export type AssistantRow = typeof assistantTable.$inferSelect;
+export type InsertAssistantRow = typeof assistantTable.$inferInsert;
 
 export const vectorFileSchema = z.object({
   fileId: z.string(),

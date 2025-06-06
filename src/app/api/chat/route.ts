@@ -1,5 +1,5 @@
-import { dbGetAgentById } from '@/db/functions/agent';
 import { dbGetEnabledModelById } from '@/db/functions/ai-model';
+import { dbGetAssistantById } from '@/db/functions/assistant';
 import {
   dbGetOrCreateConversation,
   dbInsertChatContent,
@@ -50,14 +50,14 @@ export async function POST(request: NextRequest) {
       chatId,
       messages,
       modelId,
-      agentId,
+      assistantId,
       webSearchActive,
       imageGenerationActive,
     }: {
       chatId: string;
       messages: Message[];
       modelId: string;
-      agentId?: string;
+      assistantId?: string;
       webSearchActive: boolean;
       imageGenerationActive: boolean;
     } = await request.json();
@@ -74,13 +74,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const maybeAgent =
-      agentId !== undefined ? await dbGetAgentById({ agentId, userId: user.id }) : undefined;
+    const maybeAssistant =
+      assistantId !== undefined
+        ? await dbGetAssistantById({ assistantId, userId: user.id })
+        : undefined;
 
     const conversation = await dbGetOrCreateConversation({
       conversationId: chatId,
       userId: user.id,
-      agentId: maybeAgent?.id,
+      assistantId: maybeAssistant?.id,
     });
 
     if (conversation === undefined) {
@@ -100,7 +102,7 @@ export async function POST(request: NextRequest) {
     });
 
     const systemPrompt = constructSystemPrompt({
-      agentInstructions: maybeAgent?.instructions,
+      assistantInstructions: maybeAssistant?.instructions,
       userCustomInstructions: user.settings?.customInstructions,
       webSearchActive,
       imageGenerationActive,
@@ -116,9 +118,9 @@ export async function POST(request: NextRequest) {
       ...(imageGenerationActive &&
         !webSearchActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
       ...(!imageGenerationActive &&
-        maybeAgent !== undefined &&
-        maybeAgent.vectorStoreId !== null && {
-          searchFiles: fileSearchTool({ vectorStoreId: maybeAgent.vectorStoreId }),
+        maybeAssistant !== undefined &&
+        maybeAssistant.vectorStoreId !== null && {
+          searchFiles: fileSearchTool({ vectorStoreId: maybeAssistant.vectorStoreId }),
         }),
       ...(!imageGenerationActive &&
         notionDataSource !== undefined && {

@@ -8,17 +8,17 @@ import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { deleteAgentFilesAction } from '../[agentId]/actions';
+import { deleteAssistantFilesAction } from '../[assistantId]/actions';
 
-type AgentKnowledgeDisplayProps = {
+type AssistantKnowledgeDisplayProps = {
   vectorStoreId: string | null;
   files: VectorFile[];
 };
 
-export default function AgentKnowledgeDisplay({
+export default function AssistantKnowledgeDisplay({
   vectorStoreId,
   files,
-}: AgentKnowledgeDisplayProps) {
+}: AssistantKnowledgeDisplayProps) {
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -83,7 +83,7 @@ export default function AgentKnowledgeDisplay({
     }
 
     try {
-      await deleteAgentFilesAction({
+      await deleteAssistantFilesAction({
         vectorStoreId,
         fileIds: [fileId],
       });

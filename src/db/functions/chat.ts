@@ -10,15 +10,15 @@ import {
 export async function dbGetOrCreateConversation({
   conversationId,
   userId,
-  agentId,
+  assistantId,
 }: {
   conversationId: string;
   userId: string;
-  agentId?: string;
+  assistantId?: string;
 }) {
   const conversation = await db
     .insert(conversationTable)
-    .values({ id: conversationId, name: 'New Chat', userId, agentId })
+    .values({ id: conversationId, name: 'New Chat', userId, assistantId })
     .onConflictDoUpdate({
       target: conversationTable.id,
       set: { id: conversationId },
@@ -50,9 +50,12 @@ export async function dbGetCoversationMessages({
 }
 
 export async function dbInsertChatContent(chatContent: InsertConversationMessageRow) {
-  const newChatContent = await db.insert(conversationMessageTable).values(chatContent).returning();
+  const [newChatContent] = await db
+    .insert(conversationMessageTable)
+    .values(chatContent)
+    .returning();
 
-  return newChatContent[0];
+  return newChatContent;
 }
 
 export async function dbGetConversations({ userId }: { userId: string }) {
@@ -68,33 +71,33 @@ export async function dbGetConversations({ userId }: { userId: string }) {
 export async function dbGetConversationById({
   conversationId,
   userId,
-  agentId,
+  assistantId,
 }: {
   conversationId: string;
   userId: string;
-  agentId?: string;
+  assistantId?: string;
 }) {
-  if (agentId !== undefined) {
-    const agentConversation = await db
+  if (assistantId !== undefined) {
+    const [assistantConversation] = await db
       .select()
       .from(conversationTable)
       .where(
         and(
           eq(conversationTable.id, conversationId),
           eq(conversationTable.userId, userId),
-          eq(conversationTable.agentId, agentId),
+          eq(conversationTable.assistantId, assistantId),
         ),
       );
 
-    return agentConversation[0];
+    return assistantConversation;
   }
 
-  const conversation = await db
+  const [conversation] = await db
     .select()
     .from(conversationTable)
     .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)));
 
-  return conversation[0];
+  return conversation;
 }
 
 export async function dbUpdateConversationTitle({
@@ -106,13 +109,13 @@ export async function dbUpdateConversationTitle({
   name: string;
   userId: string;
 }) {
-  const updatedConversation = await db
+  const [updatedConversation] = await db
     .update(conversationTable)
     .set({ name })
     .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
     .returning();
 
-  return updatedConversation[0];
+  return updatedConversation;
 }
 
 export async function dbUpdateConversationMessageContent(

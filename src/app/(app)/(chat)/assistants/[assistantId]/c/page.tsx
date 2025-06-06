@@ -1,6 +1,6 @@
 import Chat from '@/components/chat/chat';
-import { dbGetAgentById } from '@/db/functions/agent';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
+import { dbGetAssistantById } from '@/db/functions/assistant';
 import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 const pageContextSchema = z.object({
   params: z.object({
-    agentId: z.string().uuid(),
+    assistantId: z.string().uuid(),
   }),
 });
 
@@ -25,11 +25,11 @@ export default async function Page(context: unknown) {
   }
 
   const id = generateUUID();
-  const { agentId } = parsedParams.data.params;
+  const { assistantId } = parsedParams.data.params;
 
-  const [models, agent, tokensUsed, subscriptionPlan] = await Promise.all([
+  const [models, assistant, tokensUsed, subscriptionPlan] = await Promise.all([
     dbGetEnabledModels(),
-    dbGetAgentById({ agentId, userId: user.id }),
+    dbGetAssistantById({ assistantId, userId: user.id }),
     dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
     getSubscriptionPlanBySubscriptionState(user.subscription),
   ]);
@@ -39,7 +39,7 @@ export default async function Page(context: unknown) {
     throw new Error('No subscription plan found');
   }
 
-  if (agent === undefined) {
+  if (assistant === undefined) {
     return notFound();
   }
 
@@ -50,8 +50,8 @@ export default async function Page(context: unknown) {
       key={id}
       id={id}
       initialMessages={[]}
-      agentId={agent.id}
-      agentName={agent.name}
+      assistantId={assistant.id}
+      assistantName={assistant.name}
       models={models}
       tokensUsed={tokensUsed}
       userLimits={limits}

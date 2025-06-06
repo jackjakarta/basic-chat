@@ -12,13 +12,13 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { createAgentAction } from './actions';
-import { newAgentSchema } from './schemas';
+import { createAssistantAction } from './actions';
+import { newAssistantSchema } from './schemas';
 
-type FormData = z.infer<typeof newAgentSchema>;
+type FormData = z.infer<typeof newAssistantSchema>;
 
-export default function CreateAgentForm() {
-  const t = useTranslations('agents');
+export default function CreateAssistantForm() {
+  const t = useTranslations('assistants');
   const router = useRouter();
   const { toastSuccess, toastLoading, toastError } = useToast();
 
@@ -27,16 +27,16 @@ export default function CreateAgentForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    resolver: zodResolver(newAgentSchema),
+    resolver: zodResolver(newAssistantSchema),
   });
 
   async function onSubmit(data: FormData) {
     toastLoading(t('toasts.toast-create-loading'));
 
     try {
-      const newAgent = await createAgentAction(data);
+      const newAssistant = await createAssistantAction(data);
       toastSuccess(t('toasts.toast-create-success'));
-      router.push(`/agents/${newAgent.id}`);
+      router.push(`/assistants/${newAssistant.id}`);
     } catch (error) {
       console.error({ error });
       toastError(t('toasts.toast-create-error'));
@@ -72,7 +72,7 @@ export default function CreateAgentForm() {
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
-        {t('buttons.create-agent')}
+        {t('buttons.create-assistant')}
       </Button>
     </form>
   );

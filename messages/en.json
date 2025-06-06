@@ -1,40 +1,40 @@
 {
-  "agents": {
+  "assistants": {
     "buttons": {
-      "create-agent": "Create Agent",
-      "creating-agent": "Creating..."
+      "create-assistant": "Create Assistant",
+      "creating-assistant": "Creating..."
     },
     "create": {
-      "description": "Fill in the details to create a new AI agent.",
+      "description": "Fill in the details to create a new AI assistant.",
       "form": {
         "instructions": {
           "label": "Instructions",
-          "placeholder": "Enter agent instructions"
+          "placeholder": "Enter assistant instructions"
         },
         "name": {
           "label": "Name",
-          "placeholder": "Enter agent name"
+          "placeholder": "Enter assistant name"
         }
       },
       "name": "Name",
-      "title": "Create New Agent"
+      "title": "Create New Assistant"
     },
-    "description": "Agents are custom AI assistants designed with a specific set of instructions tailored to perform particular tasks or solve particular problems.",
-    "no-agents": "No agents found. Create your first agent.",
-    "title": "Agents",
+    "description": "Assistants are custom AI assistants designed with a specific set of instructions tailored to perform particular tasks or solve particular problems.",
+    "no-assistants": "No assistants found. Create your first assistant.",
+    "title": "Assistants",
     "confirmation": {
       "delete": {
-        "title": "Delete Agent",
-        "description": "Are you sure you want to delete $AGENT_NAME ? This action cannot be undone."
+        "title": "Delete Assistant",
+        "description": "Are you sure you want to delete $ASSISTANT_NAME ? This action cannot be undone."
       }
     },
     "toasts": {
-      "toast-create-error": "Error creating agent",
-      "toast-create-loading": "Creating agent...",
-      "toast-create-success": "Agent created successfully",
-      "toast-delete-error": "Error deleting agent",
-      "toast-delete-loading": "Deleting agent...",
-      "toast-delete-success": "Agent deleted successfully"
+      "toast-create-error": "Error creating assistant",
+      "toast-create-loading": "Creating assistant...",
+      "toast-create-success": "Assistant created successfully",
+      "toast-delete-error": "Error deleting assistant",
+      "toast-delete-loading": "Deleting assistant...",
+      "toast-delete-success": "Assistant deleted successfully"
     }
   },
   "auth": {
@@ -152,7 +152,7 @@
     }
   },
   "sidebar": {
-    "agents": "Agents",
+    "assistants": "Assistants",
     "new-chat": "New chat",
     "no-chats": "No chats at the moment",
     "chats": "Chats",

@@ -32,8 +32,8 @@ type ChatProps = {
   models: AIModelRow[];
   tokensUsed: number;
   userFirstName?: string;
-  agentId?: string;
-  agentName?: string;
+  assistantId?: string;
+  assistantName?: string;
 };
 
 export default function Chat({
@@ -43,8 +43,8 @@ export default function Chat({
   models,
   tokensUsed,
   userFirstName,
-  agentId,
-  agentName,
+  assistantId,
+  assistantName,
 }: ChatProps) {
   const queryClient = useQueryClient();
 
@@ -65,7 +65,7 @@ export default function Chat({
       body: {
         chatId: id,
         modelId,
-        agentId,
+        assistantId,
         webSearchActive: isWebSearchActive,
         imageGenerationActive: isImageGenerationActive,
       },
@@ -126,7 +126,7 @@ export default function Chat({
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   }
 
-  const chatPath = agentId !== undefined ? `/agents/${agentId}/c/${id}` : `/c/${id}`;
+  const chatPath = assistantId !== undefined ? `/assistants/${assistantId}/c/${id}` : `/c/${id}`;
 
   function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -146,7 +146,7 @@ export default function Chat({
 
   return (
     <>
-      <Header title={agentName} models={models} isEmptyChat={messages.length <= 0} />
+      <Header title={assistantName} models={models} isEmptyChat={messages.length <= 0} />
       <div
         ref={scrollRef}
         className="flex flex-col h-full w-full overflow-y-auto"

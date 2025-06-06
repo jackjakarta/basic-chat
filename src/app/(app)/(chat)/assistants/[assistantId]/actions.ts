@@ -1,33 +1,33 @@
 'use server';
 
-import { dbDeleteAgent, dbUpdateAgent } from '@/db/functions/agent';
+import { dbDeleteAssistant, dbUpdateAssistant } from '@/db/functions/assistant';
 import { dbDeleteFilesFromVectorStore } from '@/db/functions/vector-store';
-import { type AgentRow } from '@/db/schema';
+import { type AssistantRow } from '@/db/schema';
 import { deleteFile, deleteVectorStore } from '@/openai/files';
 import { getUser } from '@/utils/auth';
 
-export async function updateAgentAction({
-  agentId,
+export async function updateAssistantAction({
+  assistantId,
   data,
 }: {
-  agentId: string;
-  data: Partial<AgentRow>;
+  assistantId: string;
+  data: Partial<AssistantRow>;
 }) {
   const user = await getUser();
-  const updatedAgent = await dbUpdateAgent({ agentId, userId: user.id, data });
+  const updatedAssistant = await dbUpdateAssistant({ assistantId, userId: user.id, data });
 
-  if (updatedAgent === undefined) {
-    throw new Error('Failed to update agent');
+  if (updatedAssistant === undefined) {
+    throw new Error('Failed to update assistant');
   }
 
-  return updatedAgent;
+  return updatedAssistant;
 }
 
-export async function deleteAgentAction({
-  agentId,
+export async function deleteAssistantAction({
+  assistantId,
   vectorStoreId,
 }: {
-  agentId: string;
+  assistantId: string;
   vectorStoreId: string | null;
 }) {
   const user = await getUser();
@@ -36,10 +36,10 @@ export async function deleteAgentAction({
     await deleteVectorStore({ vectorStoreId, userId: user.id });
   }
 
-  await dbDeleteAgent({ agentId, userId: user.id });
+  await dbDeleteAssistant({ assistantId, userId: user.id });
 }
 
-export async function deleteAgentFilesAction({
+export async function deleteAssistantFilesAction({
   vectorStoreId,
   fileIds,
 }: {

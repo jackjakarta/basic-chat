@@ -134,6 +134,13 @@
       "when": 1748727376182,
       "tag": "0018_foamy_magma",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1749236039437,
+      "tag": "0019_cheerful_proudstar",
+      "breakpoints": true
     }
   ]
 }
