@@ -100,7 +100,6 @@ export const conversationTable = appSchema.table('conversation', {
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),
-  agentId: uuid('agent_id').references(() => agentTable.id),
   assistantId: uuid('assistant_id').references(() => assistantTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
@@ -142,25 +141,6 @@ export const conversationMessageTable = appSchema.table('conversation_message', 
 
 export type ConversationMessageRow = typeof conversationMessageTable.$inferSelect;
 export type InsertConversationMessageRow = typeof conversationMessageTable.$inferInsert;
-
-export const agentTable = appSchema.table('agent', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
-  instructions: text('instructions'),
-  pictureUrl: text('picture_url'),
-  userId: uuid('user_id')
-    .references(() => userTable.id)
-    .notNull(),
-  vectorStoreId: text('vector_store_id').references(() => vectorStoreTable.id),
-  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-export type AgentRow = typeof agentTable.$inferSelect;
-export type InsertAgentRow = typeof agentTable.$inferInsert;
 
 export const assistantTable = appSchema.table('assistant', {
   id: uuid('id').defaultRandom().primaryKey(),
