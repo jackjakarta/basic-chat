@@ -72,7 +72,7 @@ export default function CreateAssistantForm() {
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
-        {t('buttons.create-agent')}
+        {t('buttons.create-assistant')}
       </Button>
     </form>
   );

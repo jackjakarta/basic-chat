@@ -152,7 +152,7 @@
     }
   },
   "sidebar": {
-    "agents": "Agents",
+    "assistants": "Assistants",
     "new-chat": "New chat",
     "no-chats": "No chats at the moment",
     "chats": "Chats",

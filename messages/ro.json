@@ -152,7 +152,7 @@
     }
   },
   "sidebar": {
-    "agents": "Agenți",
+    "assistants": "Asistenți",
     "new-chat": "Chat nou",
     "no-chats": "Momentan nu există chat-uri",
     "chats": "Chat-uri",

@@ -152,7 +152,7 @@
     }
   },
   "sidebar": {
-    "agents": "Agenten",
+    "assistants": "Assistenten",
     "new-chat": "Neuer Chat",
     "no-chats": "Momentan keine Gespräche",
     "chats": "Gespräche",

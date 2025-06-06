@@ -18,12 +18,12 @@ import { z } from 'zod';
 import { updateAssistantAction } from '../[assistantId]/actions';
 import AssistantKnowledgeDisplay from './assistant-knowledge-display';
 
-const editAgentSchema = z.object({
+const editAssistantSchema = z.object({
   name: z.string().optional(),
   instructions: z.string().optional(),
 });
 
-type FormData = z.infer<typeof editAgentSchema>;
+type FormData = z.infer<typeof editAssistantSchema>;
 
 export default function EditAssistantForm({
   assistant,
@@ -40,7 +40,7 @@ export default function EditAssistantForm({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    resolver: zodResolver(editAgentSchema),
+    resolver: zodResolver(editAssistantSchema),
     defaultValues: {
       name: assistant.name,
       instructions: assistant.instructions ?? undefined,

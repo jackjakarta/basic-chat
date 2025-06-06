@@ -1,5 +1,5 @@
 import { db } from '.';
-import { agentTable, conversationMessageTable, conversationTable, tokenTable } from './schema';
+import { assistantTable, conversationMessageTable, conversationTable, tokenTable } from './schema';
 
 async function clearDb({ skip }: { skip: boolean }) {
   if (skip) {
@@ -10,7 +10,7 @@ async function clearDb({ skip }: { skip: boolean }) {
   await db.transaction(async (tx) => {
     await tx.delete(conversationMessageTable);
     await tx.delete(conversationTable);
-    await tx.delete(agentTable);
+    await tx.delete(assistantTable);
     await tx.delete(tokenTable);
   });
 }

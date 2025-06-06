@@ -20,7 +20,7 @@ import React from 'react';
 
 import { deleteAssistantAction } from '../[assistantId]/actions';
 
-export default function AgentCard({ assistant }: { assistant: AssistantRow }) {
+export default function AssistantCard({ assistant }: { assistant: AssistantRow }) {
   const t = useTranslations('assistants');
   const tCommon = useTranslations('common');
   const router = useRouter();
@@ -49,7 +49,7 @@ export default function AgentCard({ assistant }: { assistant: AssistantRow }) {
 
   return (
     <>
-      <Link href={`/agents/${assistant.id}/c`}>
+      <Link href={`/assistants/${assistant.id}/c`}>
         <Card className="w-full p-4 flex border-none shadow-none items-center dark:bg-secondary/40 hover:bg-sidebar/50 dark:hover:bg-secondary/20 justify-between space-x-4 cursor-pointer">
           <div className="flex items-center space-x-4 flex-1">
             <Avatar className="h-12 w-12">

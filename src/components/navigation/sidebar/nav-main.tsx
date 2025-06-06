@@ -46,7 +46,7 @@ export function NavMain({ onClickMobile }: NavMainProps) {
           >
             <Link href="/assistants" className="flex items-center gap-2">
               <Bot />
-              <span>{t('agents')}</span>
+              <span>{t('assistants')}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>

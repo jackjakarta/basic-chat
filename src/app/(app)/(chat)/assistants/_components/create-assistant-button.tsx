@@ -9,7 +9,7 @@ type CreateAsistantButtonProps = {
   className?: React.ComponentProps<'button'>['className'];
 };
 
-export default function CreateAgentButton({ className }: CreateAsistantButtonProps) {
+export default function CreateAssistantButton({ className }: CreateAsistantButtonProps) {
   const t = useTranslations('assistants');
   const router = useRouter();
 
