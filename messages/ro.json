@@ -1,40 +1,40 @@
 {
-  "agents": {
+  "assistants": {
     "buttons": {
-      "create-agent": "Creează Agent",
-      "creating-agent": "Se creează..."
+      "create-assistant": "Creează Asistent",
+      "creating-assistant": "Se creează..."
     },
     "create": {
-      "description": "Completează detaliile pentru a crea un agent AI nou.",
+      "description": "Completează detaliile pentru a crea un asistent AI nou.",
       "form": {
         "instructions": {
           "label": "Instrucțiuni",
-          "placeholder": "Introdu instrucțiunile agentului"
+          "placeholder": "Introdu instrucțiunile asistentului"
         },
         "name": {
           "label": "Nume",
-          "placeholder": "Introdu numele agentului"
+          "placeholder": "Introdu numele asistentului"
         }
       },
       "name": "Nume",
-      "title": "Creează Agent Nou"
+      "title": "Creează Asistent Nou"
     },
-    "description": "Agenții sunt asistenți AI personalizați, concepuți cu instrucțiuni specifice pentru a efectua anumite sarcini sau pentru a rezolva anumite probleme.",
-    "no-agents": "Nu există agenți. Creează primul tău agent.",
-    "title": "Agenți",
+    "description": "Asistenții sunt asistenți AI personalizați, concepuți cu instrucțiuni specifice pentru a efectua anumite sarcini sau pentru a rezolva anumite probleme.",
+    "no-assistants": "Nu există asistenți. Creează primul tău asistent.",
+    "title": "Asistenți",
     "confirmation": {
       "delete": {
-        "title": "Șterge Agent",
-        "description": "Ești sigur că vrei să ștergi $AGENT_NAME? Această acțiune nu poate fi anulată."
+        "title": "Șterge Asistent",
+        "description": "Ești sigur că vrei să ștergi $ASSISTANT_NAME? Această acțiune nu poate fi anulată."
       }
     },
     "toasts": {
-      "toast-create-error": "Eroare la crearea agentului",
-      "toast-create-loading": "Se creează agentul...",
-      "toast-create-success": "Agentul a fost creat cu succes",
-      "toast-delete-error": "Eroare la ștergerea agentului",
-      "toast-delete-loading": "Se șterge agentul...",
-      "toast-delete-success": "Agentul a fost șters cu succes"
+      "toast-create-error": "Eroare la crearea asistentului",
+      "toast-create-loading": "Se creează asistentul...",
+      "toast-create-success": "Asistentul a fost creat cu succes",
+      "toast-delete-error": "Eroare la ștergerea asistentului",
+      "toast-delete-loading": "Se șterge asistentul...",
+      "toast-delete-success": "Asistentul a fost șters cu succes"
     }
   },
   "auth": {

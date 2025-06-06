@@ -1,4 +1,4 @@
-import { dbGetAgentById } from '@/db/functions/agent';
+import { dbGetAssistantById } from '@/db/functions/assistant';
 import { getUser } from '@/utils/auth';
 import { metadataTitle } from '@/utils/metadata';
 import { type Metadata } from 'next';
@@ -6,13 +6,13 @@ import { type Metadata } from 'next';
 export async function generateMetadata({
   params,
 }: {
-  params: { agentId: string };
+  params: { assistantId: string };
 }): Promise<Metadata> {
   const user = await getUser();
-  const agent = await dbGetAgentById({ agentId: params.agentId, userId: user.id });
+  const assistant = await dbGetAssistantById({ assistantId: params.assistantId, userId: user.id });
 
   return {
-    title: `${metadataTitle} - ${agent ? agent.name : 'Agents'}`,
+    title: `${metadataTitle} - ${assistant ? assistant.name : 'Assistants'}`,
   };
 }
 

@@ -141,6 +141,13 @@
       "when": 1749161464986,
       "tag": "0019_tranquil_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1749234842933,
+      "tag": "0020_aspiring_killraven",
+      "breakpoints": true
     }
   ]
 }

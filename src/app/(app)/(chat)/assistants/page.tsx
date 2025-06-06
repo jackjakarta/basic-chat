@@ -12,7 +12,7 @@ export default async function Page() {
 
   const [assistants, t] = await Promise.all([
     dbGetAssistantsByUserId({ userId: user.id }),
-    getTranslations('agents'),
+    getTranslations('assistants'),
   ]);
 
   return (
@@ -25,7 +25,7 @@ export default async function Page() {
           <CreateAssistantButton className="w-fit rounded-lg bg-accent hover:bg-accent/90 text-secondary-foreground active:bg-accent/90" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {assistants.length === 0 ? (
-              <span className="text-sm text-muted-foreground">{t('no-agents')}</span>
+              <span className="text-sm text-muted-foreground">{t('no-assistants')}</span>
             ) : (
               assistants.map((assistant) => (
                 <AssistantCard key={assistant.id} assistant={assistant} />

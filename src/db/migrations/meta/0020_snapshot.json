@@ -1,6 +1,6 @@
 {
-  "id": "1955569a-a6ef-4894-9d3f-bf18784e3636",
-  "prevId": "165e9ef7-4561-47a3-83a2-835ef81b4c9b",
+  "id": "a0b3cdf8-2ed3-42d1-b577-4371afea66a9",
+  "prevId": "1955569a-a6ef-4894-9d3f-bf18784e3636",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -362,6 +362,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "assistant_id": {
+          "name": "assistant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -395,6 +401,16 @@
           "tableTo": "agent",
           "schemaTo": "app",
           "columnsFrom": ["agent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "conversation_assistant_id_assistant_id_fk": {
+          "name": "conversation_assistant_id_assistant_id_fk",
+          "tableFrom": "conversation",
+          "tableTo": "assistant",
+          "schemaTo": "app",
+          "columnsFrom": ["assistant_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"

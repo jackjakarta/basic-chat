@@ -10,15 +10,15 @@ import {
 export async function dbGetOrCreateConversation({
   conversationId,
   userId,
-  agentId,
+  assistantId,
 }: {
   conversationId: string;
   userId: string;
-  agentId?: string;
+  assistantId?: string;
 }) {
   const conversation = await db
     .insert(conversationTable)
-    .values({ id: conversationId, name: 'New Chat', userId, agentId })
+    .values({ id: conversationId, name: 'New Chat', userId, assistantId })
     .onConflictDoUpdate({
       target: conversationTable.id,
       set: { id: conversationId },
@@ -68,13 +68,13 @@ export async function dbGetConversations({ userId }: { userId: string }) {
 export async function dbGetConversationById({
   conversationId,
   userId,
-  agentId,
+  assistantId,
 }: {
   conversationId: string;
   userId: string;
-  agentId?: string;
+  assistantId?: string;
 }) {
-  if (agentId !== undefined) {
+  if (assistantId !== undefined) {
     const agentConversation = await db
       .select()
       .from(conversationTable)
@@ -82,7 +82,7 @@ export async function dbGetConversationById({
         and(
           eq(conversationTable.id, conversationId),
           eq(conversationTable.userId, userId),
-          eq(conversationTable.agentId, agentId),
+          eq(conversationTable.assistantId, assistantId),
         ),
       );
 

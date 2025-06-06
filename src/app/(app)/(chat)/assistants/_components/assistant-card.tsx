@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AssistantRow, type AgentRow } from '@/db/schema';
+import { type AssistantRow } from '@/db/schema';
 import { MoreHorizontal } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ import React from 'react';
 import { deleteAssistantAction } from '../[assistantId]/actions';
 
 export default function AgentCard({ assistant }: { assistant: AssistantRow }) {
-  const t = useTranslations('agents');
+  const t = useTranslations('assistants');
   const tCommon = useTranslations('common');
   const router = useRouter();
 

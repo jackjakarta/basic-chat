@@ -1,10 +1,10 @@
 export function constructSystemPrompt({
-  agentInstructions,
+  assistantInstructions,
   userCustomInstructions,
   webSearchActive,
   imageGenerationActive,
 }: {
-  agentInstructions?: string | null;
+  assistantInstructions?: string | null;
   userCustomInstructions?: string;
   webSearchActive: boolean;
   imageGenerationActive: boolean;
@@ -18,11 +18,11 @@ export function constructSystemPrompt({
     : '';
 
   if (
-    agentInstructions !== null &&
-    agentInstructions !== undefined &&
-    agentInstructions.length > 0
+    assistantInstructions !== null &&
+    assistantInstructions !== undefined &&
+    assistantInstructions.length > 0
   ) {
-    const agentSystemPrompt = `Below are custom instructions provided by the user that you must strictly follow: 
+    const assistantSystemPrompt = `Below are custom instructions provided by the user that you must strictly follow: 
 
     Your task is to help the user with special kind of tasks based on 
     the instructions that are provided below. You will assume the role that the 
@@ -32,9 +32,9 @@ export function constructSystemPrompt({
     
     These are the instructions provided by the user: 
     
-    ${agentInstructions}`;
+    ${assistantInstructions}`;
 
-    const promptWithSearchInstructions = agentSystemPrompt.replace(
+    const promptWithSearchInstructions = assistantSystemPrompt.replace(
       '$SEARCH_INSTRUCTIONS',
       searchInstructions,
     );
