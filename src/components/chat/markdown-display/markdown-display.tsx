@@ -1,6 +1,5 @@
 import { cw } from '@/utils/tailwind';
 import katex from 'katex';
-import { useTheme } from 'next-themes';
 import React from 'react';
 import Markdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -30,7 +29,6 @@ function preprocessMathDelimiters(markdown: string) {
 
 export default function MarkdownDisplay({ children: _children, maxWidth }: MarkdownDisplayProps) {
   const children = preprocessMathDelimiters(_children);
-  const { resolvedTheme } = useTheme();
 
   return (
     <Markdown
@@ -44,7 +42,7 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: resolvedTheme === 'dark' ? '#f8f8f2' : 'blue' }}
+              className={cw('hover:underline text-blue-600 dark:text-blue-200')}
               {...props}
             >
               {children}
