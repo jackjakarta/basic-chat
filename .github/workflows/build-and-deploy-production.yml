@@ -77,5 +77,5 @@ jobs:
           script: |
             cd /home/jack/basic-chat
             export $(grep -v '^#' .env | xargs) && \
-            envsubst < docker-compose.production.yml | docker stack deploy -c - el-chat && \
+            envsubst < docker-compose.production.yml | docker stack deploy --with-registry-auth -c - el-chat && \
             docker system prune -f
