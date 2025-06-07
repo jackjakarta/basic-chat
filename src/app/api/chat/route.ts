@@ -38,8 +38,9 @@ export async function POST(request: NextRequest) {
 
     const tokenUsed = await dbGetAmountOfTokensUsedByUserId({ userId: user.id });
     const { limits } = subscriptionPlan;
+    const { totalTokens } = tokenUsed;
 
-    if (limits.tokenLimit !== null && tokenUsed >= limits.tokenLimit) {
+    if (limits.tokenLimit !== null && totalTokens >= limits.tokenLimit) {
       return NextResponse.json(
         { error: 'Token limit exceeded. Please upgrade your subscription.' },
         { status: 403 },

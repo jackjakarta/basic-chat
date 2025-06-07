@@ -155,6 +155,7 @@
     "assistants": "Asistenți",
     "new-chat": "Chat nou",
     "no-chats": "Momentan nu există chat-uri",
+    "error-loading-chats": "Eroare la încărcarea chat-urilor",
     "chats": "Chat-uri",
     "user-menu": {
       "profile": "Profil",

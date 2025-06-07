@@ -51,7 +51,7 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
 
   async function handleResend() {
     try {
-      console.debug({ email, message: 'Not implemented' });
+      console.info({ email, message: 'Not implemented' });
     } catch (error) {
       console.error({ error });
     }

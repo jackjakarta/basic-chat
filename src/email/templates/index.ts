@@ -29,7 +29,6 @@ export async function createUserActionMailTemplate(
   });
 
   const actionUrl = buildUserActionUrl({ searchParams, tokenAction: action });
-  console.debug({ actionUrl });
 
   switch (action) {
     case 'verify-email':

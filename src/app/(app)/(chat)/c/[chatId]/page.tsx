@@ -55,12 +55,14 @@ export default async function Page(context: unknown) {
     experimental_attachments: message.attachments ?? undefined,
   }));
 
+  const { totalTokens } = tokensUsed;
+
   return (
     <Chat
       key={chat.id}
       id={chat.id}
       initialMessages={messagesWithAttachments}
-      tokensUsed={tokensUsed}
+      tokensUsed={totalTokens}
       userLimits={limits}
       models={models}
     />
