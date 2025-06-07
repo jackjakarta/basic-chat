@@ -221,7 +221,9 @@ export default function ChatInput({
           </div>
         </form>
         <span className="text-xs mt-2 font-normal text-main-900 flex self-center">
-          This chat can search the web and generate images
+          {chatDisabled
+            ? 'You have reach your limit for the month. Buy a plan to get higher limits.'
+            : 'This chat can search the web and generate images'}
         </span>
       </div>
     </div>
