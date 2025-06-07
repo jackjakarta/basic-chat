@@ -155,6 +155,7 @@
     "assistants": "Assistants",
     "new-chat": "New chat",
     "no-chats": "No chats at the moment",
+    "error-loading-chats": "Error loading chats",
     "chats": "Chats",
     "user-menu": {
       "profile": "Profile",

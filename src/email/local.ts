@@ -31,7 +31,7 @@ export async function sendTestEmail({
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.debug({ info });
+    console.info({ info });
     return { success: true };
   } catch (error) {
     console.error({ error });

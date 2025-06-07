@@ -44,6 +44,7 @@ export default async function Page(context: unknown) {
   }
 
   const { limits } = subscriptionPlan;
+  const { totalTokens } = tokensUsed;
 
   return (
     <Chat
@@ -53,7 +54,7 @@ export default async function Page(context: unknown) {
       assistantId={assistant.id}
       assistantName={assistant.name}
       models={models}
-      tokensUsed={tokensUsed}
+      tokensUsed={totalTokens}
       userLimits={limits}
       userFirstName={user.firstName}
     />

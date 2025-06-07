@@ -23,7 +23,11 @@ type NavChatsProps = {
 export function NavChats({ onClickMobile }: NavChatsProps) {
   const t = useTranslations('sidebar');
 
-  const { data: conversations = [], isLoading } = useQuery({
+  const {
+    data: conversations = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['conversations'],
     queryFn: fetchClientSideConversations,
     refetchOnMount: true,
@@ -43,8 +47,12 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                 {isLoading &&
                   Array.from({ length: 14 }).map((_, index) => <SidebarMenuSkeleton key={index} />)}
 
-                {conversations &&
-                  !isLoading &&
+                {isError && (
+                  <span className="text-xs dark:opacity-70">{t('error-loading-chats')}</span>
+                )}
+
+                {!isLoading &&
+                  !isError &&
                   (conversations.length > 0 ? (
                     conversations.map((conversation) => (
                       <ConversationItem

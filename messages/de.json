@@ -155,6 +155,7 @@
     "assistants": "Assistenten",
     "new-chat": "Neuer Chat",
     "no-chats": "Momentan keine Gespräche",
+    "error-loading-chats": "Fehler beim Laden der Gespräche",
     "chats": "Gespräche",
     "user-menu": {
       "profile": "Profil",

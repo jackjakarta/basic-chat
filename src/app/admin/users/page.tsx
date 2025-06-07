@@ -40,7 +40,13 @@ export default async function Page() {
 
       const { limits } = subscriptionPlan;
 
-      const fullUser: ExtentedUser = { ...user, tokensUsed, avatarUrl, subscription, limits };
+      const fullUser: ExtentedUser = {
+        ...user,
+        tokensUsed: tokensUsed.totalTokens,
+        avatarUrl,
+        subscription,
+        limits,
+      };
 
       return fullUser;
     }),

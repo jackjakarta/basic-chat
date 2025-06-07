@@ -57,7 +57,7 @@ export default async function Page(context: unknown) {
 
   const fullUser: ExtentedUser = {
     ...user,
-    tokensUsed,
+    tokensUsed: tokensUsed.totalTokens,
     subscription,
     avatarUrl,
     limits,

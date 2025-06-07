@@ -62,6 +62,7 @@ export default async function Page(context: unknown) {
   });
 
   const filteredMessages = filterChatMessages({ chatMessages });
+  const { totalTokens } = tokensUsed;
 
   return (
     <Chat
@@ -70,7 +71,7 @@ export default async function Page(context: unknown) {
       initialMessages={filteredMessages}
       assistantId={assistantId}
       models={models}
-      tokensUsed={tokensUsed}
+      tokensUsed={totalTokens}
       userLimits={limits}
       assistantName={assistant.name}
     />
