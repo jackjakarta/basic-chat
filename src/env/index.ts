@@ -32,6 +32,7 @@ export const env = createEnv({
     notionRedirectUri: z.string().url(),
     stripeSecretKey: z.string().min(1),
     stripeWebhookSecret: z.string().min(1),
+    githubAccessToken: z.string().min(1),
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
@@ -67,6 +68,7 @@ export const env = createEnv({
     notionRedirectUri: process.env.NOTION_REDIRECT_URI,
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    githubAccessToken: process.env.GITHUB_ACCESS_TOKEN,
     NEXT_PUBLIC_stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },

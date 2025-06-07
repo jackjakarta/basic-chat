@@ -56,10 +56,11 @@ export const authOptions = {
     async jwt({ token, user, account }) {
       if (user) {
         let dbUser;
+
         try {
           dbUser = await dbGetUserByEmail({ email: user.email ?? '' });
 
-          if (!dbUser) {
+          if (dbUser === undefined) {
             throw new Error('User not found');
           }
         } catch {
