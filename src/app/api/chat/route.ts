@@ -14,8 +14,6 @@ import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
 import { convertToCoreMessages, smoothStream, streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getAwsDocsMcpTools } from './mcp/aws';
-// import { getGithubMcpTools } from './mcp/github';
 import { getModel } from './models';
 import { constructSystemPrompt } from './system-prompt';
 import { executeCodeTool } from './tools/code-execution';
@@ -113,7 +111,7 @@ export async function POST(request: NextRequest) {
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
     const notionDataSource = getActiveNotionIntegration(activeDataSources);
 
-    const customTools = {
+    const tools = {
       ...(webSearchActive && !imageGenerationActive && { searchTheWeb: webSearchTool() }),
       ...(!imageGenerationActive && { executeCode: executeCodeTool() }),
       ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
@@ -128,15 +126,6 @@ export async function POST(request: NextRequest) {
         notionDataSource !== undefined && {
           searchNotion: await searchNotionTool({ notionDataSource }),
         }),
-    };
-
-    const awsDocsTools = await getAwsDocsMcpTools();
-    // const githubMcpTools = await getGithubMcpTools();
-
-    const tools = {
-      ...customTools,
-      ...awsDocsTools,
-      // ...githubMcpTools,
     };
 
     const result = streamText({
