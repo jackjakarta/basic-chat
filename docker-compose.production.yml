@@ -32,7 +32,7 @@ services:
   web:
     image: jackjakarta/el-chat:${TAG_VERSION}
     deploy:
-      replicas: 2
+      replicas: 3
       update_config:
         parallelism: 1
         delay: 5s
