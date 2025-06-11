@@ -1,6 +1,12 @@
 import { db } from '@/db';
 
-import { aiModelTable, dataSourceIntegrationTable, subscriptionPlanTable } from '../schema';
+import {
+  aiModelTable,
+  conversationTable,
+  dataSourceIntegrationTable,
+  subscriptionPlanTable,
+} from '../schema';
+import { conversations } from './conversations';
 import { dataSourceIntegrations } from './data-source-integrations';
 import { models } from './models';
 import { subscriptionPlans } from './subscription-plans';
@@ -9,6 +15,7 @@ Promise.all([
   seedAIModels({ skip: false }),
   seedSubscriptionPlans({ skip: false }),
   seedDataSourceIntegrations({ skip: false }),
+  seedConversations({ skip: true }),
 ])
   .then(() => {
     console.info({ info: 'Seeding completed' });
@@ -64,5 +71,21 @@ async function seedDataSourceIntegrations({ skip = true }: { skip: boolean }) {
       .onConflictDoNothing({ target: dataSourceIntegrationTable.id });
 
     console.info({ insertedIntegration });
+  }
+}
+
+async function seedConversations({ skip = true }: { skip: boolean }) {
+  if (skip) {
+    console.info({ info: 'Skipping conversations seeding' });
+    return;
+  }
+
+  for (const conversation of conversations) {
+    const insertedConversation = await db
+      .insert(conversationTable)
+      .values(conversation)
+      .onConflictDoNothing({ target: conversationTable.id });
+
+    console.info({ insertedConversation });
   }
 }

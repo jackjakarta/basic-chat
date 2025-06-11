@@ -1,4 +1,4 @@
-import { differenceInMonths } from 'date-fns';
+import { differenceInDays, differenceInMonths } from 'date-fns';
 
 export function formatDateToDayMonthYear(date: Date | undefined): string | undefined {
   if (date === undefined) return;
@@ -26,9 +26,14 @@ export function formatDateToDayMonthYearTime(date: Date | undefined): string | u
   return new Intl.DateTimeFormat('en-UK', options).format(date);
 }
 
-export function getMonthsSince(pastDate: Date): number {
+export function getTimeSince(pastDate: Date): string {
   const now = new Date();
-  const timeSince = differenceInMonths(now, pastDate);
+  const monthsSince = differenceInMonths(now, pastDate);
 
-  return timeSince;
+  if (monthsSince === 0) {
+    const daysSince = differenceInDays(now, pastDate);
+    return `${daysSince} day${daysSince !== 1 ? 's' : ''}`;
+  }
+
+  return `${monthsSince} month${monthsSince !== 1 ? 's' : ''}`;
 }

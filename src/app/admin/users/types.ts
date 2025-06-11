@@ -1,8 +1,14 @@
 import { type SubscriptionLimits } from '@/db/schema';
-import { UserAndContext } from '@/utils/auth';
+import { type UserAndContext } from '@/utils/auth';
 
-export type ExtentedUser = UserAndContext & {
+type UserStats = {
   tokensUsed: number;
-  avatarUrl: string;
-  limits: SubscriptionLimits;
+  conversationsCount: number | undefined;
+  conversationMessagesCount: number | undefined;
 };
+
+export type ExtendedUser = UserAndContext &
+  UserStats & {
+    avatarUrl: string;
+    limits: SubscriptionLimits;
+  };

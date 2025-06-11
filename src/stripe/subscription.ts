@@ -15,6 +15,7 @@ export function getSubscriptionStateBySubscriptions({
   if (hasFreeTrial) {
     return 'premium';
   }
+
   const activeSubscription = subscriptions.find((s) => s.status === 'active');
 
   if (activeSubscription !== undefined) {

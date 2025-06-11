@@ -1,16 +1,11 @@
-// Define the types of time periods
-type TimePeriod = 'morning' | 'noon' | 'afternoon' | 'evening' | 'night' | 'anytime';
+type TimeOfDay = 'morning' | 'noon' | 'afternoon' | 'evening' | 'night' | 'anytime';
 
-// Define the greeting structure
 type Greeting = {
   text: string;
-  period: TimePeriod;
+  period: TimeOfDay;
 };
 
-/**
- * Collection of all possible greetings organized by time period
- */
-const greetings: Record<TimePeriod, string[]> = {
+const greetings: Record<TimeOfDay, string[]> = {
   anytime: ['Welcome back', 'Nice to see you'],
   morning: ['Good morning', 'A brand new day'],
   noon: ['Enjoy your lunch'],
@@ -19,17 +14,11 @@ const greetings: Record<TimePeriod, string[]> = {
   night: ['Good night', 'Late night thoughts'],
 };
 
-/**
- * Determines the current time period based on the hour in Germany
- * @returns The current time period
- */
-function getCurrentTimePeriod(): TimePeriod {
-  // Get current hour in Germany
+function getCurrentTimeOfDay(): TimeOfDay {
   const now = new Date();
   const germanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
   const hour = germanTime.getHours();
 
-  // Determine time period based on hour ranges
   if (hour >= 5 && hour < 11.5) {
     return 'morning';
   } else if (hour >= 11.5 && hour < 13.5) {
@@ -43,36 +32,20 @@ function getCurrentTimePeriod(): TimePeriod {
   }
 }
 
-/**
- * Generates a seeded random number based on the day
- * @param max The maximum value (exclusive)
- * @param seed The seed to use for randomization
- * @returns A pseudo-random number between 0 and max-1
- */
 function seededRandom(max: number, seed: number): number {
-  // Simple seeded random function
   const x = Math.sin(seed) * 10000;
   const randomValue = x - Math.floor(x);
   return Math.floor(randomValue * max);
 }
 
-/**
- * Gets today's date as a number to use as a seed
- * @returns A number representing today's date in Germany
- */
 function getTodaySeed(): number {
   const now = new Date();
-  // const germanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+
   return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
 }
 
-/**
- * Returns a greeting appropriate for the current time in Germany
- * @param maybeFirstName Optional first name to personalize the greeting
- * @returns A greeting string that remains consistent throughout the time period
- */
 export function getTimeBasedGreeting(maybeFirstName?: string): string {
-  const currentPeriod = getCurrentTimePeriod();
+  const currentPeriod = getCurrentTimeOfDay();
   const todaySeed = getTodaySeed();
 
   const combinedGreetings: Greeting[] = [
