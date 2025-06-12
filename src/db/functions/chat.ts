@@ -16,16 +16,16 @@ export async function dbGetOrCreateConversation({
   userId: string;
   assistantId?: string;
 }) {
-  const conversation = await db
+  const [conversation] = await db
     .insert(conversationTable)
-    .values({ id: conversationId, name: 'New Chat', userId, assistantId })
+    .values({ id: conversationId, userId, assistantId })
     .onConflictDoUpdate({
       target: conversationTable.id,
       set: { id: conversationId },
     })
     .returning();
 
-  return conversation[0];
+  return conversation;
 }
 
 export async function dbGetCoversationMessages({

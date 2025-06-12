@@ -31,7 +31,7 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
     queryKey: ['conversations'],
     queryFn: fetchClientSideConversations,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
   return (

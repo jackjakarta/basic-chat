@@ -84,6 +84,27 @@
       }
     }
   },
+  "billing": {
+    "title": "Plăți",
+    "pricing": "Prețuri",
+    "choose-plan": "Alege planul care se potrivește nevoilor tale",
+    "ready-get-started": "Ești gata să începi?",
+    "join": "Alătură-te miilor de utilizatori care folosesc deja platforma noastră",
+    "start-trial": "Începe perioada de probă gratuită",
+    "cards": {
+      "month": "lună",
+      "recommended": "Recomandat",
+      "free-forever": "Gratuit pentru totdeauna",
+      "days-trial": "zile probă gratuită",
+      "whats-included": "Ce este inclus",
+      "messages-month": "mesaje pe lună",
+      "tokens-month": "tokenuri pe lună",
+      "priority-support": "Asistență prioritară",
+      "community-support": "Asistență comunitară",
+      "basic-features": "Funcții de bază",
+      "advanced-features": "Funcții avansate"
+    }
+  },
   "common": {
     "cancel": "Anulează",
     "close": "Închide",
@@ -155,7 +176,7 @@
     "assistants": "Asistenți",
     "new-chat": "Chat nou",
     "no-chats": "Momentan nu există chat-uri",
-    "error-loading-chats": "Eroare la încărcarea chat-urilor",
+    "error-loading-chats": "Probleme la încărcarea chat-urilor",
     "chats": "Chat-uri",
     "user-menu": {
       "profile": "Profil",

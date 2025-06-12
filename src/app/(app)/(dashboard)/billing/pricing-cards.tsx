@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { type SubscriptionPlanRow } from '@/db/schema';
 import { convertCentAmountToEuro } from '@/utils/money';
 import { Check, Infinity, MessageSquare, Zap } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
 export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }) {
   const router = useRouter();
+  const t = useTranslations('billing.cards');
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
@@ -22,7 +24,7 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
         >
           {plan.id === 'premium' && (
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <Badge className="bg-blue-600 px-4 py-1">Recommended</Badge>
+              <Badge className="bg-blue-600 px-4 py-1">{t('recommended')}</Badge>
             </div>
           )}
 
@@ -43,13 +45,13 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
                 <span className="text-5xl font-bold text-muted-foreground">
                   ${plan.price > 0 ? convertCentAmountToEuro(plan.price) : '0'}
                 </span>
-                <span className="text-muted-foreground ml-2">/month</span>
+                <span className="text-muted-foreground ml-2">/{t('month')}</span>
               </div>
               {plan.id === 'free' && (
-                <p className="text-sm text-muted-foreground mt-2">Forever free</p>
+                <p className="text-sm text-muted-foreground mt-2">{t('free-forever')}</p>
               )}
               {plan.id === 'premium' && (
-                <p className="text-sm text-muted-foreground mt-2">14 days free trial</p>
+                <p className="text-sm text-muted-foreground mt-2">14 {t('days-trial')}</p>
               )}
             </div>
           </CardHeader>
@@ -65,7 +67,7 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
             </Button>
 
             <div className="space-y-4">
-              <h4 className="font-semibold text-muted-foreground">What's included:</h4>
+              <h4 className="font-semibold text-muted-foreground">{t('whats-included')}</h4>
               <ul className="space-y-3">
                 <li className="flex items-center space-x-3">
                   {plan.limits.messagesLimit === null ? (
@@ -74,7 +76,7 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
                     <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
                   )}
                   <span className="text-muted-foreground">
-                    {formatLimit(plan.limits.messagesLimit, 'messages per month')}
+                    {formatLimit(plan.limits.messagesLimit, t('messages-month'))}
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
@@ -84,19 +86,19 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
                     <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
                   )}
                   <span className="text-muted-foreground">
-                    {formatLimit(plan.limits.tokenLimit, 'tokens per month')}
+                    {formatLimit(plan.limits.tokenLimit, t('tokens-month'))}
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
                   <span className="text-muted-foreground">
-                    {plan.id === 'premium' ? 'Priority support' : 'Community support'}
+                    {plan.id === 'premium' ? t('priority-support') : t('community-support')}
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
                   <span className="text-muted-foreground">
-                    {plan.id === 'premium' ? 'Advanced features' : 'Basic features'}
+                    {plan.id === 'premium' ? t('advanced-features') : t('basic-features')}
                   </span>
                 </li>
               </ul>

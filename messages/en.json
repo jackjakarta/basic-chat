@@ -84,6 +84,27 @@
       }
     }
   },
+  "billing": {
+    "title": "Billing",
+    "pricing": "Pricing",
+    "choose-plan": "Choose the plan that fits your needs",
+    "ready-get-started": "Ready to get started?",
+    "join": "Join thousands of users already using our platform",
+    "start-trial": "Start Your Free Trial",
+    "cards": {
+      "month": "month",
+      "recommended": "Recommended",
+      "free-forever": "Forever free",
+      "days-trial": "days free trial",
+      "whats-included": "What's included",
+      "messages-month": "messages per month",
+      "tokens-month": "tokens per month",
+      "priority-support": "Priority support",
+      "community-support": "Community support",
+      "basic-features": "Basic features",
+      "advanced-features": "Advanced features"
+    }
+  },
   "common": {
     "cancel": "Cancel",
     "close": "Close",
@@ -155,7 +176,7 @@
     "assistants": "Assistants",
     "new-chat": "New chat",
     "no-chats": "No chats at the moment",
-    "error-loading-chats": "Error loading chats",
+    "error-loading-chats": "Problem when loading the chats",
     "chats": "Chats",
     "user-menu": {
       "profile": "Profile",
