@@ -84,6 +84,27 @@
       }
     }
   },
+  "billing": {
+    "title": "Abrechnung",
+    "pricing": "Preise",
+    "choose-plan": "Wähle den passenden Plan für deine Bedürfnisse",
+    "ready-get-started": "Bereit loszulegen?",
+    "join": "Schließe dich tausenden Nutzern an, die unsere Plattform bereits verwenden",
+    "start-trial": "Starte deine kostenlose Testversion",
+    "cards": {
+      "month": "Monat",
+      "recommended": "Empfohlen",
+      "free-forever": "Für immer kostenlos",
+      "days-trial": "Tage kostenlos testen",
+      "whats-included": "Was ist enthalten",
+      "messages-month": "Nachrichten pro Monat",
+      "tokens-month": "Tokens pro Monat",
+      "priority-support": "Priorisierter Support",
+      "community-support": "Community-Support",
+      "basic-features": "Grundfunktionen",
+      "advanced-features": "Erweiterte Funktionen"
+    }
+  },
   "common": {
     "cancel": "Abbrechen",
     "close": "Schließen",

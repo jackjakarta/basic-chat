@@ -10,14 +10,14 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { formatDateToDayMonthYear, getMonthsSince } from '@/utils/date';
+import { formatDateToDayMonthYear, getTimeSince } from '@/utils/date';
 import { ArrowLeft, Calendar, Edit, Key, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
-import { type ExtentedUser } from '../types';
+import { type ExtendedUser } from '../types';
 
-export default function UserProfile({ user }: { user: ExtentedUser }) {
+export default function UserProfile({ user }: { user: ExtendedUser }) {
   const [isEditing, setIsEditing] = React.useState(false);
 
   return (
@@ -84,26 +84,26 @@ export default function UserProfile({ user }: { user: ExtentedUser }) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{35}</div>
-            <p className="text-xs text-muted-foreground">Total Logins</p>
+            <div className="text-2xl font-bold">{user.conversationsCount ?? 0}</div>
+            <p className="text-xs text-muted-foreground">Conversations</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{1231}</div>
-            <p className="text-xs text-muted-foreground">Projects Created</p>
+            <div className="text-2xl font-bold">{user.conversationMessagesCount ?? 0}</div>
+            <p className="text-xs text-muted-foreground">Conversation Messages</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold">{getTimeSince(user.createdAt)}</div>
+            <p className="text-xs text-muted-foreground">Account Age</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{user.subscription.toUpperCase()}</div>
             <p className="text-xs text-muted-foreground">Subscription</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{getMonthsSince(user.createdAt)} Months</div>
-            <p className="text-xs text-muted-foreground">Account Age</p>
           </CardContent>
         </Card>
       </div>

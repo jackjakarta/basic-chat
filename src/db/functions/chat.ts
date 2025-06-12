@@ -1,4 +1,4 @@
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 
 import { db } from '..';
 import {
@@ -16,16 +16,16 @@ export async function dbGetOrCreateConversation({
   userId: string;
   assistantId?: string;
 }) {
-  const conversation = await db
+  const [conversation] = await db
     .insert(conversationTable)
-    .values({ id: conversationId, name: 'New Chat', userId, assistantId })
+    .values({ id: conversationId, userId, assistantId })
     .onConflictDoUpdate({
       target: conversationTable.id,
       set: { id: conversationId },
     })
     .returning();
 
-  return conversation[0];
+  return conversation;
 }
 
 export async function dbGetCoversationMessages({
@@ -63,7 +63,8 @@ export async function dbGetConversations({ userId }: { userId: string }) {
     .select()
     .from(conversationTable)
     .where(eq(conversationTable.userId, userId))
-    .orderBy(desc(conversationTable.createdAt));
+    .orderBy(desc(conversationTable.createdAt))
+    .limit(20);
 
   return conversations;
 }
@@ -118,19 +119,6 @@ export async function dbUpdateConversationTitle({
   return updatedConversation;
 }
 
-export async function dbUpdateConversationMessageContent(
-  conversationMessageId: string,
-  conversationMessageContent: string,
-) {
-  const updatedConversationMessage = await db
-    .update(conversationMessageTable)
-    .set({ content: conversationMessageContent })
-    .where(eq(conversationMessageTable.id, conversationMessageId))
-    .returning();
-
-  return updatedConversationMessage[0];
-}
-
 export async function dbDeleteConversationById({
   conversationId,
   userId,
@@ -159,4 +147,22 @@ export async function dbDeleteAllConversationsByUserId({ userId }: { userId: str
     await tx.delete(conversationMessageTable).where(eq(conversationMessageTable.userId, userId));
     await tx.delete(conversationTable).where(eq(conversationTable.userId, userId));
   });
+}
+
+export async function dbGetUserConversationsCount({ userId }: { userId: string }) {
+  const [conversationsCount] = await db
+    .select({ count: sql<number>`count(${conversationTable.id})` })
+    .from(conversationTable)
+    .where(eq(conversationTable.userId, userId));
+
+  return conversationsCount?.count;
+}
+
+export async function dbGetUserConversationMessagesCount({ userId }: { userId: string }) {
+  const [messagesCount] = await db
+    .select({ count: sql<number>`count(${conversationMessageTable.id})` })
+    .from(conversationMessageTable)
+    .where(eq(conversationMessageTable.userId, userId));
+
+  return messagesCount?.count;
 }

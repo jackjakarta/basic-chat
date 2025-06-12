@@ -9,7 +9,7 @@ import {
 import { getUser } from '@/utils/auth';
 import { getUserAvatarUrl } from '@/utils/user';
 
-import { type ExtentedUser } from './types';
+import { type ExtendedUser } from './types';
 import UsersTable from './users-table';
 
 export const dynamic = 'force-dynamic';
@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export default async function Page() {
   const [user, users] = await Promise.all([getUser(), dbGetAllUsers()]);
 
-  const usersWithTokensAvatar: ExtentedUser[] = await Promise.all(
+  const usersWithTokensAvatar: ExtendedUser[] = await Promise.all(
     users.map(async (user) => {
       const [tokensUsed, subscriptions] = await Promise.all([
         dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
@@ -40,12 +40,14 @@ export default async function Page() {
 
       const { limits } = subscriptionPlan;
 
-      const fullUser: ExtentedUser = {
+      const fullUser: ExtendedUser = {
         ...user,
         tokensUsed: tokensUsed.totalTokens,
         avatarUrl,
         subscription,
         limits,
+        conversationsCount: undefined,
+        conversationMessagesCount: undefined,
       };
 
       return fullUser;

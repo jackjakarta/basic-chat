@@ -133,7 +133,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
                 }
                 className="flex-1 truncate"
               >
-                <span>{conversation.name}</span>
+                <span>{conversation.name ?? 'New Chat'}</span>
               </Link>
 
               <DropdownMenu>

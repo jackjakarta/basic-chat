@@ -11,6 +11,7 @@ import { summarizeConversationTitle } from '@/openai/text';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
+import { AnthropicProviderOptions } from '@ai-sdk/anthropic';
 import { convertToCoreMessages, smoothStream, streamText, type Message } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -136,6 +137,11 @@ export async function POST(request: NextRequest) {
       maxSteps: 5,
       experimental_transform: smoothStream({ delayInMs: 20 }),
       tools,
+      providerOptions: {
+        anthropic: {
+          thinking: { type: 'enabled', budgetTokens: 12000 },
+        } satisfies AnthropicProviderOptions,
+      },
       async onFinish(assistantMessage) {
         await Promise.all([
           dbInsertChatContent({

@@ -29,19 +29,19 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { deleteUserAction } from './actions';
-import { type ExtentedUser } from './types';
+import { type ExtendedUser } from './types';
 
 export default function UsersTable({
   users,
   currentUserId,
 }: {
-  users: ExtentedUser[];
+  users: ExtendedUser[];
   currentUserId: string;
 }) {
   const router = useRouter();
 
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [filteredUsers, setFilteredUsers] = React.useState<ExtentedUser[]>(users);
+  const [filteredUsers, setFilteredUsers] = React.useState<ExtendedUser[]>(users);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   const { toastSuccess, toastError, toastLoading } = useToast();

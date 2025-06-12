@@ -1,4 +1,8 @@
 import PageContainer from '@/components/common/page-container';
+import {
+  dbGetUserConversationMessagesCount,
+  dbGetUserConversationsCount,
+} from '@/db/functions/chat';
 import { dbGetCustomerSubscriptionsStripe } from '@/db/functions/customer';
 import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { dbGetUserById } from '@/db/functions/user';
@@ -10,7 +14,7 @@ import { getUserAvatarUrl } from '@/utils/user';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 
-import { type ExtentedUser } from '../types';
+import { type ExtendedUser } from '../types';
 import UserProfile from './user-profile';
 
 const pageContextSchema = z.object({
@@ -34,12 +38,15 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
-  const [tokensUsed, subscriptions] = await Promise.all([
-    dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
-    dbGetCustomerSubscriptionsStripe({
-      customerId: user.customerId,
-    }),
-  ]);
+  const [tokensUsed, conversationsCount, conversationMessagesCount, subscriptions] =
+    await Promise.all([
+      dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
+      dbGetUserConversationsCount({ userId: user.id }),
+      dbGetUserConversationMessagesCount({ userId: user.id }),
+      dbGetCustomerSubscriptionsStripe({
+        customerId: user.customerId,
+      }),
+    ]);
 
   const avatarUrl = getUserAvatarUrl(user);
   const subscription = getSubscriptionStateBySubscriptions({
@@ -55,12 +62,14 @@ export default async function Page(context: unknown) {
 
   const { limits } = subscriptionPlan;
 
-  const fullUser: ExtentedUser = {
+  const fullUser: ExtendedUser = {
     ...user,
-    tokensUsed: tokensUsed.totalTokens,
     subscription,
     avatarUrl,
     limits,
+    tokensUsed: tokensUsed.totalTokens,
+    conversationsCount,
+    conversationMessagesCount,
   };
 
   return (
