@@ -8,11 +8,11 @@ export async function generateTTS({ text }: { text: string }) {
   try {
     const audioStream = await elevenlabs.textToSpeech.convert(voiceId, {
       text,
-      model_id: 'eleven_flash_v2_5',
-      output_format: 'mp3_44100_128',
-      voice_settings: {
+      modelId: 'eleven_flash_v2_5',
+      outputFormat: 'mp3_44100_128',
+      voiceSettings: {
         stability: 0.5,
-        similarity_boost: 0.8,
+        similarityBoost: 0.8,
       },
     });
 
