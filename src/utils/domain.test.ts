@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { extractDomain } from './domain';
 
 describe('extractDomain', () => {

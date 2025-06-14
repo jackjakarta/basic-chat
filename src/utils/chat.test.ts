@@ -1,4 +1,5 @@
 import { type ConversationMessageRow } from '@/db/schema';
+import { describe, expect, it } from 'vitest';
 
 import { filterChatMessages } from './chat';
 

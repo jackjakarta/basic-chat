@@ -1,15 +1,16 @@
 import { type TokenAction } from '@/db/schema';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 
 import { getBaseUrlByHeaders } from './host';
 import { buildUserActionUrl } from './url';
 
-jest.mock('./host', () => ({
-  getBaseUrlByHeaders: jest.fn(),
+vi.mock('./host', () => ({
+  getBaseUrlByHeaders: vi.fn(),
 }));
 
 describe('buildUserActionUrl', () => {
   beforeEach(() => {
-    (getBaseUrlByHeaders as jest.Mock).mockReturnValue('http://127.0.0.1:3000');
+    (getBaseUrlByHeaders as Mock).mockReturnValue('http://127.0.0.1:3000');
   });
 
   it('should build a user action URL correctly', () => {
