@@ -14,6 +14,7 @@ import { generateUUID } from '@/utils/uuid';
 import { useChat, type Message } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { type Attachment } from 'ai';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import Header from '../common/header';
@@ -47,6 +48,7 @@ export default function Chat({
   assistantName,
 }: ChatProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { model: modelId } = useLlmModel();
   const { toastError } = useToast();
@@ -79,6 +81,7 @@ export default function Chat({
       onFinish: () => {
         if (messages.length <= 1) {
           refetchConversations();
+          router.refresh();
         }
       },
     },

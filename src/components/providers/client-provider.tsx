@@ -28,15 +28,14 @@ export function ClientProvider({
         }
       }
     }
+
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [pathname, router]);
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session} refetchOnWindowFocus>
-        {children}
-      </SessionProvider>
+      <SessionProvider session={session}>{children}</SessionProvider>
     </QueryClientProvider>
   );
 }

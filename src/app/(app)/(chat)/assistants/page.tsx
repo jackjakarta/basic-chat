@@ -1,8 +1,10 @@
 import Header from '@/components/common/header';
+import LoadingPage from '@/components/common/loading-page';
 import PageContainer from '@/components/common/page-container';
 import { dbGetAssistantsByUserId } from '@/db/functions/assistant';
 import { getUser } from '@/utils/auth';
 import { getTranslations } from 'next-intl/server';
+import React from 'react';
 
 import AssistantCard from './_components/assistant-card';
 import CreateAssistantButton from './_components/create-assistant-button';
@@ -16,7 +18,7 @@ export default async function Page() {
   ]);
 
   return (
-    <>
+    <React.Suspense fallback={<LoadingPage />}>
       <Header />
       <PageContainer className="mx-auto">
         <div className="flex flex-col gap-6 w-full">
@@ -34,6 +36,6 @@ export default async function Page() {
           </div>
         </div>
       </PageContainer>
-    </>
+    </React.Suspense>
   );
 }

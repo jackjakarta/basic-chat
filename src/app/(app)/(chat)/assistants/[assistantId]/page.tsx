@@ -1,9 +1,11 @@
 import Header from '@/components/common/header';
+import LoadingPage from '@/components/common/loading-page';
 import PageContainer from '@/components/common/page-container';
 import { dbGetAssistantById } from '@/db/functions/assistant';
 import { dbGetFilesFromVectorStore } from '@/db/functions/vector-store';
 import { getUser } from '@/utils/auth';
 import { notFound } from 'next/navigation';
+import React from 'react';
 import { z } from 'zod';
 
 import EditAssistantForm from '../_components/update-assistant-form';
@@ -35,11 +37,11 @@ export default async function Page(context: unknown) {
   });
 
   return (
-    <>
+    <React.Suspense fallback={<LoadingPage />}>
       <Header />
       <PageContainer className="mx-auto w-full">
         <EditAssistantForm assistant={assistant} assistantFiles={assistantKnowledgeFiles?.files} />
       </PageContainer>
-    </>
+    </React.Suspense>
   );
 }
