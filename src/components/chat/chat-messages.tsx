@@ -36,7 +36,7 @@ export default function ChatMessages({ messages, status, reload }: ChatMessagesP
           message.experimental_attachments?.filter((a) => a.type === 'file') ?? [];
 
         return (
-          <div key={index} className="flex flex-col  gap-2">
+          <div key={index} className="flex flex-col gap-2">
             {userFileAttachments.length > 0 && (
               <div className="flex items-center flex-wrap gap-x-2 self-end">
                 {userFileAttachments.map((attachment) => (
