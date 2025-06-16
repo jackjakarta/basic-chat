@@ -44,9 +44,9 @@ export function NavMain({ onClickMobile }: NavMainProps) {
                 <span>{t('new-chat')}</span>
                 <div className="flex-grow" />
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Command className="h-[14px] w-[14px] mt-0.5" />
-                  <ArrowBigUp className="h-[16px] w-[16px] mt-0.5" />
-                  <span className="font-semibold">N</span>
+                  <Command className="h-[14px] w-[14px]" />
+                  <ArrowBigUp className="h-[16px] w-[16px]" />
+                  <span className="font-semibold">O</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -61,7 +61,7 @@ export function NavMain({ onClickMobile }: NavMainProps) {
               <span>Search chats</span>
               <div className="flex-grow" />
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Command className="h-[14px] w-[14px] mt-0.5" />
+                <Command className="h-[14px] w-[14px]" />
                 <span className="font-semibold">J</span>
               </div>
             </SidebarMenuButton>

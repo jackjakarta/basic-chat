@@ -41,9 +41,9 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
       const formData = new FormData();
       formData.append('file', file);
 
-      const imageOrFile = file.type.startsWith('image/') ? 'image' : 'file';
+      const endpoint = file.type.startsWith('image/') ? 'image' : 'file';
 
-      const response = await fetch(`/api/chat-upload/${imageOrFile}`, {
+      const response = await fetch(`/api/chat-upload/${endpoint}`, {
         method: 'POST',
         body: formData,
       });
@@ -72,7 +72,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
         const next = new Map(prev);
         next.set(fileId, {
           status: 'success',
-          file: { type: imageOrFile, imageUrl: signedURL },
+          file: { type: endpoint, imageUrl: signedURL },
           id: fileId,
         });
 

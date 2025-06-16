@@ -3,14 +3,13 @@
 import { type LocalFileState } from '@/types/files';
 import { cw } from '@/utils/tailwind';
 import { type Attachment, type Message } from 'ai';
-import { Globe2, Image as ImageIcon, X } from 'lucide-react';
+import { ArrowUp, Globe2, Image as ImageIcon, X } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
 import { ButtonTooltip } from '../common/tooltip-button';
 import SpinnerLoading from '../icons/animated/spinner';
-import ArrowRightIcon from '../icons/arrow-right';
 import StopIcon from '../icons/stop';
 import DisplayPdfFile from './display-pdf-file';
 import { type ChatResponseStatus } from './types';
@@ -214,7 +213,7 @@ export default function ChatInput({
                   className="flex items-center justify-center group text-secondary disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
                   aria-label="Send Message"
                 >
-                  <ArrowRightIcon className="w-7 h-7 text-dark-gray group-disabled:bg-secondary rounded-lg dark:group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
+                  <ArrowUp className="w-7 h-7 text-dark-gray group-disabled:bg-secondary rounded-lg dark:group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
                 </button>
               )}
             </div>

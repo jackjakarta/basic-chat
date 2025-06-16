@@ -8,7 +8,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { File } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -54,7 +54,7 @@ export default function SearchCommandMenu({
       <CommandInput placeholder="Search chats…" />
       <CommandList className="cmd-scroll-area">
         <CommandEmpty>No chats found.</CommandEmpty>
-        <CommandGroup heading="Conversations">
+        <CommandGroup>
           {isLoading && (
             <>
               {Array.from({ length: 5 }).map((_, index) => (
@@ -71,14 +71,14 @@ export default function SearchCommandMenu({
             </CommandItem>
           )}
 
-          {conversations &&
+          {conversations.length > 0 &&
             conversations.map((conversation) => (
               <CommandItem
                 key={conversation.id}
                 value={conversation.name ?? 'New Chat'}
                 onSelect={() => handleSelect(conversation.id, conversation.assistantId)}
               >
-                <File className="mr-2 h-4 w-4" />
+                <MessageCircle className="mr-2 h-4 w-4" />
                 <span>{conversation.name ?? 'New Chat'}</span>
               </CommandItem>
             ))}

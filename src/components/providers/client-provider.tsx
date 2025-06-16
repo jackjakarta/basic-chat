@@ -20,7 +20,7 @@ export function ClientProvider({
 
   React.useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'n' && (e.metaKey || e.ctrlKey) && e.shiftKey) {
+      if (e.key === 'o' && (e.metaKey || e.ctrlKey) && e.shiftKey) {
         e.preventDefault();
 
         if (pathname !== '/') {
