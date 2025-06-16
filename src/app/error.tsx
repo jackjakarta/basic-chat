@@ -3,7 +3,7 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw } from 'lucide-react';
-import type NextError from 'next/error';
+import NextError from 'next/error';
 import React from 'react';
 
 export default function Error({ error, reset }: { error: NextError; reset: () => void }) {
