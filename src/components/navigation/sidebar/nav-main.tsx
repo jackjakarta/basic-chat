@@ -62,7 +62,7 @@ export function NavMain({ onClickMobile }: NavMainProps) {
               <div className="flex-grow" />
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <Command className="h-[14px] w-[14px]" />
-                <span className="font-semibold">J</span>
+                <span className="font-semibold">K</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
