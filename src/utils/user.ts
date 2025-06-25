@@ -21,11 +21,11 @@ export function obscureUser(user: UserRow): ObscuredUser {
   };
 }
 
-export function getUserAvatarUrl({ email, size }: { email: string; size?: number }) {
-  const trimmedEmail = email.trim().toLowerCase();
+export function getUserAvatarUrl({ email: _email, size }: { email: string; size?: number }) {
+  const email = _email.trim().toLowerCase();
   const imageSize = size ?? 200;
 
-  const hash = crypto.createHash('sha256').update(trimmedEmail).digest('hex');
+  const hash = crypto.createHash('sha256').update(email).digest('hex');
   const avatarUrl = `https://www.gravatar.com/avatar/${hash}?s=${imageSize}&d=identicon`;
 
   return avatarUrl;

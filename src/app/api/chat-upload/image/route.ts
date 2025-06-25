@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       MAX_FILE_SIZE_BYTES,
     );
 
-    const [, signedURL] = await Promise.all([
+    const [, signedUrl] = await Promise.all([
       uploadFileToS3({
         key: fileId,
         bucketName: 'chat',
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       }),
     ]);
 
-    return NextResponse.json({ fileId, signedURL }, { status: 200 });
+    return NextResponse.json({ fileId, signedUrl }, { status: 200 });
   } catch (error) {
     console.error('Error calling files upload route:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

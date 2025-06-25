@@ -22,13 +22,13 @@ import { updateUserNameAction, updateUserSettingsAction } from './actions';
 const inputFieldClassName =
   'dark:border-muted/50 dark:hover:border-muted dark:focus:border-transparent dark:focus-visible:ring-muted';
 
-const registrationSchema = z.object({
+const profileFormSchema = z.object({
   firstName: firstNameSchema,
   lastName: lastNameSchema,
   customInstructions: z.string().optional(),
 });
 
-type FormData = z.infer<typeof registrationSchema>;
+type FormData = z.infer<typeof profileFormSchema>;
 
 type RegistrationProps = {
   className?: React.ComponentProps<'form'>['className'];
@@ -57,7 +57,7 @@ export default function ProfileForm({
     formState: { errors, isSubmitting },
     reset,
   } = useForm<FormData>({
-    resolver: zodResolver(registrationSchema),
+    resolver: zodResolver(profileFormSchema),
     defaultValues: {
       firstName,
       lastName,

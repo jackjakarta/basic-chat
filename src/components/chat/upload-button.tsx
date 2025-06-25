@@ -3,10 +3,16 @@
 import { LocalFileState } from '@/types/files';
 import { Paperclip } from 'lucide-react';
 import React from 'react';
+import { z } from 'zod';
 
 import { ButtonTooltip } from '../common/tooltip-button';
 import { useToast } from '../hooks/use-toast';
 import { useLlmModel } from '../providers/llm-model';
+
+const uploadResponseSchema = z.object({
+  fileId: z.string(),
+  signedUrl: z.string(),
+});
 
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
@@ -16,6 +22,7 @@ type UploadButtonProps = {
 
 export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const { toastError } = useToast();
   const { model: modelId } = useLlmModel();
 
@@ -37,12 +44,12 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
   async function handleFileUpload(file: File) {
     setIsUploading(true);
 
+    const endpoint = file.type.startsWith('image/') ? 'image' : 'file';
+
+    const formData = new FormData();
+    formData.append('file', file);
+
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const endpoint = file.type.startsWith('image/') ? 'image' : 'file';
-
       const response = await fetch(`/api/chat-upload/${endpoint}`, {
         method: 'POST',
         body: formData,
@@ -55,7 +62,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
 
       if (response.status === 413) {
         const res = await response.json();
-        toastError(res.error || 'File size exceeds the limit');
+        toastError(res.error ?? 'File size exceeds the limit');
         return;
       }
 
@@ -66,20 +73,21 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
         return;
       }
 
-      const { fileId, signedURL } = await response.json();
+      const json = await response.json();
+      const { fileId, signedUrl } = uploadResponseSchema.parse(json);
 
       setFiles((prev) => {
         const next = new Map(prev);
         next.set(fileId, {
           status: 'success',
-          file: { type: endpoint, imageUrl: signedURL },
+          file: { type: endpoint, signedUrl },
           id: fileId,
         });
 
         return next;
       });
     } catch (error) {
-      console.error('Error uploading photo:', error);
+      console.error({ error });
       toastError('An error occurred while uploading the file');
     } finally {
       setIsUploading(false);

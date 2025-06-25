@@ -2,8 +2,7 @@
 
 import { type AIModelRow, type SubscriptionLimits } from '@/db/schema';
 import {
-  type FileFile,
-  type ImageFile,
+  type AttachmentFile,
   type LocalFileState,
   type SuccessLocalFileState,
 } from '@/types/files';
@@ -94,12 +93,12 @@ export default function Chat({
       Array.from(files)
         .map(([, fileState]) => fileState)
         .filter(
-          (f): f is SuccessLocalFileState & { file: ImageFile } =>
+          (f): f is SuccessLocalFileState & { file: AttachmentFile } =>
             f.status === 'success' && f.file.type === 'image',
         )
         .map((image) => ({
-          name: image.file.imageUrl ?? '',
-          url: image.file.imageUrl ?? '',
+          name: image.file.signedUrl ?? '',
+          url: image.file.signedUrl ?? '',
           contentType: 'image/png',
           type: 'image',
           id: image.id,
@@ -112,12 +111,12 @@ export default function Chat({
       Array.from(files)
         .map(([, fileState]) => fileState)
         .filter(
-          (f): f is SuccessLocalFileState & { file: FileFile } =>
+          (f): f is SuccessLocalFileState & { file: AttachmentFile } =>
             f.status === 'success' && f.file.type === 'file',
         )
         .map((file) => ({
-          name: file.file.imageUrl ?? '',
-          url: file.file.imageUrl ?? '',
+          name: file.file.signedUrl ?? '',
+          url: file.file.signedUrl ?? '',
           contentType: 'application/pdf',
           type: 'file',
           id: file.id,
@@ -144,12 +143,12 @@ export default function Chat({
     }
   }
 
-  const tokenLimit = userLimits.tokenLimit ?? 0;
-  const hasReachedLimit = tokenLimit > 0 && tokensUsed >= tokenLimit;
+  const { tokenLimit } = userLimits;
+  const hasReachedLimit = tokenLimit !== null && tokensUsed >= tokenLimit;
 
   return (
     <>
-      <Header title={assistantName} models={models} isEmptyChat={messages.length <= 0} />
+      <Header title={assistantName} models={models} isEmptyChat={messages.length === 0} />
       <div
         ref={scrollRef}
         className="flex flex-col h-full w-full overflow-y-auto"
@@ -173,7 +172,7 @@ export default function Chat({
                 {status === 'submitted' && <LoadingDisplay />}
               </>
             )}
-            {status === 'error' && <ErrorDisplay reload={reload} error={error} />}
+            {status === 'error' && <ErrorDisplay error={error} reload={reload} />}
           </div>
           <ChatInput
             messages={messages}
