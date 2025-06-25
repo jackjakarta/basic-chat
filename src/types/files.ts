@@ -1,19 +1,19 @@
-export type FileFile = { type: 'file'; imageUrl: string | undefined };
-export type ImageFile = { type: 'image'; imageUrl: string | undefined };
+export type AttachmentFileType = 'file' | 'image';
+export type AttachmentFile = { type: AttachmentFileType; signedUrl: string | undefined };
 
 export type PendingLocalFileState = {
   status: 'pending';
-  file: FileFile | ImageFile;
+  file: AttachmentFile;
 };
 
 export type ErrorLocalFileState = {
   status: 'error';
-  file: FileFile | ImageFile;
+  file: AttachmentFile;
 };
 
 export type SuccessLocalFileState = {
   status: 'success';
-  file: FileFile | ImageFile;
+  file: AttachmentFile;
   id: string;
 };
 
