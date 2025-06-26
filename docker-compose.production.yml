@@ -38,15 +38,21 @@ services:
           - spread: node.hostname
       update_config:
         parallelism: 1
-        delay: 5s
+        delay: 15s
       restart_policy:
         condition: on-failure
+        max_attempts: 3
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.routers.el-chat.rule=Host(`chat.codebyalex.dev`)'
         - 'traefik.http.routers.el-chat.entrypoints=websecure'
         - 'traefik.http.routers.el-chat.tls.certresolver=myresolver'
         - 'traefik.http.services.el-chat.loadbalancer.server.port=3000'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   traefik-lets-encrypt:
