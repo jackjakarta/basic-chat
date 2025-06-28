@@ -7,10 +7,12 @@ export async function sendTestEmail({
   email,
   subject,
   html,
+  text,
 }: {
   email: string;
   subject: string;
   html: string;
+  text?: string;
 }): Promise<EmailActionResult | undefined> {
   const transporter = nodemailer.createTransport({
     host: '127.0.0.1',
@@ -27,6 +29,7 @@ export async function sendTestEmail({
     to: email,
     subject,
     html,
+    text: text ?? 'This is a test email. Please ignore it.',
   };
 
   try {

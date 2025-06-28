@@ -13,7 +13,9 @@ export function getHostByHeaders() {
 
 export function getBaseUrlByHeaders() {
   const host = getHostByHeaders();
-  const formatedPrefix = host === '127.0.0.1:3000' || host === 'localhost:3000' ? 'http' : 'https';
+  const isLocalhost = checkIsLocalhost();
+
+  const formatedPrefix = isLocalhost ? 'http' : 'https';
   const baseUrl = `${formatedPrefix}://${host}`;
 
   return baseUrl;

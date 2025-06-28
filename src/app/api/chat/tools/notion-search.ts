@@ -23,7 +23,8 @@ export async function getSearchNotionTool({
     execute: async ({ searchQuery }) => {
       try {
         const toolResult =
-          (await notionClient?.search(searchQuery).catch(() => [])) ?? ([] as NotionSource[]);
+          (await notionClient?.search(searchQuery, { filter: 'page', limit: 3 }).catch(() => [])) ??
+          ([] as NotionSource[]);
 
         if (toolResult.length === 0) {
           return 'An error occurred while searching the data source. We are sorry.';
