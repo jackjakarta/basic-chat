@@ -174,6 +174,7 @@
   },
   "sidebar": {
     "assistants": "Assistants",
+    "search-chats": "Search chats",
     "new-chat": "New chat",
     "no-chats": "No chats at the moment",
     "error-loading-chats": "Problem when loading the chats",

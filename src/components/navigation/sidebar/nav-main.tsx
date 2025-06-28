@@ -58,7 +58,7 @@ export function NavMain({ onClickMobile }: NavMainProps) {
               className="flex items-center gap-2 cursor-pointer"
             >
               <Search />
-              <span>Search chats</span>
+              <span>{t('search-chats')}</span>
               <div className="flex-grow" />
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <Command className="h-[14px] w-[14px]" />
