@@ -73,5 +73,11 @@ export async function createInformationMailTemplate(
         header: 'Account deleted',
         content: `We are sad to see you go. Your account has been successfully deleted.`,
       });
+    case 'invoice-paid':
+      return buildInformationEmailTemplate({
+        subject: 'Invoice paid',
+        header: 'Invoice paid',
+        content: `Your invoice has been successfully paid. Thank you for your payment.`,
+      });
   }
 }

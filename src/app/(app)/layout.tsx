@@ -1,4 +1,4 @@
-import { ClientProvider } from '@/components/providers/client-provider';
+import { ClientProvider } from '@/components/providers/client';
 import { LlmModelProvider } from '@/components/providers/llm-model';
 import { dbGetEnabledModels } from '@/db/functions/ai-model';
 import { getMaybeUserSession } from '@/utils/auth';

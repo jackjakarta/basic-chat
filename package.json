@@ -1,10 +1,11 @@
 {
   "name": "elchat",
-  "version": "1.5.7",
+  "version": "1.6.4",
   "private": true,
   "scripts": {
     "dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next dev --hostname 127.0.0.1",
     "dev:turbo": "pnpm dev --turbo",
+    "dev:email": "email dev --port 3001",
     "build": "next build",
     "build:dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next build",
     "start": "next start",
@@ -15,11 +16,11 @@
     "lint": "next lint",
     "test": "vitest --run",
     "checks": "chmod +x $(git rev-parse --show-toplevel)/scripts/checks.sh && $(git rev-parse --show-toplevel)/scripts/checks.sh",
-    "customers": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/create-customers.ts",
     "pipeline": "chmod +x $(git rev-parse --show-toplevel)/scripts/pipeline.sh && $(git rev-parse --show-toplevel)/scripts/pipeline.sh",
     "db:generate": "drizzle-kit generate --config=./src/db/drizzle.config.ts",
     "db:migrate": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/migrate.ts",
     "db:seed": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/seed/index.ts",
+    "db:customers": "ENVIRONMENT=development op run --env-file=\".env.op\" -- tsx ./src/db/create-customers.ts",
     "db:studio": "ENVIRONMENT=development op run --env-file=\".env.op\" -- drizzle-kit studio --config=src/db/drizzle.config.ts"
   },
   "dependencies": {
@@ -48,6 +49,7 @@
     "@radix-ui/react-switch": "1.1.3",
     "@radix-ui/react-tabs": "1.1.12",
     "@radix-ui/react-tooltip": "1.1.8",
+    "@react-email/components": "0.1.1",
     "@t3-oss/env-nextjs": "0.7.3",
     "@tanstack/react-query": "5.67.1",
     "ai": "4.2.6",
@@ -113,6 +115,7 @@
     "eslint-config-next": "14.2.15",
     "jsdom": "26.1.0",
     "postcss": "8.4.47",
+    "react-email": "4.0.17",
     "tailwindcss": "3.4.13",
     "ts-jest": "29.2.6",
     "tsx": "4.7.0",

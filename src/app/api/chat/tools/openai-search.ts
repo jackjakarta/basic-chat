@@ -2,7 +2,7 @@ import { aiSearch } from '@/openai/search';
 import { tool } from 'ai';
 import { z } from 'zod';
 
-export function webSearchTool() {
+export function getWebSearchTool() {
   const webSearchTool = tool({
     description:
       'Search the web if the user asks a question that the assistant cannot answer. Or if the user asks the assistant to search the web.',

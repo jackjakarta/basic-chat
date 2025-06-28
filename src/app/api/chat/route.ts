@@ -11,17 +11,17 @@ import { summarizeConversationTitle } from '@/openai/text';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
-import { convertToCoreMessages, smoothStream, streamText, type Message } from 'ai';
+import { smoothStream, streamText, type Message, type ToolSet } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getModel } from './models';
 import { constructSystemPrompt } from './system-prompt';
-import { executeCodeTool } from './tools/code-execution';
-import { fileSearchTool } from './tools/file-search';
-import { generateImageTool } from './tools/generate-image';
+import { getExecuteCodeTool } from './tools/code-execution';
+import { getFileSearchTool } from './tools/file-search';
+import { getGenerateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
-import { getActiveNotionIntegration, searchNotionTool } from './tools/notion-search';
-import { webSearchTool } from './tools/openai-search';
+import { getActiveNotionIntegration, getSearchNotionTool } from './tools/notion-search';
+import { getWebSearchTool } from './tools/openai-search';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -112,27 +112,27 @@ export async function POST(request: NextRequest) {
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
     const notionDataSource = getActiveNotionIntegration(activeDataSources);
 
-    const tools = {
-      ...(webSearchActive && !imageGenerationActive && { searchTheWeb: webSearchTool() }),
-      ...(!imageGenerationActive && { executeCode: executeCodeTool() }),
+    const tools: ToolSet = {
+      ...(webSearchActive && !imageGenerationActive && { searchTheWeb: getWebSearchTool() }),
+      ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
       ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
       ...(imageGenerationActive &&
-        !webSearchActive && { generateImage: generateImageTool({ userEmail: user.email }) }),
+        !webSearchActive && { generateImage: getGenerateImageTool({ userEmail: user.email }) }),
       ...(!imageGenerationActive &&
         maybeAssistant !== undefined &&
         maybeAssistant.vectorStoreId !== null && {
-          searchFiles: fileSearchTool({ vectorStoreId: maybeAssistant.vectorStoreId }),
+          searchFiles: getFileSearchTool({ vectorStoreId: maybeAssistant.vectorStoreId }),
         }),
       ...(!imageGenerationActive &&
         notionDataSource !== undefined && {
-          searchNotion: await searchNotionTool({ notionDataSource }),
+          searchNotion: await getSearchNotionTool({ notionDataSource }),
         }),
     };
 
     const result = streamText({
       model: getModel(model),
       system: systemPrompt,
-      messages: convertToCoreMessages(messages),
+      messages,
       maxSteps: 5,
       experimental_transform: smoothStream({ delayInMs: 20 }),
       tools,

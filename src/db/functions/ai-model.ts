@@ -45,11 +45,11 @@ export async function dbUpdateModelEnabledStatus({
   modelId: string;
   isEnabled: boolean;
 }) {
-  const [result] = await db
+  const [updatedModel] = await db
     .update(aiModelTable)
     .set({ isEnabled })
     .where(eq(aiModelTable.id, modelId))
     .returning();
 
-  return result;
+  return updatedModel;
 }

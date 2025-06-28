@@ -198,3 +198,16 @@ export async function dbSetUserCustomFreeTrial({
 
   return user;
 }
+
+export async function dbGetUserEmailByCustomerId({
+  customerId,
+}: {
+  customerId: string;
+}): Promise<{ email: string } | undefined> {
+  const [email] = await db
+    .select({ email: userTable.email })
+    .from(userTable)
+    .where(eq(userTable.customerId, customerId));
+
+  return email;
+}

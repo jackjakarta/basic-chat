@@ -11,7 +11,7 @@ const anthropic = new Anthropic({
   },
 });
 
-export function executeCodeTool() {
+export function getExecuteCodeTool() {
   const executeCodeChatTool = tool({
     description:
       'Execute code if the user asks a question that would be best solved by executing some code. Or if the user asks the assistant to execute code.',

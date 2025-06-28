@@ -7,6 +7,9 @@ export type InformationEmailMetadata =
     }
   | {
       type: 'account-delete-success';
+    }
+  | {
+      type: 'invoice-paid';
     };
 
 export type MailTemplateResult = {

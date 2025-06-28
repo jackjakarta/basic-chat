@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { NotionSearchClient, type NotionSource } from '../../auth/notion/client';
 import { type NotionIntegration } from '../types';
 
-export async function searchNotionTool({
+export async function getSearchNotionTool({
   notionDataSource,
 }: {
   notionDataSource: NotionIntegration;
