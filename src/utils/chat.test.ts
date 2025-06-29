@@ -68,7 +68,7 @@ describe('filterChatMessages', () => {
       },
     ];
 
-    const filteredMessages = filterChatMessages({ chatMessages });
+    const filteredMessages = filterChatMessages(chatMessages);
 
     expect(filteredMessages).toHaveLength(2);
     expect(filteredMessages).toEqual([
@@ -127,7 +127,7 @@ describe('filterChatMessages', () => {
       },
     ];
 
-    const filteredMessages = filterChatMessages({ chatMessages });
+    const filteredMessages = filterChatMessages(chatMessages);
     expect(filteredMessages).toHaveLength(0);
   });
 
@@ -159,7 +159,7 @@ describe('filterChatMessages', () => {
       },
     ];
 
-    const filteredMessages = filterChatMessages({ chatMessages });
+    const filteredMessages = filterChatMessages(chatMessages);
     expect(filteredMessages).toHaveLength(2);
     expect(filteredMessages).toEqual(chatMessages);
   });

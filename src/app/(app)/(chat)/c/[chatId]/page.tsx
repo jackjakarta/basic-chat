@@ -5,6 +5,7 @@ import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { filterChatMessages } from '@/utils/chat';
+import { type Message } from 'ai';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 
@@ -38,6 +39,7 @@ export default async function Page(context: unknown) {
   }
 
   const { limits } = subscriptionPlan;
+  const { totalTokens } = tokensUsed;
 
   if (chat === undefined) {
     return notFound();
@@ -48,14 +50,13 @@ export default async function Page(context: unknown) {
     userId: user.id,
   });
 
-  const filteredMessages = filterChatMessages({ chatMessages });
+  const filteredMessages = filterChatMessages(chatMessages);
 
-  const messagesWithAttachments = filteredMessages.map((message) => ({
+  const messagesWithAttachments: Message[] = filteredMessages.map((message) => ({
     ...message,
     experimental_attachments: message.attachments ?? undefined,
+    attachments: null,
   }));
-
-  const { totalTokens } = tokensUsed;
 
   return (
     <Chat

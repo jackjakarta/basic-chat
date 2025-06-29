@@ -18,15 +18,15 @@ import { extractFileNameFromSignedUrl } from './utils';
 type ChatMessagesProps = {
   messages: Message[];
   status: ChatResponseStatus;
-  reload: () => void;
+  onReload: () => void;
 };
 
-export default function ChatMessages({ messages, status, reload }: ChatMessagesProps) {
+export default function ChatMessages({ messages, status, onReload }: ChatMessagesProps) {
   return (
     <div className="flex flex-col gap-4 px-4">
       {messages.map((message, index) => {
         const isLastNonUser = index === messages.length - 1 && message.role !== 'user';
-        const finishedAssistantMessage =
+        const isAssistantFinished =
           message.role === 'assistant' && status !== 'submitted' && status !== 'streaming';
 
         const userImageAttachments =
@@ -82,7 +82,7 @@ export default function ChatMessages({ messages, status, reload }: ChatMessagesP
                   <LoadingTool message={message} />
                 )}
 
-                {finishedAssistantMessage && (
+                {isAssistantFinished && (
                   <div
                     className={cw(
                       'flex items-center gap-1 hover:opacity-100',
@@ -102,7 +102,7 @@ export default function ChatMessages({ messages, status, reload }: ChatMessagesP
                       <button
                         title="Reload last message"
                         type="button"
-                        onClick={() => reload()}
+                        onClick={() => onReload()}
                         className="mt-1"
                         aria-label="Reload"
                       >
