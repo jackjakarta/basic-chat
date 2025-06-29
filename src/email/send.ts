@@ -27,7 +27,8 @@ export async function sendUserActionEmail({
     };
   }
 
-  const { mailTemplate, subject } = result;
+  const { subject, mailTemplate, textPart } = result;
+
   if (mailTemplate === undefined) {
     console.warn(`Could not generate mail template for action '${action}' and email: '${to}'`);
     return {
@@ -42,7 +43,7 @@ export async function sendUserActionEmail({
         {
           From: {
             Email: 'info@codebyalex.dev',
-            Name: 'AI Chat App',
+            Name: 'El Chat',
           },
           To: [
             {
@@ -50,13 +51,13 @@ export async function sendUserActionEmail({
             },
           ],
           Subject: subject,
-          TextPart: 'This email is not supported by your email client.',
           HTMLPart: mailTemplate,
+          TextPart: textPart,
         },
       ],
     });
 
-    console.log('Email successfully sent:', request.body);
+    console.info('Email successfully sent:', request.body);
 
     return { success: true };
   } catch (e: unknown) {
@@ -82,9 +83,9 @@ export async function sendUserActionInformationEmail({
   to: string;
   information: InformationEmailMetadata;
 }) {
-  const mailTemplate = await createInformationMailTemplate(information, to);
+  const result = await createInformationMailTemplate(information, to);
 
-  if (mailTemplate === undefined) {
+  if (result === undefined) {
     console.warn(
       `Could not generate mail template for information '${information.type}' and email: '${to}'`,
     );
@@ -94,6 +95,8 @@ export async function sendUserActionInformationEmail({
       error: 'For more information look inside the logs',
     };
   }
+
+  const { subject, mailTemplate, textPart } = result;
 
   try {
     const request = await mailjet.post('send', { version: 'v3.1' }).request({
@@ -108,14 +111,14 @@ export async function sendUserActionInformationEmail({
               Email: to,
             },
           ],
-          Subject: mailTemplate.Subject.Data,
-          TextPart: 'This email is not supported by your email client.',
-          HTMLPart: mailTemplate.Body.Html.Data,
+          Subject: subject,
+          HTMLPart: mailTemplate,
+          TextPart: textPart,
         },
       ],
     });
 
-    console.log('Email successfully sent:', request.body);
+    console.info('Email successfully sent:', request.body);
 
     return { success: true };
   } catch (e: unknown) {

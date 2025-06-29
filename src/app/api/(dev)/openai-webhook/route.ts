@@ -9,10 +9,6 @@ export async function POST(request: NextRequest) {
     const event = await openai.webhooks.unwrap(rawBody, headers);
     console.debug({ event });
 
-    if (event.type === 'response.completed') {
-      console.debug('Response completed event received');
-    }
-
     return NextResponse.json({ success: true, event }, { status: 200 });
   } catch (error) {
     console.error({ error });
