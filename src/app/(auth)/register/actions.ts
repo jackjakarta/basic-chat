@@ -2,9 +2,7 @@
 
 import { dbCreateNewUser, dbUpdateUserCustomerId } from '@/db/functions/user';
 import { authProviderSchema } from '@/db/schema';
-import { sendTestEmail } from '@/email/local';
 import { sendUserActionEmail } from '@/email/send';
-import { emailTemplateHtml } from '@/email/templates/verify-email';
 import { createCustomerByEmailStripe } from '@/stripe/customer';
 import { isDevMode } from '@/utils/dev-mode';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
@@ -51,14 +49,6 @@ export async function registerNewUserAction(body: RegisterUserRequestBody) {
     await sendUserActionEmail({
       to: newUser.email,
       action: 'verify-email',
-    });
-  }
-
-  if (authProvider === 'credentials' && isDevMode) {
-    await sendTestEmail({
-      email: newUser.email,
-      subject: 'Verify your email',
-      html: emailTemplateHtml.replace('$REGISTER_CODE', 'K4AYJD'),
     });
   }
 

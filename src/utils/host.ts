@@ -1,7 +1,7 @@
-import { headers as nextHeaders } from 'next/headers';
+import { headers as getHeaders } from 'next/headers';
 
 export function getHostByHeaders() {
-  const headers = nextHeaders();
+  const headers = getHeaders();
   const host = headers.get('host');
 
   if (host === null) {
@@ -13,10 +13,10 @@ export function getHostByHeaders() {
 
 export function getBaseUrlByHeaders() {
   const host = getHostByHeaders();
-  const isLocalhost = checkIsLocalhost();
+  const isLocalhost = host === 'localhost:3000' || host === '127.0.0.1:3000';
 
-  const formatedPrefix = isLocalhost ? 'http' : 'https';
-  const baseUrl = `${formatedPrefix}://${host}`;
+  const prefix = isLocalhost ? 'http' : 'https';
+  const baseUrl = `${prefix}://${host}`;
 
   return baseUrl;
 }

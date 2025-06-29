@@ -1,12 +1,14 @@
 import { dbInsertOrUpdateActionToken } from '@/db/functions/token';
 import { dbGetUserByEmail } from '@/db/functions/user';
 import { type TokenAction } from '@/db/schema';
+import ForgotPasswordTemplate from '@/emails/forgot-password';
+import VerifyEmailTemplate from '@/emails/verify-email';
+import { getBaseUrlByHeaders } from '@/utils/host';
 import { buildUserActionUrl } from '@/utils/url';
+import { render } from '@react-email/components';
 
 import { type InformationEmailMetadata, type MailTemplateResponse } from '../types';
 import { buildInformationEmailTemplate } from './information-template';
-import { resetPasswordTemplate } from './reset-password';
-import { verifyMailTemplate } from './verify-email';
 
 export async function createUserActionMailTemplate(
   email: string,
@@ -29,20 +31,25 @@ export async function createUserActionMailTemplate(
   });
 
   const actionUrl = buildUserActionUrl({ searchParams, tokenAction: action });
+  const baseUrl = getBaseUrlByHeaders();
 
   switch (action) {
     case 'verify-email':
       return {
         success: true,
-        subject: verifyMailTemplate({ verifyCode: userActionRow.token }).Subject.Data,
-        mailTemplate: verifyMailTemplate({ verifyCode: userActionRow.token }).Body.Html.Data,
+        subject: 'Verify your email address',
+        mailTemplate: await render(
+          <VerifyEmailTemplate verificationCode={userActionRow.token} baseUrl={baseUrl} />,
+        ),
         createdAt: userActionRow.createdAt,
       };
     case 'reset-password':
       return {
         success: true,
-        subject: resetPasswordTemplate({ actionUrl }).Subject.Data,
-        mailTemplate: resetPasswordTemplate({ actionUrl }).Body.Html.Data,
+        subject: 'Reset password',
+        mailTemplate: await render(
+          <ForgotPasswordTemplate actionUrl={actionUrl} baseUrl={baseUrl} />,
+        ),
         createdAt: userActionRow.createdAt,
       };
     default:
