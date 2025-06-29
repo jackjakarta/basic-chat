@@ -61,12 +61,14 @@ export default function UsersTable({
 
   function handleSearch(value: string) {
     setSearchTerm(value);
+
     const filtered = users.filter(
       (user) =>
         user.firstName.toLowerCase().includes(value.toLowerCase()) ||
         user.lastName.toLowerCase().includes(value.toLowerCase()) ||
         user.email.toLowerCase().includes(value.toLowerCase()),
     );
+
     setFilteredUsers(filtered);
   }
 

@@ -1,0 +1,190 @@
+{
+  "assistants": {
+    "buttons": {
+      "create-assistant": "Crear asistente",
+      "creating-assistant": "Creando..."
+    },
+    "create": {
+      "description": "Completa los detalles para crear un nuevo asistente de IA.",
+      "form": {
+        "instructions": {
+          "label": "Instrucciones",
+          "placeholder": "Ingresa las instrucciones del asistente"
+        },
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Ingresa el nombre del asistente"
+        }
+      },
+      "name": "Nombre",
+      "title": "Crear nuevo asistente"
+    },
+    "description": "Los asistentes son IA personalizadas diseñadas con un conjunto específico de instrucciones para realizar tareas o resolver problemas concretos.",
+    "no-assistants": "No se encontraron asistentes. Crea tu primer asistente.",
+    "title": "Asistentes",
+    "confirmation": {
+      "delete": {
+        "title": "Eliminar asistente",
+        "description": "¿Estás seguro de que deseas eliminar $ASSISTANT_NAME? Esta acción no se puede deshacer."
+      }
+    },
+    "toasts": {
+      "toast-create-error": "Error al crear el asistente",
+      "toast-create-loading": "Creando asistente...",
+      "toast-create-success": "Asistente creado con éxito",
+      "toast-delete-error": "Error al eliminar el asistente",
+      "toast-delete-loading": "Eliminando asistente...",
+      "toast-delete-success": "Asistente eliminado con éxito"
+    }
+  },
+  "auth": {
+    "no-account": "¿No tienes una cuenta?",
+    "login": {
+      "form": {
+        "title": "Inicia sesión en tu cuenta",
+        "description": "Ingresa tu correo electrónico para acceder a tu cuenta",
+        "or": "O continúa con",
+        "login-with": "Iniciar sesión con",
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "Ingresa tu contraseña"
+        },
+        "submit": "Iniciar sesión"
+      }
+    },
+    "logout": "Cerrar sesión",
+    "forgot-password": {
+      "message": "¿Olvidaste tu contraseña?",
+      "form": {
+        "title": "Recuperar contraseña",
+        "description": "Ingresa tu correo para restablecer la contraseña",
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico"
+        },
+        "submit": "Enviar enlace de recuperación"
+      }
+    },
+    "register": {
+      "sign-up": "Regístrate",
+      "form": {
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "Ingresa tu contraseña"
+        },
+        "submit": "Registrarse"
+      }
+    }
+  },
+  "billing": {
+    "title": "Facturación",
+    "pricing": "Precios",
+    "choose-plan": "Elige el plan que se ajuste a tus necesidades",
+    "ready-get-started": "¿Listo para comenzar?",
+    "join": "Únete a miles de usuarios que ya usan nuestra plataforma",
+    "start-trial": "Comienza tu prueba gratuita",
+    "cards": {
+      "month": "mes",
+      "recommended": "Recomendado",
+      "free-forever": "Gratis para siempre",
+      "days-trial": "días de prueba gratuita",
+      "whats-included": "Qué incluye",
+      "messages-month": "mensajes por mes",
+      "tokens-month": "tokens por mes",
+      "priority-support": "Soporte prioritario",
+      "community-support": "Soporte comunitario",
+      "basic-features": "Funciones básicas",
+      "advanced-features": "Funciones avanzadas"
+    }
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "create": "Crear",
+    "delete": "Eliminar",
+    "delete-confirmation": "¿Estás seguro de que deseas eliminar este elemento?",
+    "delete-confirmation-accept": "Sí, eliminar",
+    "delete-confirmation-cancel": "Cancelar",
+    "delete-confirmation-title": "Confirmación de eliminación",
+    "edit": "Editar",
+    "error": "Error",
+    "loading": "Cargando...",
+    "no": "No",
+    "save": "Guardar",
+    "save-changes": "Guardar cambios",
+    "search": "Buscar",
+    "submit": "Enviar",
+    "yes": "Sí",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirm-password": "Confirmar contraseña",
+    "new-password": "Nueva contraseña",
+    "name": "Nombre",
+    "first-name": "Nombre",
+    "last-name": "Apellido"
+  },
+  "not-found": {
+    "title": "Página no encontrada",
+    "description": "No pudimos encontrar la página que buscabas. Es posible que la página haya sido movida, eliminada o que nunca haya existido.",
+    "action": "Verifica la URL o regresa a la página principal.",
+    "button": "Volver al inicio"
+  },
+  "settings": {
+    "title": "Configuración",
+    "profile": {
+      "title": "Perfil",
+      "description": "Actualiza la información de tu perfil.",
+      "avatar-disclaimer": "Puedes cambiar tu avatar en",
+      "form": {
+        "first-name": {
+          "label": "Nombre",
+          "placeholder": "Ingresa tu nombre"
+        },
+        "last-name": {
+          "label": "Apellido",
+          "placeholder": "Ingresa tu apellido"
+        },
+        "custom-instructions": {
+          "label": "¿Qué preferencias debería considerar el chat en sus respuestas?",
+          "placeholder": "Ej. Uso principalmente este chat para preguntas de programación, así que por favor sé conciso y directo"
+        }
+      }
+    },
+    "integrations": {
+      "title": "Integraciones",
+      "description": "Las integraciones amplían la funcionalidad del chat. Puedes conectar tus herramientas y servicios favoritos a El Chat. Puedes usar estas integraciones para dar acceso al chat a tus propias fuentes de datos, como Notion u otras próximamente.",
+      "privacy-disclaimer": "No almacenamos ninguno de tus datos. Solo los usamos para generar las respuestas que ves en el chat."
+    },
+    "preferences": {
+      "title": "Preferencias",
+      "description": "Configura tu idioma preferido para la experiencia del chat.",
+      "language": {
+        "heading": "Cambiar idioma"
+      }
+    }
+  },
+  "sidebar": {
+    "assistants": "Asistentes",
+    "search-chats": "Buscar chats",
+    "new-chat": "Nuevo chat",
+    "no-chats": "No hay chats por el momento",
+    "error-loading-chats": "Hubo un problema al cargar los chats",
+    "chats": "Chats",
+    "user-menu": {
+      "profile": "Perfil",
+      "preferences": "Preferencias",
+      "integrations": "Integraciones",
+      "upgrade": "Actualizar a Pro",
+      "billing": "Facturación"
+    }
+  }
+}

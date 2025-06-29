@@ -1,13 +1,13 @@
 import { generateTTS } from '@/elevenlabs/tts';
 import { getValidSession } from '@/utils/auth';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const requestSchema = z.object({
   text: z.string().min(1),
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   await getValidSession();
 
   try {

@@ -6,7 +6,7 @@ import {
   getSubscriptionPlanBySubscriptionState,
   getSubscriptionStateBySubscriptions,
 } from '@/stripe/subscription';
-import { getUser } from '@/utils/auth';
+import { getSuperAdmin } from '@/utils/auth';
 import { getUserAvatarUrl } from '@/utils/user';
 
 import { type ExtendedUser } from './types';
@@ -15,7 +15,7 @@ import UsersTable from './users-table';
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const [user, users] = await Promise.all([getUser(), dbGetAllUsers()]);
+  const [user, users] = await Promise.all([getSuperAdmin(), dbGetAllUsers()]);
 
   const usersWithTokensAvatar: ExtendedUser[] = await Promise.all(
     users.map(async (user) => {

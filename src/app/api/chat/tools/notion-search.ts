@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { NotionSearchClient, type NotionSource } from '../../auth/notion/client';
 import { type NotionIntegration } from '../types';
 
-export async function searchNotionTool({
+export async function getSearchNotionTool({
   notionDataSource,
 }: {
   notionDataSource: NotionIntegration;
@@ -23,7 +23,8 @@ export async function searchNotionTool({
     execute: async ({ searchQuery }) => {
       try {
         const toolResult =
-          (await notionClient?.search(searchQuery).catch(() => [])) ?? ([] as NotionSource[]);
+          (await notionClient?.search(searchQuery, { filter: 'page', limit: 3 }).catch(() => [])) ??
+          ([] as NotionSource[]);
 
         if (toolResult.length === 0) {
           return 'An error occurred while searching the data source. We are sorry.';

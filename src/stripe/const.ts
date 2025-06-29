@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-export const paymentMethodTypes = ['card'] satisfies Stripe.Emptyable<
+export const PAYMENT_METHOD_TYPES = ['card'] satisfies Stripe.Emptyable<
   Stripe.SubscriptionCreateParams.PaymentSettings.PaymentMethodType[]
 >;
 

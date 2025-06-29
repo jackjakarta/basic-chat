@@ -30,7 +30,7 @@ export default function AppSidebar({ user, avatarUrl, ...props }: SidebarProps) 
   }
 
   return (
-    <Sidebar variant="sidebar" className="border-accent" {...props}>
+    <Sidebar variant="inset" className="border-accent" {...props}>
       <SidebarHeader>
         <NavHeader />
       </SidebarHeader>

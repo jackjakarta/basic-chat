@@ -63,6 +63,7 @@ function languageNameMap(language: SiteLanguage | undefined) {
     en: 'English',
     de: 'Deutsch',
     ro: 'Română',
+    es: 'Español',
   };
 
   return mapping[language] ?? language;

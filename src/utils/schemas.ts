@@ -8,4 +8,4 @@ export const lastNameSchema = z.string().min(1, 'Last name is required');
 export const emailSchema = z.string().email('Invalid email address');
 export const passwordSchema = getPasswordValidator({ level: env.NEXT_PUBLIC_passwordValidator });
 
-export const siteLanguageSchema = z.enum(['en', 'de', 'ro']);
+export const siteLanguageSchema = z.enum(['en', 'de', 'ro', 'es']);

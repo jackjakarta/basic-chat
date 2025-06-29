@@ -85,16 +85,16 @@ export async function dbDeleteAssistant({
       throw new Error('Assistant not found');
     }
 
-    const AssistantConversations = await tx
+    const assistantConversations = await tx
       .select()
       .from(conversationTable)
       .where(
         and(eq(conversationTable.assistantId, assistantId), eq(conversationTable.userId, userId)),
       );
 
-    if (AssistantConversations.length > 0) {
+    if (assistantConversations.length > 0) {
       await Promise.all(
-        AssistantConversations.map(async (conversation) => {
+        assistantConversations.map(async (conversation) => {
           await tx
             .delete(conversationMessageTable)
             .where(

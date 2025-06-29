@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 const apiKey = env.openaiApiKey;
 
-export function fileSearchTool({ vectorStoreId }: { vectorStoreId: string }) {
+export function getFileSearchTool({ vectorStoreId }: { vectorStoreId: string }) {
   const fileSearchTool = tool({
     description:
       'Search own knowledge base of files if the user asks a question that the assistant cannot answer. Or if the user asks the assistant to search the knowledge.',

@@ -5,7 +5,7 @@ import { tool } from 'ai';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
-export function generateImageTool({ userEmail }: { userEmail: string }) {
+export function getGenerateImageTool({ userEmail }: { userEmail: string }) {
   const generateImageTool = tool({
     description: 'Generate an image based on the provided description.',
     parameters: z.object({

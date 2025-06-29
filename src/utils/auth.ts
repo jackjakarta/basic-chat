@@ -51,6 +51,16 @@ export async function getUser(): Promise<UserAndContext> {
   };
 }
 
+export async function getSuperAdmin() {
+  const user = await getUser();
+
+  if (!user.isSuperAdmin) {
+    throw new Error('Unauthorized: Only super admins can access this resource.');
+  }
+
+  return user;
+}
+
 export async function getMaybeUser() {
   const session = await getMaybeUserSession();
 
