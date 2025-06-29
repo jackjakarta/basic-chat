@@ -1,5 +1,6 @@
 import { cw } from '@/utils/tailwind';
 import katex from 'katex';
+import Image from 'next/image';
 import React from 'react';
 import Markdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -95,6 +96,20 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
             <strong className="font-semibold" {...props}>
               {children}
             </strong>
+          );
+        },
+        img({ src, alt, ...props }) {
+          return (
+            <Image
+              src={src ?? ''}
+              alt={alt ?? ''}
+              //@ts-expect-error - weird typescript error
+              width={400}
+              //@ts-expect-error - weird typescript error
+              height={400}
+              className="rounded-lg my-2"
+              {...props}
+            />
           );
         },
         ul({ children, ...props }) {
