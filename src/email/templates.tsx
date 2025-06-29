@@ -8,7 +8,7 @@ import { getBaseUrlByHeaders } from '@/utils/host';
 import { buildUserActionUrl } from '@/utils/url';
 import { render } from '@react-email/components';
 
-import { type InformationEmailMetadata, type MailTemplateResponse } from '../types';
+import { type InformationEmailMetadata, type MailTemplateResponse } from './types';
 
 export async function createUserActionMailTemplate(
   email: string,
