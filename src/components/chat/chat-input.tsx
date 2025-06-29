@@ -30,7 +30,7 @@ type ChatInputProps = {
   setIsImageGenerationActive: React.Dispatch<React.SetStateAction<boolean>>;
   status: ChatResponseStatus;
   chatDisabled: boolean;
-  stop: () => void;
+  onStop: () => void;
 };
 
 export default function ChatInput({
@@ -47,7 +47,7 @@ export default function ChatInput({
   setIsImageGenerationActive,
   status,
   chatDisabled,
-  stop,
+  onStop,
 }: ChatInputProps) {
   const [isUploading, setIsUploading] = React.useState(false);
 
@@ -199,7 +199,7 @@ export default function ChatInput({
                 <button
                   type="button"
                   title="Stop generating"
-                  onClick={() => stop()}
+                  onClick={() => onStop()}
                   className="p-1.5 flex items-center justify-center group disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
                   aria-label="Stop"
                 >

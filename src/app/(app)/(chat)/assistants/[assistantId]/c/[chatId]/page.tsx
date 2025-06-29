@@ -6,6 +6,7 @@ import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { filterChatMessages } from '@/utils/chat';
+import { type Message } from 'ai';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 
@@ -41,6 +42,7 @@ export default async function Page(context: unknown) {
   }
 
   const { limits } = subscriptionPlan;
+  const { totalTokens } = tokensUsed;
 
   if (assistant === undefined) {
     return notFound();
@@ -61,14 +63,19 @@ export default async function Page(context: unknown) {
     userId: user.id,
   });
 
-  const filteredMessages = filterChatMessages({ chatMessages });
-  const { totalTokens } = tokensUsed;
+  const filteredMessages = filterChatMessages(chatMessages);
+
+  const messagesWithAttachments: Message[] = filteredMessages.map((message) => ({
+    ...message,
+    experimental_attachments: message.attachments ?? undefined,
+    attachments: null,
+  }));
 
   return (
     <Chat
       key={chat.id}
       id={chat.id}
-      initialMessages={filteredMessages}
+      initialMessages={messagesWithAttachments}
       assistantId={assistantId}
       models={models}
       tokensUsed={totalTokens}

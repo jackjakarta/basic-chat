@@ -18,7 +18,6 @@ import React from 'react';
 
 import Header from '../common/header';
 import { useChatOptions } from '../hooks/use-chat-options';
-import { useToast } from '../hooks/use-toast';
 import { useLlmModel } from '../providers/llm-model';
 import ChatInput from './chat-input';
 import ChatMessages from './chat-messages';
@@ -46,11 +45,10 @@ export default function Chat({
   assistantId,
   assistantName,
 }: ChatProps) {
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { model: modelId } = useLlmModel();
-  const { toastError } = useToast();
 
   const [isWebSearchActive, setIsWebSearchActive] = React.useState(false);
   const [isImageGenerationActive, setIsImageGenerationActive] = React.useState(false);
@@ -139,7 +137,6 @@ export default function Chat({
       replaceUrl(chatPath);
     } catch (error) {
       console.error({ error });
-      toastError('Failed to send message');
     }
   }
 
@@ -168,11 +165,11 @@ export default function Chat({
               </div>
             ) : (
               <>
-                <ChatMessages messages={messages} status={status} reload={reload} />
+                <ChatMessages messages={messages} status={status} onReload={reload} />
                 {status === 'submitted' && <LoadingDisplay />}
               </>
             )}
-            {status === 'error' && <ErrorDisplay error={error} reload={reload} />}
+            {status === 'error' && <ErrorDisplay error={error} onReload={reload} />}
           </div>
           <ChatInput
             messages={messages}
@@ -188,7 +185,7 @@ export default function Chat({
             isImageGenerationActive={isImageGenerationActive}
             setIsImageGenerationActive={setIsImageGenerationActive}
             chatDisabled={hasReachedLimit}
-            stop={stop}
+            onStop={stop}
           />
         </div>
       </div>

@@ -1,9 +1,9 @@
 import { type ConversationMessageRow } from '@/db/schema';
 import { type Message } from 'ai';
 
-export function filterChatMessages({ chatMessages }: { chatMessages: ConversationMessageRow[] }) {
+export function filterChatMessages(messages: ConversationMessageRow[]) {
   const filteredMessages = Array.from(
-    chatMessages
+    messages
       .filter((message) => message.content !== '')
       .reduce((map, message) => {
         const existingMessage = map.get(message.orderNumber);
@@ -13,7 +13,7 @@ export function filterChatMessages({ chatMessages }: { chatMessages: Conversatio
         }
 
         return map;
-      }, new Map<number, (typeof chatMessages)[0]>())
+      }, new Map<number, (typeof messages)[0]>())
       .values(),
   );
 
