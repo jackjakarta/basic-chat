@@ -16,6 +16,7 @@ export type MailTemplateResult = {
   success: true;
   subject: string;
   mailTemplate: string;
+  textPart: string;
   createdAt: Date;
 };
 

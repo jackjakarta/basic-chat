@@ -57,7 +57,7 @@ export async function deleteVectorStore({
     throw new Error(`Vector store with ID ${vectorStoreId} not found`);
   }
 
-  const result = await openai.vectorStores.del(vectorStore.id);
+  const result = await openai.vectorStores.delete(vectorStore.id);
 
   if (!result.deleted) {
     throw new Error(`Failed to delete vector store: ${JSON.stringify(result.object)}`);
@@ -85,7 +85,7 @@ export async function uploadFileToOpenAi({ file }: { file: File }): Promise<Vect
 }
 
 export async function deleteFile({ fileId }: { fileId: string }) {
-  const response = await openai.files.del(fileId);
+  const response = await openai.files.delete(fileId);
 
   return response;
 }
