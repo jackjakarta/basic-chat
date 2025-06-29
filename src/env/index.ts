@@ -1,8 +1,6 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
-export const passwordValidatorSchema = z.enum(['weak', 'medium', 'strong']).default('medium');
-
 export const env = createEnv({
   server: {
     databaseUrl: z.string().url(),
@@ -37,7 +35,6 @@ export const env = createEnv({
     devMode: z.enum(['true', 'false']).default('false'),
   },
   client: {
-    NEXT_PUBLIC_passwordValidator: passwordValidatorSchema,
     NEXT_PUBLIC_stripePublishableKey: z.string().min(1),
   },
   runtimeEnv: {
@@ -72,6 +69,5 @@ export const env = createEnv({
     stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
     githubAccessToken: process.env.GITHUB_ACCESS_TOKEN,
     NEXT_PUBLIC_stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-    NEXT_PUBLIC_passwordValidator: process.env.NEXT_PUBLIC_PASSWORD_VALIDATOR,
   },
 });
