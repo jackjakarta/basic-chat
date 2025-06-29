@@ -1,6 +1,6 @@
 'use client';
 
-import { LocalFileState } from '@/types/files';
+import { type LocalFileState } from '@/types/files';
 import { Paperclip } from 'lucide-react';
 import React from 'react';
 import { z } from 'zod';

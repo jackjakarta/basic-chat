@@ -51,8 +51,9 @@ async function generateImageFromText({
     }),
     getSignedUrlFromS3Get({
       key: fileName,
-      duration: 7200,
       bucketName: 'chat',
+      contentType: 'image/png',
+      attachment: false,
     }),
   ]);
 

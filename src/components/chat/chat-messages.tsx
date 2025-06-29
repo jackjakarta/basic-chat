@@ -100,8 +100,8 @@ export default function ChatMessages({ messages, status, onReload }: ChatMessage
                     />
                     {isLastNonUser && (
                       <button
-                        title="Reload last message"
                         type="button"
+                        title="Reload last message"
                         onClick={() => onReload()}
                         className="mt-1"
                         aria-label="Reload"

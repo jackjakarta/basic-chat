@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const fileId = `${user.email}/uploaded/files/file_${nanoid()}`;
   const fileExtension = getFileExtension(file.name);
 
   if (!SUPPORTED_FILE_EXTENSIONS.includes(fileExtension.toLowerCase())) {
@@ -40,6 +39,8 @@ export async function POST(req: NextRequest) {
       { status: 413 },
     );
   }
+
+  const fileId = `${user.email}/uploaded/files/file_${nanoid()}.${fileExtension}`;
 
   try {
     const [, signedUrl] = await Promise.all([
