@@ -110,7 +110,7 @@ export default function ResetPasswordForm({
           {isSubmitting ? 'Updating...' : 'Reset password'}
         </Button>
       </div>
-      <div className="text-center text-muted-foreground text-sm">
+      <div className="text-center text-sm text-muted-foreground">
         Make sure to use a strong password that you don't use elsewhere to keep your account secure
       </div>
     </form>

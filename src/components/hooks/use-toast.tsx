@@ -64,7 +64,7 @@ export function useToast() {
 function getSuccessToastOptions(isDarkMode: boolean): ToastOptions {
   return {
     duration: 4000,
-    icon: <CheckIcon className="w-8 h-8 text-green-600" />,
+    icon: <CheckIcon className="h-8 w-8 text-green-600" />,
     style: {
       display: 'flex',
       borderRadius: '10px',
@@ -91,7 +91,7 @@ function getErrorToastOptions(isDarkMode: boolean): ToastOptions {
 
 function getLoadingToastOptions(isDarkMode: boolean): ToastOptions {
   return {
-    icon: <SpinnerLoading className="w-8 h-8 text-primary" />,
+    icon: <SpinnerLoading className="h-8 w-8 text-primary" />,
     style: {
       display: 'flex',
       borderRadius: '10px',

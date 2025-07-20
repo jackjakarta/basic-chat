@@ -100,16 +100,16 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
           pathname.includes(conversation.id) && !editMode && 'bg-sidebar-accent',
         )}
       >
-        <div className="flex justify-between items-center w-full">
+        <div className="flex w-full items-center justify-between">
           {editMode && (
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="flex-1 flex items-center gap-2 -ml-2"
+              className="-ml-2 flex flex-1 items-center gap-2"
             >
               <input
                 {...register('name')}
                 autoFocus
-                className="py-1 pr-1 pl-2 rounded-sm w-full focus:outline-none"
+                className="w-full rounded-sm py-1 pl-2 pr-1 focus:outline-none"
               />
               <button
                 type="submit"
@@ -117,7 +117,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
                 className="py-2 focus:outline-none"
                 aria-label="Save name"
               >
-                <CheckIcon className="w-5 h-5" />
+                <CheckIcon className="h-5 w-5" />
               </button>
             </form>
           )}
@@ -153,7 +153,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className={cw('shadow-sm rounded-md')}
+                  className={cw('rounded-md shadow-sm')}
                   align="start"
                   sideOffset={5}
                 >
@@ -172,7 +172,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
                       e.preventDefault();
                       handleDeleteConversation(conversation.id);
                     }}
-                    className="text-destructive focus:text-destructive cursor-pointer"
+                    className="cursor-pointer text-destructive focus:text-destructive"
                   >
                     Delete
                   </DropdownMenuItem>

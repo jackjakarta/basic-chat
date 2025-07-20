@@ -148,15 +148,15 @@ export default function Chat({
       <Header title={assistantName} models={models} isEmptyChat={messages.length === 0} />
       <div
         ref={scrollRef}
-        className="flex flex-col h-full w-full overflow-y-auto"
+        className="flex h-full w-full flex-col overflow-y-auto"
         style={{ maxHeight: 'calc(100vh - 150px)' }}
       >
-        <div className="flex flex-col flex-1 justify-center items-center w-full">
+        <div className="flex w-full flex-1 flex-col items-center justify-center">
           <div
             className={cw('w-full max-w-[50rem] p-4 pb-[5rem]', messages.length > 0 && 'flex-grow')}
           >
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full">
+              <div className="flex h-full flex-col items-center justify-center">
                 {userFirstName && (
                   <h1 className="text-3xl font-normal text-primary dark:text-primary-foreground">
                     {getTimeBasedGreeting(userFirstName)}

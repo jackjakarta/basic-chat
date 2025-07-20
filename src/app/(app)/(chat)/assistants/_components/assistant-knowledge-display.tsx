@@ -98,14 +98,14 @@ export default function AssistantKnowledgeDisplay({
 
   return (
     <div className="flex flex-col gap-4">
-      <span className="font-semibold text-lg">Knowledge Base:</span>
+      <span className="text-lg font-semibold">Knowledge Base:</span>
 
       <Button
         type="button"
         variant="secondary"
         onClick={openFileDialog}
         title="Upload File"
-        className="py-1 w-fit flex items-center justify-center group disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
+        className="group me-2 flex w-fit items-center justify-center rounded-lg py-1 hover:bg-secondary/20 disabled:cursor-not-allowed"
         aria-label="Upload File"
       >
         <Plus />

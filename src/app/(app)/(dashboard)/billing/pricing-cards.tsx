@@ -14,7 +14,7 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
   const t = useTranslations('billing.cards');
 
   return (
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid gap-8 md:grid-cols-2">
       {plans.map((plan) => (
         <Card
           key={plan.id}
@@ -23,35 +23,35 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
           }`}
         >
           {plan.id === 'premium' && (
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 transform">
               <Badge className="bg-blue-600 px-4 py-1">{t('recommended')}</Badge>
             </div>
           )}
 
-          <CardHeader className="text-center pb-8">
-            <div className="flex items-center justify-center mb-4">
+          <CardHeader className="pb-8 text-center">
+            <div className="mb-4 flex items-center justify-center">
               <div
-                className={`p-3 rounded-full ${plan.id === 'premium' ? 'bg-blue-100' : 'bg-gray-100'}`}
+                className={`rounded-full p-3 ${plan.id === 'premium' ? 'bg-blue-100' : 'bg-gray-100'}`}
               >
                 {getPlanIcon(plan.id)}
               </div>
             </div>
 
             <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-            <CardDescription className="text-gray-600 mt-2">{plan.description}</CardDescription>
+            <CardDescription className="mt-2 text-gray-600">{plan.description}</CardDescription>
 
             <div className="mt-6">
               <div className="flex items-baseline justify-center">
                 <span className="text-5xl font-bold text-muted-foreground">
                   ${plan.price > 0 ? convertCentAmountToEuro(plan.price) : '0'}
                 </span>
-                <span className="text-muted-foreground ml-2">/{t('month')}</span>
+                <span className="ml-2 text-muted-foreground">/{t('month')}</span>
               </div>
               {plan.id === 'free' && (
-                <p className="text-sm text-muted-foreground mt-2">{t('free-forever')}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{t('free-forever')}</p>
               )}
               {plan.id === 'premium' && (
-                <p className="text-sm text-muted-foreground mt-2">14 {t('days-trial')}</p>
+                <p className="mt-2 text-sm text-muted-foreground">14 {t('days-trial')}</p>
               )}
             </div>
           </CardHeader>
@@ -71,9 +71,9 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
               <ul className="space-y-3">
                 <li className="flex items-center space-x-3">
                   {plan.limits.messagesLimit === null ? (
-                    <Infinity className="h-5 w-5 text-green-500 flex-shrink-0" />
+                    <Infinity className="h-5 w-5 flex-shrink-0 text-green-500" />
                   ) : (
-                    <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                    <Check className="h-5 w-5 flex-shrink-0 text-green-500" />
                   )}
                   <span className="text-muted-foreground">
                     {formatLimit(plan.limits.messagesLimit, t('messages-month'))}
@@ -81,22 +81,22 @@ export default function PricingCards({ plans }: { plans: SubscriptionPlanRow[] }
                 </li>
                 <li className="flex items-center space-x-3">
                   {plan.limits.tokenLimit === null ? (
-                    <Infinity className="h-5 w-5 text-green-500 flex-shrink-0" />
+                    <Infinity className="h-5 w-5 flex-shrink-0 text-green-500" />
                   ) : (
-                    <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                    <Check className="h-5 w-5 flex-shrink-0 text-green-500" />
                   )}
                   <span className="text-muted-foreground">
                     {formatLimit(plan.limits.tokenLimit, t('tokens-month'))}
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                  <Check className="h-5 w-5 flex-shrink-0 text-green-500" />
                   <span className="text-muted-foreground">
                     {plan.id === 'premium' ? t('priority-support') : t('community-support')}
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                  <Check className="h-5 w-5 flex-shrink-0 text-green-500" />
                   <span className="text-muted-foreground">
                     {plan.id === 'premium' ? t('advanced-features') : t('basic-features')}
                   </span>

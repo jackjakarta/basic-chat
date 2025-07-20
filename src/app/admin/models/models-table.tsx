@@ -41,13 +41,13 @@ export default function ModelsTable({ models: initialModels }: ModelsTableProps)
 
   return (
     <>
-      <div className="border rounded-lg p-4 bg-sidebar-border/10">
+      <div className="rounded-lg border bg-sidebar-border/10 p-4">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">Model ID</TableHead>
               <TableHead>Model Name</TableHead>
-              <TableHead className="text-center w-[120px]">Status</TableHead>
+              <TableHead className="w-[120px] text-center">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

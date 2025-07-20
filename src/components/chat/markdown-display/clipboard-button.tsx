@@ -17,11 +17,11 @@ export default function ClipboardButton({ text }: { text: string }) {
 
   return (
     <button
-      className="p-1 hover:bg-secondary/40 rounded-md"
+      className="rounded-md p-1 hover:bg-secondary/40"
       onClick={() => handleCopy(text)}
       disabled={isCopied}
     >
-      {isCopied ? <Check className="w-4 h-4" /> : <Clipboard className="w-4 h-4" />}
+      {isCopied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
     </button>
   );
 }

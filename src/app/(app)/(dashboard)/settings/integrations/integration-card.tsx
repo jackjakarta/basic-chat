@@ -59,8 +59,8 @@ export default function IntegrationCard({
     <button
       title="Connect/Disconnect with integration"
       className={cw(
-        'border border-grey-400 p-4 grid grid-cols-[auto_1fr_auto] rounded-lg w-full gap-4 hover:bg-primary/10',
-        state === 'comingSoon' && 'bg-gray-200 border-grey-600',
+        'border-grey-400 grid w-full grid-cols-[auto_1fr_auto] gap-4 rounded-lg border p-4 hover:bg-primary/10',
+        state === 'comingSoon' && 'border-grey-600 bg-gray-200',
         state === 'active' && 'group hover:cursor-pointer',
       )}
       onClick={handleClick}
@@ -70,15 +70,15 @@ export default function IntegrationCard({
         <div className="flex items-center gap-2">
           <h2 className="font-medium">{name}</h2>
           {state === 'comingSoon' && (
-            <span className="text-[#453A09] text-sm px-1 pt-0.5 bg-yellow-300">Coming soon</span>
+            <span className="bg-yellow-300 px-1 pt-0.5 text-sm text-[#453A09]">Coming soon</span>
           )}
           {activeIntegration !== undefined && (
-            <span className="bg-[#31E38A1A] text-green-600 rounded-lg text-sm py-1 px-2">
+            <span className="rounded-lg bg-[#31E38A1A] px-2 py-1 text-sm text-green-600">
               Active
             </span>
           )}
         </div>
-        <p className="text-secondary-foreground/70 dark:text-primary-foreground/60 text-base">
+        <p className="text-base text-secondary-foreground/70 dark:text-primary-foreground/60">
           {description}
         </p>
       </div>

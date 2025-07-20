@@ -88,21 +88,21 @@ export default function ChatInput({
   return (
     <div
       className={cw(
-        'w-full max-w-[25rem] md:max-w-[30rem] lg:max-w-[42rem] px-4 -mt-14',
+        '-mt-14 w-full max-w-[25rem] px-4 md:max-w-[30rem] lg:max-w-[42rem]',
         messages.length > 0 && 'fixed bottom-4',
       )}
     >
       <div className="flex flex-col">
         <form
           onSubmit={customHandleSubmit}
-          className="bg-sidebar w-full p-1 border focus-within:border-primary border-none rounded-xl"
+          className="w-full rounded-xl border border-none bg-sidebar p-1 focus-within:border-primary"
         >
           <div className="flex flex-col gap-1">
-            <div className="flex items-center ml-2 gap-2">
+            <div className="ml-2 flex items-center gap-2">
               {imageAttachments.map((f) => (
                 <div
                   key={f.id}
-                  className="relative cursor-pointer group"
+                  className="group relative cursor-pointer"
                   onClick={() => handleDeattachFile(f.id)}
                 >
                   <Image
@@ -110,32 +110,32 @@ export default function ChatInput({
                     alt={`logo-${f.id}`}
                     width={60}
                     height={60}
-                    className="my-2 group-hover:opacity-50 rounded-lg h-[60px]"
+                    className="my-2 h-[60px] rounded-lg group-hover:opacity-50"
                   />
-                  <div className="absolute invisible group-hover:visible top-6 right-4 text-muted-foreground rounded-full p-1">
-                    <X className="w-5 h-5" />
+                  <div className="invisible absolute right-4 top-6 rounded-full p-1 text-muted-foreground group-hover:visible">
+                    <X className="h-5 w-5" />
                   </div>
                 </div>
               ))}
               {fileAttachments.map((f) => (
                 <div
                   key={f.id}
-                  className="relative cursor-pointer group"
+                  className="group relative cursor-pointer"
                   onClick={() => handleDeattachFile(f.id)}
                 >
                   <DisplayPdfFile
                     fileName={extractFileNameFromSignedUrl(f.name) ?? undefined}
                     className="my-2 group-hover:opacity-50"
                   />
-                  <div className="absolute invisible group-hover:visible top-4 right-4 text-muted-foreground rounded-full p-1">
-                    <X className="w-5 h-5" />
+                  <div className="invisible absolute right-4 top-4 rounded-full p-1 text-muted-foreground group-hover:visible">
+                    <X className="h-5 w-5" />
                   </div>
                 </div>
               ))}
 
               {isUploading && (
-                <div className="flex justify-center items-center w-[60px] h-[60px]">
-                  <SpinnerLoading className="w-6 h-6" />
+                <div className="flex h-[60px] w-[60px] items-center justify-center">
+                  <SpinnerLoading className="h-6 w-6" />
                 </div>
               )}
             </div>
@@ -150,14 +150,14 @@ export default function ChatInput({
                       ? 'Search the web...'
                       : 'Ask anything...'
                 }
-                className="w-full text-base focus:outline-none bg-transparent max-h-[10rem] sm:max-h-[15rem] overflow-y-auto px-3 py-2 disabled:cursor-not-allowed"
+                className="max-h-[10rem] w-full overflow-y-auto bg-transparent px-3 py-2 text-base focus:outline-none disabled:cursor-not-allowed sm:max-h-[15rem]"
                 onChange={handleInputChange}
                 value={input}
                 onKeyDown={handleSubmitOnEnter}
                 maxLength={20000}
               />
             </div>
-            <div className="flex items-center justify-between py-1 pl-3 -ml-1 mb-1">
+            <div className="-ml-1 mb-1 flex items-center justify-between py-1 pl-3">
               <div className="flex items-center gap-2">
                 <UploadButton
                   setFiles={setFiles}
@@ -169,7 +169,7 @@ export default function ChatInput({
                   tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
                   size="sm"
                   type="button"
-                  className="py-1 transition-colors duration-200 ease-in-out "
+                  className="py-1 transition-colors duration-200 ease-in-out"
                   variant={isWebSearchActive ? 'active' : 'neutral'}
                   onClick={toggleWebSearch}
                   disabled={chatDisabled}
@@ -200,26 +200,26 @@ export default function ChatInput({
                   type="button"
                   title="Stop generating"
                   onClick={() => onStop()}
-                  className="p-1.5 flex items-center justify-center group disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
+                  className="group me-2 flex items-center justify-center rounded-lg p-1.5 hover:bg-secondary/20 disabled:cursor-not-allowed"
                   aria-label="Stop"
                 >
-                  <StopIcon className="w-6 h-6 text-dark-gray group-disabled:bg-gray-200 group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
+                  <StopIcon className="text-dark-gray rounded-enterprise-sm h-6 w-6 text-primary group-hover:bg-secondary/20 group-disabled:bg-gray-200 group-disabled:text-gray-100" />
                 </button>
               ) : (
                 <button
                   type="submit"
                   title="Send message"
                   disabled={input.trim().length === 0}
-                  className="flex items-center justify-center group text-secondary disabled:cursor-not-allowed rounded-lg hover:bg-secondary/20 me-2"
+                  className="group me-2 flex items-center justify-center rounded-lg text-secondary hover:bg-secondary/20 disabled:cursor-not-allowed"
                   aria-label="Send Message"
                 >
-                  <ArrowUp className="w-7 h-7 text-dark-gray group-disabled:bg-secondary rounded-lg dark:group-disabled:text-gray-100 rounded-enterprise-sm text-primary group-hover:bg-secondary/20 " />
+                  <ArrowUp className="text-dark-gray rounded-enterprise-sm h-7 w-7 rounded-lg text-primary group-hover:bg-secondary/20 group-disabled:bg-secondary dark:group-disabled:text-gray-100" />
                 </button>
               )}
             </div>
           </div>
         </form>
-        <span className="text-xs mt-2 font-normal text-main-900 flex self-center">
+        <span className="text-main-900 mt-2 flex self-center text-xs font-normal">
           {chatDisabled
             ? 'You have reach your limit for the month. Buy a plan to get higher limits.'
             : 'This chat can search the web and generate images'}

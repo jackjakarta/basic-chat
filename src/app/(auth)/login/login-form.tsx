@@ -139,7 +139,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </Button>
         </div>
       </div>
-      <div className="flex justify-center items-center gap-2 text-sm">
+      <div className="flex items-center justify-center gap-2 text-sm">
         <span className="text-muted-foreground">{tAuth('no-account')} </span>
         <Link href="/register" className="hover:opacity-75">
           {tAuth('register.sign-up')}

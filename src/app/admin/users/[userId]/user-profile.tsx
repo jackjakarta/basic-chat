@@ -27,22 +27,22 @@ export default function UserProfile({ user }: { user: ExtendedUser }) {
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="sm" asChild>
             <Link href="/admin/users">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Users
             </Link>
           </Button>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="sm">
-            <Key className="h-4 w-4 mr-2" />
+            <Key className="mr-2 h-4 w-4" />
             Reset Password
           </Button>
           <Button variant="outline" size="sm" onClick={() => setIsEditing(!isEditing)}>
-            <Edit className="h-4 w-4 mr-2" />
+            <Edit className="mr-2 h-4 w-4" />
             {isEditing ? 'Cancel' : 'Edit'}
           </Button>
           <Button variant="destructive" size="sm">
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete User
           </Button>
         </div>
@@ -61,7 +61,7 @@ export default function UserProfile({ user }: { user: ExtendedUser }) {
             </Avatar>
             <div className="flex-1 space-y-4">
               <div>
-                <div className="flex items-center space-x-3 mb-2">
+                <div className="mb-2 flex items-center space-x-3">
                   <h1 className="text-2xl font-bold">
                     {user.firstName} {user.lastName}
                   </h1>
@@ -69,7 +69,7 @@ export default function UserProfile({ user }: { user: ExtendedUser }) {
                 </div>
                 <p className="text-muted-foreground">{user.email}</p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>Joined {formatDateToDayMonthYear(user.createdAt)}</span>
@@ -81,7 +81,7 @@ export default function UserProfile({ user }: { user: ExtendedUser }) {
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{user.conversationsCount ?? 0}</div>
@@ -122,7 +122,7 @@ export default function UserProfile({ user }: { user: ExtendedUser }) {
               <CardDescription>Basic information about the user account.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
                   <Input

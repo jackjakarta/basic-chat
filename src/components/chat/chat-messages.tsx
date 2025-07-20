@@ -38,7 +38,7 @@ export default function ChatMessages({ messages, status, onReload }: ChatMessage
         return (
           <div key={index} className="flex flex-col gap-2">
             {userFileAttachments.length > 0 && (
-              <div className="flex items-center flex-wrap gap-x-2 self-end">
+              <div className="flex flex-wrap items-center gap-x-2 self-end">
                 {userFileAttachments.map((attachment) => (
                   <DisplayPdfFile
                     key={attachment.id}
@@ -58,7 +58,7 @@ export default function ChatMessages({ messages, status, onReload }: ChatMessage
                     alt={`logo-${attachment.id}`}
                     width={300}
                     height={300}
-                    className="rounded-lg h-[300px] w-[300px] object-cover bg-sidebar"
+                    className="h-[300px] w-[300px] rounded-lg bg-sidebar object-cover"
                   />
                 ))}
               </div>
@@ -68,7 +68,7 @@ export default function ChatMessages({ messages, status, onReload }: ChatMessage
               className={cw(
                 'w-fit text-secondary-foreground',
                 message.role === 'user' &&
-                  'p-4 rounded-2xl rounded-br-none self-end bg-sidebar-accent text-secondary-foreground max-w-[70%] break-words',
+                  'max-w-[70%] self-end break-words rounded-2xl rounded-br-none bg-sidebar-accent p-4 text-secondary-foreground',
               )}
             >
               <div>
@@ -93,7 +93,7 @@ export default function ChatMessages({ messages, status, onReload }: ChatMessage
                     <TTSButton
                       text={message.content}
                       className={cw(
-                        'mt-1 p-2 rounded-md hover:bg-secondary/65',
+                        'mt-1 rounded-md p-2 hover:bg-secondary/65',
                         'text-primary dark:text-sidebar-accent',
                       )}
                       iconClassName="w-3.5 h-3.5"
@@ -108,11 +108,11 @@ export default function ChatMessages({ messages, status, onReload }: ChatMessage
                       >
                         <div
                           className={cw(
-                            'p-2 rounded-md hover:bg-secondary/65',
+                            'rounded-md p-2 hover:bg-secondary/65',
                             'text-primary dark:text-sidebar-accent',
                           )}
                         >
-                          <ReloadIcon className="w-3.5 h-3.5" />
+                          <ReloadIcon className="h-3.5 w-3.5" />
                         </div>
                       </button>
                     )}
