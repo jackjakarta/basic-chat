@@ -11,7 +11,7 @@ const AutoResizeTextarea = forwardRef<HTMLTextAreaElement, React.ComponentProps<
       <TextareaAutosize
         autoFocus
         className={cw(
-          'w-full border-1 py-1.5 focus:outline-none resize-none',
+          'border-1 w-full resize-none py-1.5 focus:outline-none',
           value === undefined || value.toString().length < 1 ? 'h-9' : 'h-fit',
           className,
         )}

@@ -97,19 +97,19 @@ export default function UsersTable({
               </div>
               <div className="flex items-center space-x-2">
                 <Button variant="outline" size="sm">
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="mr-2 h-4 w-4" />
                   Export
                 </Button>
                 <Button size="sm">
-                  <UserPlus className="h-4 w-4 mr-2" />
+                  <UserPlus className="mr-2 h-4 w-4" />
                   Add User
                 </Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="relative flex-1 max-w-sm">
+            <div className="mb-4 flex items-center space-x-2">
+              <div className="relative max-w-sm flex-1">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search users..."
@@ -119,7 +119,7 @@ export default function UsersTable({
                 />
               </div>
               <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
+                <Filter className="mr-2 h-4 w-4" />
                 Filter
               </Button>
             </div>
@@ -192,7 +192,7 @@ export default function UsersTable({
                                 e.preventDefault();
                                 setIsDialogOpen(true);
                               }}
-                              className="text-red-600 cursor-pointer disabled:cursor-not-allowed"
+                              className="cursor-pointer text-red-600 disabled:cursor-not-allowed"
                               disabled={user.id === currentUserId}
                             >
                               Delete user

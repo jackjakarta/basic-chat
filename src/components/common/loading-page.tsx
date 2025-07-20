@@ -2,8 +2,8 @@ import BouncingBallsLoading from '../icons/animated/bouncing-balls';
 
 export default function LoadingPage() {
   return (
-    <div className="flex items-center justify-center h-full">
-      <BouncingBallsLoading className="w-16 h-16 text-primary-500" />
+    <div className="flex h-full items-center justify-center">
+      <BouncingBallsLoading className="text-primary-500 h-16 w-16" />
     </div>
   );
 }

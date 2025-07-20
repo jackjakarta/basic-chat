@@ -45,7 +45,7 @@ export default function SetLanguageSelect() {
       </SelectTrigger>
       <SelectContent>
         {siteLanguageSchema.options.map((language) => (
-          <SelectItem key={language} value={language} className="hover:bg-muted cursor-pointer">
+          <SelectItem key={language} value={language} className="cursor-pointer hover:bg-muted">
             {languageNameMap(language)}
           </SelectItem>
         ))}

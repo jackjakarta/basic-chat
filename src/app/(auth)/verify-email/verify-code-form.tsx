@@ -101,7 +101,7 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
           {isSubmitting || isSubmitSuccessful ? 'Verifying code...' : 'Verify'}
         </Button>
       </div>
-      <div className="flex justify-center items-center gap-2 text-sm">
+      <div className="flex items-center justify-center gap-2 text-sm">
         <span className="text-muted-foreground">Haven't recieved a code?</span>
         <button onClick={handleResend} className="hover:text-muted-foreground">
           Resend

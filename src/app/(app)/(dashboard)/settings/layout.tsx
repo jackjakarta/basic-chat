@@ -8,9 +8,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <PageContainer className="mx-auto w-full">
-      <div className="flex flex-col md:flex-row items-start gap-4 max-h-dvh">
+      <div className="flex max-h-dvh flex-col items-start gap-4 md:flex-row">
         <SettingsNav userSubscription={user.subscription} />
-        <div className="flex flex-col flex-1 gap-4">{children}</div>
+        <div className="flex flex-1 flex-col gap-4">{children}</div>
       </div>
     </PageContainer>
   );

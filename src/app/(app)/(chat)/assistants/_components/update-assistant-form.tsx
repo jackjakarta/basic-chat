@@ -62,7 +62,7 @@ export default function EditAssistantForm({
   }
 
   return (
-    <div className="flex flex-col w-full mx-auto py-8 px-4">
+    <div className="mx-auto flex w-full flex-col px-4 py-8">
       <Card className="border-border/40 shadow-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Update Assistant</CardTitle>
@@ -112,7 +112,7 @@ export default function EditAssistantForm({
               vectorStoreId={assistant.vectorStoreId}
               files={assistantFiles ?? []}
             />
-            <Button type="submit" disabled={isSubmitting} className="w-full mt-6 transition-all">
+            <Button type="submit" disabled={isSubmitting} className="mt-6 w-full transition-all">
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

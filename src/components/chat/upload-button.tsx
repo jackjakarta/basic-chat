@@ -101,7 +101,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
         tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
         size="sm"
         type="button"
-        className="py-1 transition-colors duration-200 ease-in-out "
+        className="py-1 transition-colors duration-200 ease-in-out"
         variant="neutral"
         onClick={openFileDialog}
         disabled={disabled}

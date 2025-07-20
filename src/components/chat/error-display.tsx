@@ -9,13 +9,13 @@ type ErrorDisplayProps = {
 
 export default function ErrorDisplay({ onReload, error }: ErrorDisplayProps) {
   return (
-    <div className="mx-4 p-4 gap-2 text-sm rounded-2xl bg-red-100 text-red-500 border border-red-500 text-right mt-8">
-      <div className="flex justify-between items-center px-2">
+    <div className="mx-4 mt-8 gap-2 rounded-2xl border border-red-500 bg-red-100 p-4 text-right text-sm text-red-500">
+      <div className="flex items-center justify-between px-2">
         {error?.message ?? 'Something went wrong'}
         <button
           type="button"
           onClick={() => onReload()}
-          className="hover:bg-red-200 p-2 rounded-lg"
+          className="rounded-lg p-2 hover:bg-red-200"
         >
           <ReloadIcon className="h-4 w-4" />
         </button>

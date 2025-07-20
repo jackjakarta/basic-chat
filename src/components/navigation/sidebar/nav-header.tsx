@@ -8,13 +8,13 @@ export function NavHeader() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton
-          className="bg-sidebar-accent text-sidebar-accent-foreground cursor-default"
+          className="cursor-default bg-sidebar-accent text-sidebar-accent-foreground"
           size="lg"
           asChild
         >
           <Link href="#">
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <ChatLogoIcon className="w-24 h-24 -ml-0.5" />
+              <ChatLogoIcon className="-ml-0.5 h-24 w-24" />
             </div>
             <div className="flex items-center justify-center">
               <ModeToggle />

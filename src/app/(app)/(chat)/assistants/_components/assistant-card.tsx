@@ -50,15 +50,15 @@ export default function AssistantCard({ assistant }: { assistant: AssistantRow }
   return (
     <>
       <Link href={`/assistants/${assistant.id}/c`}>
-        <Card className="w-full p-4 flex border-none shadow-none items-center dark:bg-secondary/40 hover:bg-sidebar/50 dark:hover:bg-secondary/20 justify-between space-x-4 cursor-pointer">
-          <div className="flex items-center space-x-4 flex-1">
+        <Card className="flex w-full cursor-pointer items-center justify-between space-x-4 border-none p-4 shadow-none hover:bg-sidebar/50 dark:bg-secondary/40 dark:hover:bg-secondary/20">
+          <div className="flex flex-1 items-center space-x-4">
             <Avatar className="h-12 w-12">
               <AvatarImage src={assistant.pictureUrl ?? undefined} alt={assistant.name} />
               <AvatarFallback>{assistant.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col min-w-0 space-y-1">
+            <div className="flex min-w-0 flex-col space-y-1">
               <h3 className="font-medium leading-none">{assistant.name}</h3>
-              <p className="text-sm text-muted-foreground truncate max-w-[180px] sm:max-w-[110px] lg:max-w-[270px]">
+              <p className="max-w-[180px] truncate text-sm text-muted-foreground sm:max-w-[110px] lg:max-w-[270px]">
                 {assistant.instructions}
               </p>
             </div>
@@ -79,7 +79,7 @@ export default function AssistantCard({ assistant }: { assistant: AssistantRow }
                   e.preventDefault();
                   setIsDeleteModalOpen(true);
                 }}
-                className="text-destructive focus:text-destructive cursor-pointer"
+                className="cursor-pointer text-destructive focus:text-destructive"
               >
                 {tCommon('delete')}
               </DropdownMenuItem>

@@ -115,7 +115,7 @@ export default function ChangePasswordForm({ className, ...props }: Registration
             showButton ? 'max-h-[100px]' : 'max-h-0',
           )}
         >
-          <div className="flex flex-row justify-end items-center gap-2">
+          <div className="flex flex-row items-center justify-end gap-2">
             <Button onClick={() => reset()} type="button" variant="neutral">
               {tCommon('cancel')}
             </Button>

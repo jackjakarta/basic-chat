@@ -1,5 +1,5 @@
+import VerifyEmailTemplate from '@/email/emails/verify-email';
 import { sendTestEmail } from '@/email/local';
-import VerifyEmailTemplate from '@/emails/verify-email';
 import { checkIsLocalhost } from '@/utils/host';
 import { render } from '@react-email/components';
 import { NextResponse } from 'next/server';

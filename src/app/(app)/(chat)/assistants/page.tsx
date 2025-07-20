@@ -21,11 +21,11 @@ export default async function Page() {
     <React.Suspense fallback={<LoadingPage />}>
       <Header />
       <PageContainer className="mx-auto">
-        <div className="flex flex-col gap-6 w-full">
+        <div className="flex w-full flex-col gap-6">
           <h1 className="text-2xl font-semibold">{t('title')}</h1>
           <p>{t('description')}</p>
-          <CreateAssistantButton className="w-fit rounded-lg bg-accent hover:bg-accent/90 text-secondary-foreground active:bg-accent/90" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <CreateAssistantButton className="w-fit rounded-lg bg-accent text-secondary-foreground hover:bg-accent/90 active:bg-accent/90" />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {assistants.length === 0 ? (
               <span className="text-sm text-muted-foreground">{t('no-assistants')}</span>
             ) : (

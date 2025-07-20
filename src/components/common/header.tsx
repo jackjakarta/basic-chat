@@ -22,7 +22,7 @@ export default function Header({ title, models, isEmptyChat }: HeaderProps) {
       {models !== undefined && models.length > 0 && <SelectLlmModel models={models} />}
 
       {title !== undefined && (
-        <h1 className="text-secondary-foreground text-md font-normal">{title}</h1>
+        <h1 className="text-md font-normal text-secondary-foreground">{title}</h1>
       )}
     </div>
   );

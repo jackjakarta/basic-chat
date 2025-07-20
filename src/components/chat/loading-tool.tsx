@@ -32,29 +32,29 @@ export default function LoadingTool({ message }: LoadingToolProps) {
 
   if (isNotionTool) {
     return (
-      <LoadingToolWithIcon text="Searching notion..." icon={<NotionIcon className="w-4 h-4" />} />
+      <LoadingToolWithIcon text="Searching notion..." icon={<NotionIcon className="h-4 w-4" />} />
     );
   }
 
   if (isImageGenerationTool) {
     return (
-      <LoadingToolWithIcon text="Generating image..." icon={<ImageIcon className="w-4 h-4" />} />
+      <LoadingToolWithIcon text="Generating image..." icon={<ImageIcon className="h-4 w-4" />} />
     );
   }
 
   if (isFileSearchTool) {
     return (
-      <LoadingToolWithIcon text="Searching my knowledge..." icon={<File className="w-4 h-4" />} />
+      <LoadingToolWithIcon text="Searching my knowledge..." icon={<File className="h-4 w-4" />} />
     );
   }
 
   if (isCodeExecutionTool) {
-    return <LoadingToolWithIcon text="Executing code..." icon={<Braces className="w-4 h-4" />} />;
+    return <LoadingToolWithIcon text="Executing code..." icon={<Braces className="h-4 w-4" />} />;
   }
 
   if (isWebSearchTool) {
     return (
-      <LoadingToolWithIcon text="Searching the web..." icon={<Globe2 className="w-4 h-4" />} />
+      <LoadingToolWithIcon text="Searching the web..." icon={<Globe2 className="h-4 w-4" />} />
     );
   }
 

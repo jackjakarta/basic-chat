@@ -38,17 +38,17 @@ export default async function Page() {
 
   if (!validSubscriptionExists) {
     return (
-      <PageContainer className="mx-auto w-full pt-4 pb-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-muted-foreground mb-4">{t('pricing')}</h1>
+      <PageContainer className="mx-auto w-full pb-16 pt-4">
+        <div className="mb-12 text-center">
+          <h1 className="mb-4 text-4xl font-bold text-muted-foreground">{t('pricing')}</h1>
           <p className="text-xl text-muted-foreground/80">{t('choose-plan')}</p>
         </div>
         <PricingCards plans={plans} />
         <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold text-muted-foreground mb-4">
+          <h2 className="mb-4 text-2xl font-bold text-muted-foreground">
             {t('ready-get-started')}
           </h2>
-          <p className="text-gray-600 mb-8">{t('join')}</p>
+          <p className="mb-8 text-gray-600">{t('join')}</p>
           <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
             {t('start-trial')}
           </Button>

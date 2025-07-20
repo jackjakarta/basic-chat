@@ -33,8 +33,8 @@ export default function InformationTemplate({
       <Preview>{header}</Preview>
       <Tailwind>
         <Body className="bg-gray-50 font-sans">
-          <Container className="mx-auto py-8 px-4 max-w-2xl">
-            <Section className="bg-white rounded-t-lg px-8 py-6">
+          <Container className="mx-auto max-w-2xl px-4 py-8">
+            <Section className="rounded-t-lg bg-white px-8 py-6">
               <Row>
                 <Column>
                   <Img
@@ -48,36 +48,36 @@ export default function InformationTemplate({
               </Row>
             </Section>
             <Section className="bg-white px-8 py-6">
-              <Heading className="text-2xl font-bold text-[#494d00] text-center mb-6">
+              <Heading className="mb-6 text-center text-2xl font-bold text-[#494d00]">
                 {header}
               </Heading>
-              <Text className="text-gray-700 text-base leading-6 mb-4">Hello,</Text>
-              <Text className="text-gray-700 text-base leading-6 mb-6">{content}</Text>
-              <Hr className="border-gray-200 my-6" />
-              <Section className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
-                <Text className="text-amber-800 text-sm leading-5 mb-2 font-medium">
+              <Text className="mb-4 text-base leading-6 text-gray-700">Hello,</Text>
+              <Text className="mb-6 text-base leading-6 text-gray-700">{content}</Text>
+              <Hr className="my-6 border-gray-200" />
+              <Section className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                <Text className="mb-2 text-sm font-medium leading-5 text-amber-800">
                   🔒 Security Notice
                 </Text>
-                <Text className="text-amber-700 text-sm leading-5">
+                <Text className="text-sm leading-5 text-amber-700">
                   If you did not initiate this action, please ignore this email. If you have any
                   concerns about your account security, please contact our support team immediately.
                 </Text>
               </Section>
             </Section>
-            <Section className="bg-gray-100 rounded-b-lg px-8 py-6">
-              <Text className="text-gray-600 text-sm text-center leading-5 mb-2">
+            <Section className="rounded-b-lg bg-gray-100 px-8 py-6">
+              <Text className="mb-2 text-center text-sm leading-5 text-gray-600">
                 This email was sent by El Chat
               </Text>
               <Row className="text-center">
                 <Column>
-                  <Text className="text-gray-500 text-xs">
+                  <Text className="text-xs text-gray-500">
                     <Link
                       href={`${baseUrl}/privacy-policy`}
-                      className="text-gray-600 hover:underline mr-4"
+                      className="mr-4 text-gray-600 hover:underline"
                     >
                       Privacy Policy
                     </Link>
-                    <Link href={`${baseUrl}/terms`} className="text-gray-600 hover:underline mr-4">
+                    <Link href={`${baseUrl}/terms`} className="mr-4 text-gray-600 hover:underline">
                       Terms of Service
                     </Link>
                     <Link href={`${baseUrl}/contact`} className="text-gray-600 hover:underline">

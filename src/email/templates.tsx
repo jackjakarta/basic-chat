@@ -1,9 +1,9 @@
 import { dbInsertOrUpdateActionToken } from '@/db/functions/token';
 import { dbGetUserByEmail } from '@/db/functions/user';
 import { type TokenAction } from '@/db/schema';
-import ForgotPasswordTemplate from '@/emails/forgot-password';
-import InformationTemplate from '@/emails/information';
-import VerifyEmailTemplate from '@/emails/verify-email';
+import ForgotPasswordTemplate from '@/email/emails/forgot-password';
+import InformationTemplate from '@/email/emails/information';
+import VerifyEmailTemplate from '@/email/emails/verify-email';
 import { getBaseUrlByHeaders } from '@/utils/host';
 import { buildUserActionUrl } from '@/utils/url';
 import { render } from '@react-email/components';

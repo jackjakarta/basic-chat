@@ -43,7 +43,7 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className={cw('hover:underline text-blue-600 dark:text-blue-200')}
+              className={cw('text-blue-600 hover:underline dark:text-blue-200')}
               {...props}
             >
               {children}
@@ -66,14 +66,14 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
         },
         th({ children, ...props }) {
           return (
-            <th {...props} className="text-left p-2 border-[1px] bg-slate-100 font-medium">
+            <th {...props} className="border-[1px] bg-slate-100 p-2 text-left font-medium">
               {children}
             </th>
           );
         },
         td({ children, ...props }) {
           return (
-            <td {...props} className="p-2 border-[1px]">
+            <td {...props} className="border-[1px] p-2">
               {children}
             </td>
           );
@@ -85,7 +85,7 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
           return (
             <table
               {...props}
-              className="w-full border-[1px] my-4 first:mt-0 last:mb-0 border-collapse"
+              className="my-4 w-full border-collapse border-[1px] first:mt-0 last:mb-0"
             >
               {children}
             </table>
@@ -107,21 +107,21 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
               width={400}
               //@ts-expect-error - weird typescript error
               height={400}
-              className="rounded-lg my-2"
+              className="my-2 rounded-lg"
               {...props}
             />
           );
         },
         ul({ children, ...props }) {
           return (
-            <ul className="ml-6 py-1 space-y-2 list-square" {...props}>
+            <ul className="list-square ml-6 space-y-2 py-1" {...props}>
               {children}
             </ul>
           );
         },
         ol({ children, ...props }) {
           return (
-            <ol className="list-decimal ml-6 py-1 space-y-2" {...props}>
+            <ol className="ml-6 list-decimal space-y-2 py-1" {...props}>
               {children}
             </ol>
           );
@@ -131,7 +131,7 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
         },
         p({ children, ...props }) {
           return (
-            <p className="pt-1 pb-3 first:pt-0 last:pb-0 whitespace-pre-wrap" {...props}>
+            <p className="whitespace-pre-wrap pb-3 pt-1 first:pt-0 last:pb-0" {...props}>
               {children}
             </p>
           );
@@ -144,15 +144,15 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
 
           if (language === undefined) {
             return (
-              <code className={cw(className, 'break-words bg-main-200 px-0.5 text-wrap text-sm')}>
+              <code className={cw(className, 'bg-main-200 text-wrap break-words px-0.5 text-sm')}>
                 {children}
               </code>
             );
           }
 
           return (
-            <div className="flex flex-col py-2 text-sm overflow-x-hidden w-fit">
-              <div className="flex items-center justify-center bg-primary rounded-lg rounded-b-none py-2 px-2 text-primary-foreground">
+            <div className="flex w-fit flex-col overflow-x-hidden py-2 text-sm">
+              <div className="flex items-center justify-center rounded-lg rounded-b-none bg-primary px-2 py-2 text-primary-foreground">
                 {language !== undefined && (
                   <span className="text-primary-foreground">{language}</span>
                 )}

@@ -13,12 +13,12 @@ export default function FileDisplay({ fileName, isUploading, onDelete }: SourceT
   return (
     <Badge
       variant="secondary"
-      className="relative w-auto max-w-[150px] bg-secondary hover:bg-secondary transition-colors duration-200 px-3 py-1.5"
+      className="relative w-auto max-w-[150px] bg-secondary px-3 py-1.5 transition-colors duration-200 hover:bg-secondary"
     >
       {!isUploading && onDelete !== undefined && (
         <button
           type="button"
-          className="absolute -top-1.5 -left-1.5 bg-secondary-foreground/40 hover:bg-secondary-foreground/60 rounded-full p-0.5 transition-colors duration-200"
+          className="absolute -left-1.5 -top-1.5 rounded-full bg-secondary-foreground/40 p-0.5 transition-colors duration-200 hover:bg-secondary-foreground/60"
           onClick={(e) => {
             e.stopPropagation();
             onDelete();
@@ -28,13 +28,13 @@ export default function FileDisplay({ fileName, isUploading, onDelete }: SourceT
           <X className="h-3 w-3 text-secondary-foreground" />
         </button>
       )}
-      <div className="flex items-center text-sm min-w-0">
-        <div className="flex flex-col min-w-0 w-full">
+      <div className="flex min-w-0 items-center text-sm">
+        <div className="flex w-full min-w-0 flex-col">
           <span className="truncate text-secondary-foreground dark:text-primary-foreground/80">
             {isUploading ? (
-              <SpinnerLoading className="h-4 w-4 mr-2 inline" />
+              <SpinnerLoading className="mr-2 inline h-4 w-4" />
             ) : (
-              <File className="h-4 w-4 mb-0.5 mr-2 inline" />
+              <File className="mb-0.5 mr-2 inline h-4 w-4" />
             )}
             {fileName}
           </span>

@@ -32,7 +32,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
         title="Select LLM Model"
         className={cw(
           !isChatRoute && 'invisible',
-          'w-auto h-[28px] border-none hover:bg-accent shadow-none focus:ring-0 focus:ring-transparent',
+          'h-[28px] w-auto border-none shadow-none hover:bg-accent focus:ring-0 focus:ring-transparent',
         )}
       >
         <SelectValue placeholder="Select a model" />
@@ -40,7 +40,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
       <SelectContent>
         {anthropicModels.length > 0 && (
           <SelectGroup className="flex flex-col gap-1">
-            <SelectLabel className="text-xs -mb-2 text-muted-foreground dark:text-secondary-foreground/60">
+            <SelectLabel className="-mb-2 text-xs text-muted-foreground dark:text-secondary-foreground/60">
               Anthropic
             </SelectLabel>
             {anthropicModels.map((model) => (
@@ -53,7 +53,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
 
         {googleModels.length > 0 && (
           <SelectGroup className="flex flex-col gap-1">
-            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            <SelectLabel className="-mb-2 mt-2 text-xs text-muted-foreground dark:text-secondary-foreground/60">
               Google Gemini
             </SelectLabel>
             {googleModels.map((model) => (
@@ -66,7 +66,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
 
         {mistralModels.length > 0 && (
           <SelectGroup className="flex flex-col gap-1">
-            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            <SelectLabel className="-mb-2 mt-2 text-xs text-muted-foreground dark:text-secondary-foreground/60">
               Mistral
             </SelectLabel>
             {mistralModels.map((model) => (
@@ -79,7 +79,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
 
         {xaiModels.length > 0 && (
           <SelectGroup className="flex flex-col gap-1">
-            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            <SelectLabel className="-mb-2 mt-2 text-xs text-muted-foreground dark:text-secondary-foreground/60">
               xAI
             </SelectLabel>
             {xaiModels.map((model) => (
@@ -92,7 +92,7 @@ export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
 
         {openaiModels.length > 0 && (
           <SelectGroup className="flex flex-col gap-1">
-            <SelectLabel className="text-xs -mb-2 mt-2 text-muted-foreground dark:text-secondary-foreground/60">
+            <SelectLabel className="-mb-2 mt-2 text-xs text-muted-foreground dark:text-secondary-foreground/60">
               OpenAI
             </SelectLabel>
             {openaiModels.map((model) => (

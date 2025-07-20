@@ -31,9 +31,9 @@ export default async function Page() {
         header={<h1 className="text-lg">{t('title')}</h1>}
         className={cw(uiCardClassName, 'pb-6')}
       >
-        <div className="flex flex-col gap-4 mb-8">
+        <div className="mb-8 flex flex-col gap-4">
           <p className="text-base">{t('description')}</p>
-          <p className="text-sm text-secondary-foreground/70 dark:text-primary-foreground/60 italic">
+          <p className="text-sm italic text-secondary-foreground/70 dark:text-primary-foreground/60">
             {t('privacy-disclaimer')}
           </p>
         </div>

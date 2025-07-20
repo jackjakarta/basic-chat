@@ -10,9 +10,9 @@ export default function NotFound() {
   const t = useTranslations('not-found');
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-6 text-center">
+    <div className="flex min-h-[80vh] flex-col items-center justify-center p-6 text-center">
       <div className="max-w-md space-y-6">
-        <FileQuestion className="h-16 w-16 text-primary mx-auto" />
+        <FileQuestion className="mx-auto h-16 w-16 text-primary" />
         <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
         <Alert className="border-2">
           <AlertTitle className="text-lg">404</AlertTitle>
