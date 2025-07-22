@@ -20,8 +20,8 @@ export function getMaybeCustomerIdFromStripeEvent({ event }: { event: Stripe.Eve
   if (event === null) return undefined;
 
   try {
-    const { customer: customerId } = event.data.object as {
-      customer: string;
+    const { id: customerId } = event.data.object as {
+      id: string;
     };
 
     return customerId;
