@@ -25,7 +25,7 @@ export async function sendTestEmail({
   });
 
   const mailOptions = {
-    from: 'info@codebyalex.dev',
+    from: 'info@elchat.app',
     to: email,
     subject,
     html,
