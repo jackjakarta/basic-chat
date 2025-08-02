@@ -32,11 +32,11 @@ export async function deleteAssistantAction({
 }) {
   const user = await getUser();
 
+  await dbDeleteAssistant({ assistantId, userId: user.id });
+
   if (vectorStoreId !== null) {
     await deleteVectorStore({ vectorStoreId, userId: user.id });
   }
-
-  await dbDeleteAssistant({ assistantId, userId: user.id });
 }
 
 export async function deleteAssistantFilesAction({

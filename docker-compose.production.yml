@@ -43,7 +43,7 @@ services:
         condition: on-failure
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.el-chat.rule=Host(`chat.codebyalex.dev`)'
+        - 'traefik.http.routers.el-chat.rule=Host(`elchat.app`)'
         - 'traefik.http.routers.el-chat.entrypoints=websecure'
         - 'traefik.http.routers.el-chat.tls.certresolver=myresolver'
         - 'traefik.http.services.el-chat.loadbalancer.server.port=3000'

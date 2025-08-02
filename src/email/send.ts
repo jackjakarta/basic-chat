@@ -42,7 +42,7 @@ export async function sendUserActionEmail({
       Messages: [
         {
           From: {
-            Email: 'info@codebyalex.dev',
+            Email: 'info@elchat.app',
             Name: 'El Chat',
           },
           To: [
@@ -103,7 +103,7 @@ export async function sendUserActionInformationEmail({
       Messages: [
         {
           From: {
-            Email: 'info@codebyalex.dev',
+            Email: 'info@elchat.app',
             Name: 'AI Chat App',
           },
           To: [

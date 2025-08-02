@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     environment: production
 
     steps:
@@ -52,7 +52,7 @@ jobs:
             docker push ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }}
 
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     environment: production
     needs: build
 
