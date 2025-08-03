@@ -69,9 +69,7 @@ export default function CreateAssistantButton({ className }: { className?: strin
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <DialogHeader className="flex flex-col gap-1">
             <DialogTitle>{t('buttons.create-assistant')}</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re done.
-            </DialogDescription>
+            <DialogDescription>{t('create.description')}</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4">
             <Label htmlFor="name">{t('create.form.name.label')}</Label>
