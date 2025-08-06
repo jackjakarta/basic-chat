@@ -8,7 +8,7 @@ import Image from 'next/image';
 import React from 'react';
 
 import AutoResizeTextarea from '../common/auto-resize-textarea';
-import { ButtonTooltip } from '../common/tooltip-button';
+import { TooltipButton } from '../common/tooltip-button';
 import SpinnerLoading from '../icons/animated/spinner';
 import StopIcon from '../icons/stop';
 import DisplayPdfFile from './display-pdf-file';
@@ -164,7 +164,7 @@ export default function ChatInput({
                   setIsUploading={setIsUploading}
                   disabled={chatDisabled}
                 />
-                <ButtonTooltip
+                <TooltipButton
                   tooltip={isWebSearchActive ? 'Deactivate web search' : 'Activate web search'}
                   tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
                   size="sm"
@@ -176,8 +176,8 @@ export default function ChatInput({
                 >
                   <Globe2 className="h-4 w-4" />
                   Web Search
-                </ButtonTooltip>
-                <ButtonTooltip
+                </TooltipButton>
+                <TooltipButton
                   tooltip={
                     isImageGenerationActive
                       ? 'Deactivate image generation'
@@ -193,7 +193,7 @@ export default function ChatInput({
                 >
                   <ImageIcon className="h-4 w-4" />
                   Image Generation
-                </ButtonTooltip>
+                </TooltipButton>
               </div>
               {status === 'submitted' || status === 'streaming' ? (
                 <button

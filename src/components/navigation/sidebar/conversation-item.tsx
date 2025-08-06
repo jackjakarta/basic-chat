@@ -47,7 +47,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isDirty },
   } = useForm<FormData>({
     resolver: zodResolver(renameSchema),
     defaultValues: { name: conversation.name ?? '' },
@@ -58,11 +58,16 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
   }
 
   async function onSubmit(data: FormData) {
-    toastLoading('Saving conversation name');
+    if (isDirty) {
+      toastLoading('Saving conversation name');
+    }
 
     try {
       await updateConversationTitleAction({ conversationId: conversation.id, title: data.name });
-      toastSuccess('Saved conversation name');
+
+      if (isDirty) {
+        toastSuccess('Saved conversation name');
+      }
     } catch (error) {
       console.error({ error });
       toastError('Failed to save conversation name');
@@ -110,6 +115,7 @@ export default function ConversationItem({ conversation, onClickMobile }: Conver
                 {...register('name')}
                 autoFocus
                 className="w-full rounded-sm py-1 pl-2 pr-1 focus:outline-none"
+                onBlur={() => handleSubmit(onSubmit)()}
               />
               <button
                 type="submit"

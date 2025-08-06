@@ -10,14 +10,14 @@ type ButtonWithTooltipProps = React.ComponentProps<typeof Button> & {
   tooltipClassName?: string;
 };
 
-export function ButtonTooltip({
+export function TooltipButton({
   children,
   tooltip,
   tooltipClassName,
   ...props
 }: ButtonWithTooltipProps) {
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button {...props}>{children}</Button>

@@ -5,7 +5,7 @@ import { Paperclip } from 'lucide-react';
 import React from 'react';
 import { z } from 'zod';
 
-import { ButtonTooltip } from '../common/tooltip-button';
+import { TooltipButton } from '../common/tooltip-button';
 import { useToast } from '../hooks/use-toast';
 import { useLlmModel } from '../providers/llm-model';
 
@@ -96,7 +96,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
 
   return (
     <div>
-      <ButtonTooltip
+      <TooltipButton
         tooltip={`Upload files (${toolTipMessage} only)`}
         tooltipClassName="bg-black py-2 rounded-lg mb-0.5"
         size="sm"
@@ -107,7 +107,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
         disabled={disabled}
       >
         <Paperclip className="h-4 w-4" />
-      </ButtonTooltip>
+      </TooltipButton>
       <input
         type="file"
         ref={fileInputRef}
