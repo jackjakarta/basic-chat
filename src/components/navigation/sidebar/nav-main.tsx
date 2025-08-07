@@ -38,14 +38,18 @@ export function NavMain({ onClickMobile }: NavMainProps) {
       <SidebarGroup>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={onClickMobile} className="cursor-pointer" asChild>
+            <SidebarMenuButton
+              asChild
+              onClick={onClickMobile}
+              className="group/item cursor-pointer"
+            >
               <Link href="/" className="flex items-center gap-2">
                 <Plus />
                 <span>{t('new-chat')}</span>
                 <div className="flex-grow" />
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Command className="h-[14px] w-[14px]" />
-                  <ArrowBigUp className="h-[16px] w-[16px]" />
+                <div className="invisible flex items-center gap-1.5 text-sm text-muted-foreground group-hover/item:visible">
+                  <ArrowBigUp className="size-4" />
+                  <Command className="size-3.5" />
                   <span className="font-semibold">O</span>
                 </div>
               </Link>
@@ -55,13 +59,13 @@ export function NavMain({ onClickMobile }: NavMainProps) {
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={handleSearchClick}
-              className="flex cursor-pointer items-center gap-2"
+              className="group/item flex cursor-pointer items-center gap-2"
             >
               <Search />
               <span>{t('search-chats')}</span>
               <div className="flex-grow" />
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Command className="h-[14px] w-[14px]" />
+              <div className="invisible flex items-center gap-1.5 text-sm text-muted-foreground group-hover/item:visible">
+                <Command className="size-3.5" />
                 <span className="font-semibold">K</span>
               </div>
             </SidebarMenuButton>

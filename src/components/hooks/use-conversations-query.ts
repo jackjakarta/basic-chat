@@ -18,7 +18,7 @@ async function fetchConversations(): Promise<ConversationRow[]> {
     throw new Error('Failed to fetch conversations');
   }
 
-  const data = await response.json();
+  const { conversations } = await response.json();
 
-  return Array.isArray(data.conversations) ? data.conversations : [];
+  return Array.isArray(conversations) ? conversations : [];
 }

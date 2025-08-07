@@ -75,7 +75,7 @@ export default function SearchCommandMenu({
             conversations.map((conversation) => (
               <CommandItem
                 key={conversation.id}
-                value={conversation.name ?? 'New Chat'}
+                value={`$${conversation.name}|${conversation.id}`}
                 onSelect={() => handleSelect(conversation.id, conversation.assistantId)}
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
