@@ -149,7 +149,7 @@ export default function Chat({
       <div
         ref={scrollRef}
         className="flex h-full w-full flex-col overflow-y-auto"
-        style={{ maxHeight: 'calc(100vh - 150px)' }}
+        style={{ maxHeight: 'calc(100vh - 70px)' }}
       >
         <div className="flex w-full flex-1 flex-col items-center justify-center">
           <div

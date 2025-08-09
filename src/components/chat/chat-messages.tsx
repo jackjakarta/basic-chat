@@ -23,7 +23,7 @@ type ChatMessagesProps = {
 
 export default function ChatMessages({ messages, status, onReload }: ChatMessagesProps) {
   return (
-    <div className="flex flex-col gap-4 px-4">
+    <div className="flex flex-col gap-4 px-4 pb-16">
       {messages.map((message, index) => {
         const isLastNonUser = index === messages.length - 1 && message.role !== 'user';
         const isAssistantFinished =

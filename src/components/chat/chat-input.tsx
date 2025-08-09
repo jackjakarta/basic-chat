@@ -203,7 +203,7 @@ export default function ChatInput({
                   className="group me-2 flex items-center justify-center rounded-lg p-1.5 hover:bg-secondary/20 disabled:cursor-not-allowed"
                   aria-label="Stop"
                 >
-                  <StopIcon className="text-dark-gray rounded-enterprise-sm h-6 w-6 text-primary group-hover:bg-secondary/20 group-disabled:bg-gray-200 group-disabled:text-gray-100" />
+                  <StopIcon className="text-dark-gray h-6 w-6 text-primary group-hover:bg-secondary/20 group-disabled:bg-gray-200 group-disabled:text-gray-100" />
                 </button>
               ) : (
                 <button
@@ -213,17 +213,19 @@ export default function ChatInput({
                   className="group me-2 flex items-center justify-center rounded-lg text-secondary hover:bg-secondary/20 disabled:cursor-not-allowed"
                   aria-label="Send Message"
                 >
-                  <ArrowUp className="text-dark-gray rounded-enterprise-sm h-7 w-7 rounded-lg text-primary group-hover:bg-secondary/20 group-disabled:bg-secondary dark:group-disabled:text-gray-100" />
+                  <ArrowUp className="text-dark-gray h-7 w-7 rounded-lg text-primary group-hover:bg-secondary/20 group-disabled:bg-secondary dark:group-disabled:text-gray-100" />
                 </button>
               )}
             </div>
           </div>
         </form>
-        <span className="text-main-900 mt-2 flex self-center text-xs font-normal">
-          {chatDisabled
-            ? 'You have reach your limit for the month. Buy a plan to get higher limits.'
-            : 'This chat can search the web and generate images'}
-        </span>
+        {messages.length === 0 && (
+          <span className="text-main-900 mt-2 flex self-center text-xs font-normal">
+            {chatDisabled
+              ? 'You have reach your limit for the month. Buy a plan to get higher limits.'
+              : 'This chat can search the web and generate images'}
+          </span>
+        )}
       </div>
     </div>
   );

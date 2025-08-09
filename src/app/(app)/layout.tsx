@@ -12,13 +12,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   const [defaultModel] = models.filter((model) => model.isDefault);
 
-  if (defaultModel === undefined) {
-    throw new Error('No default model found');
-  }
-
   return (
     <ClientProvider session={session}>
-      <LlmModelProvider defaultModel={defaultModel.id}>{children}</LlmModelProvider>
+      <LlmModelProvider defaultModel={defaultModel?.id ?? 'claude-sonnet-4-20250514'}>
+        {children}
+      </LlmModelProvider>
     </ClientProvider>
   );
 }
