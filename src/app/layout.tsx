@@ -31,13 +31,13 @@ export default async function RootLayout({
   const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body className={barlow.className}>
         <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          attribute="class"
+          defaultTheme="system"
         >
           <NextIntlClientProvider messages={messages}>
             <Toaster />

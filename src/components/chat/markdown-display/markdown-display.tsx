@@ -33,7 +33,7 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
 
   return (
     <Markdown
-      className="break-words text-base"
+      className="break-words"
       remarkPlugins={[RemarkMathPlugin, remarkGfm]}
       rehypePlugins={[RehypeKatex]}
       components={{
@@ -48,6 +48,34 @@ export default function MarkdownDisplay({ children: _children, maxWidth }: Markd
             >
               {children}
             </a>
+          );
+        },
+        h1({ children, ...props }) {
+          return (
+            <h1 className="text-3xl font-bold" {...props}>
+              {children}
+            </h1>
+          );
+        },
+        h2({ children, ...props }) {
+          return (
+            <h2 className="text-2xl font-bold" {...props}>
+              {children}
+            </h2>
+          );
+        },
+        h3({ children, ...props }) {
+          return (
+            <h3 className="text-xl font-bold" {...props}>
+              {children}
+            </h3>
+          );
+        },
+        h4({ children, ...props }) {
+          return (
+            <h4 className="text-lg font-bold" {...props}>
+              {children}
+            </h4>
           );
         },
         // @ts-expect-error plugin errors

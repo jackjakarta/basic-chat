@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { useConversationsQuery } from '../hooks/use-conversations-query';
+import { useKeyboardShortcut } from '../hooks/use-keyboard-shortcut';
 import { Skeleton } from '../ui/skeleton';
 
 type SearchCommandMenuProps = {
@@ -26,7 +27,13 @@ export default function SearchCommandMenu({
 }: SearchCommandMenuProps) {
   const router = useRouter();
 
-  const { data: conversations = [], isLoading, isError } = useConversationsQuery();
+  const {
+    data: conversations = [],
+    isLoading,
+    isError,
+  } = useConversationsQuery({
+    enabled: open,
+  });
 
   function handleSelect(conversationId: string, assistantId: string | null) {
     const path =
@@ -38,16 +45,10 @@ export default function SearchCommandMenu({
     setOpen(false);
   }
 
-  React.useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((prev) => !prev);
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  useKeyboardShortcut({
+    key: 'k',
+    callback: () => setOpen((prev) => !prev),
+  });
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
@@ -71,11 +72,13 @@ export default function SearchCommandMenu({
             </CommandItem>
           )}
 
-          {conversations.length > 0 &&
+          {!isLoading &&
+            !isError &&
+            conversations.length > 0 &&
             conversations.map((conversation) => (
               <CommandItem
                 key={conversation.id}
-                value={conversation.name ?? 'New Chat'}
+                value={`${conversation.name}|${conversation.id}`}
                 onSelect={() => handleSelect(conversation.id, conversation.assistantId)}
               >
                 <MessageCircle className="mr-2 h-4 w-4" />

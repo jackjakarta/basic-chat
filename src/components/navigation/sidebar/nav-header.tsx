@@ -1,4 +1,4 @@
-import { ModeToggle } from '@/components/common/dark-mode-toggle';
+import { ThemeToggle } from '@/components/common/theme-toggle';
 import ChatLogoIcon from '@/components/icons/logo';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ export function NavHeader() {
               <ChatLogoIcon className="-ml-0.5 h-24 w-24" />
             </div>
             <div className="flex items-center justify-center">
-              <ModeToggle />
+              <ThemeToggle />
             </div>
           </Link>
         </SidebarMenuButton>
