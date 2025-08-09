@@ -1,6 +1,6 @@
 'use client';
 
-import SearchCommandMenu from '@/components/common/search-command';
+import { useCommandMenu } from '@/components/providers/command-menu';
 import {
   SidebarGroup,
   SidebarMenu,
@@ -21,8 +21,7 @@ type NavMainProps = {
 export function NavMain({ onClickMobile }: NavMainProps) {
   const pathname = usePathname();
   const t = useTranslations('sidebar');
-
-  const [isOpen, setIsOpen] = React.useState(false);
+  const { setIsOpen } = useCommandMenu();
 
   function handleSearchClick() {
     setIsOpen(true);
@@ -34,7 +33,6 @@ export function NavMain({ onClickMobile }: NavMainProps) {
 
   return (
     <>
-      <SearchCommandMenu isOpen={isOpen} setIsOpen={setIsOpen} />
       <SidebarGroup>
         <SidebarMenu>
           <SidebarMenuItem>

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { useKeyboardShortcut } from '../hooks/use-keyboard-shortcut';
+import { CommandMenuProvider } from './command-menu';
 
 const queryClient = new QueryClient();
 
@@ -27,7 +28,9 @@ export function ClientProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>{children}</SessionProvider>
+      <SessionProvider session={session}>
+        <CommandMenuProvider>{children}</CommandMenuProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }
