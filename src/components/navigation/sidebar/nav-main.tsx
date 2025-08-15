@@ -32,58 +32,56 @@ export function NavMain({ onClickMobile }: NavMainProps) {
   }
 
   return (
-    <>
-      <SidebarGroup>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={onClickMobile} className="cursor-pointer" asChild>
-              <Link href="/" className="flex items-center gap-2">
-                <Plus />
-                <span>{t('new-chat')}</span>
-                <div className="flex-grow" />
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Command className="h-[14px] w-[14px]" />
-                  <ArrowBigUp className="h-[16px] w-[16px]" />
-                  <span className="font-semibold">O</span>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={handleSearchClick}
-              className="flex cursor-pointer items-center gap-2"
-            >
-              <Search />
-              <span>{t('search-chats')}</span>
+    <SidebarGroup>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton onClick={onClickMobile} className="cursor-pointer" asChild>
+            <Link href="/" className="flex items-center gap-2">
+              <Plus />
+              <span>{t('new-chat')}</span>
               <div className="flex-grow" />
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <Command className="h-[14px] w-[14px]" />
-                <span className="font-semibold">K</span>
+                <ArrowBigUp className="h-[16px] w-[16px]" />
+                <span className="font-semibold">O</span>
               </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={onClickMobile}
-              className={cw(
-                'cursor-pointer',
-                pathname.includes('/assistants') &&
-                  !pathname.includes('/c') &&
-                  'bg-sidebar-accent text-sidebar-accent-foreground',
-              )}
-              asChild
-            >
-              <Link href="/assistants" className="flex items-center gap-2">
-                <Bot />
-                <span>{t('assistants')}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarGroup>
-    </>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            onClick={handleSearchClick}
+            className="flex cursor-pointer items-center gap-2"
+          >
+            <Search />
+            <span>{t('search-chats')}</span>
+            <div className="flex-grow" />
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <Command className="h-[14px] w-[14px]" />
+              <span className="font-semibold">K</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            onClick={onClickMobile}
+            className={cw(
+              'cursor-pointer',
+              pathname.includes('/assistants') &&
+                !pathname.includes('/c') &&
+                'bg-sidebar-accent text-sidebar-accent-foreground',
+            )}
+            asChild
+          >
+            <Link href="/assistants" className="flex items-center gap-2">
+              <Bot />
+              <span>{t('assistants')}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarGroup>
   );
 }

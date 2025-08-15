@@ -7,7 +7,6 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { z } from 'zod';
 
 const accessKeyId = env.awsAccessKeyId;
 const secretAccessKey = env.awsSecretAccessKey;
@@ -23,8 +22,7 @@ const s3 = new S3Client({
   },
 });
 
-export const bucketNameSchema = z.enum(['chat']);
-export type BucketName = z.infer<typeof bucketNameSchema>;
+type BucketName = 'chat';
 
 export async function uploadFileToS3({
   key,
