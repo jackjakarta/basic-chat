@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { emailSchema } from '@/utils/schemas';
 import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as Sentry from '@sentry/nextjs';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -41,31 +42,43 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     const { email: _email, password } = data;
     const email = _email.trim().toLowerCase();
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
-
-    const loginSuccess = result === undefined || result.ok;
-
-    if (!loginSuccess) {
-      setError('root', {
-        type: 'manual',
-        message: 'Wrong email or password',
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       });
-      return;
-    }
 
-    router.push('/');
+      const loginSuccess = result === undefined || result.ok;
+
+      if (!loginSuccess) {
+        setError('root', {
+          type: 'manual',
+          message: 'Wrong email or password',
+        });
+        return;
+      }
+
+      router.push('/');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   async function handleGithubSignIn() {
-    await signIn('github');
+    try {
+      await signIn('github');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   async function handleGoogleSignIn() {
-    await signIn('google');
+    try {
+      await signIn('google');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   const emailValue = watch('email');

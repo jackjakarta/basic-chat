@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/input-otp';
 import { cw, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as Sentry from '@sentry/nextjs';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -41,7 +42,7 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
       await verifyEmailCodeAction({ code });
       window.location.reload();
     } catch (error) {
-      console.error({ error });
+      Sentry.captureException(error);
       setError('code', {
         type: 'manual',
         message: 'Your code is invalid. Click resend to get a new code.',
@@ -53,7 +54,7 @@ export default function VerifyCodeForm({ email, className, ...props }: VerifyCod
     try {
       console.info({ email, message: 'Not implemented' });
     } catch (error) {
-      console.error({ error });
+      Sentry.captureException(error);
     }
   }
 
