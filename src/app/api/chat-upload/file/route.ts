@@ -1,6 +1,7 @@
 import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { getUser } from '@/utils/auth';
 import { getFileExtension } from '@/utils/files';
+import * as Sentry from '@sentry/nextjs';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ fileId, signedUrl }, { status: 200 });
   } catch (error) {
-    console.error('Error calling files upload route:', error);
+    Sentry.captureException(error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

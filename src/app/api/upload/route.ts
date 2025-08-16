@@ -1,6 +1,7 @@
 import { dbAddFileIdsToVectorStore } from '@/db/functions/vector-store';
 import { addFileIdsToVectorStore, uploadFileToOpenAi } from '@/openai/files';
 import { getUser } from '@/utils/auth';
+import * as Sentry from '@sentry/nextjs';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ fileId, fileSize: fileField.size }, { status: 200 });
   } catch (error) {
-    console.error('Upload error:', error);
+    Sentry.captureException(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
