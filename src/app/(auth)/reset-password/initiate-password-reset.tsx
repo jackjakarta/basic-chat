@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { emailSchema } from '@/utils/schemas';
 import { cw } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -56,7 +55,7 @@ export default function InitiatePasswordResetForm({
       router.push('/login');
     } catch (error) {
       toastError('Failed to send password reset email');
-      Sentry.captureException(error);
+      console.error({ error });
     }
   }
 

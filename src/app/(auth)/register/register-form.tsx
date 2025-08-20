@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
 import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as Sentry from '@sentry/nextjs';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -75,7 +74,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
 
       toastSuccess('Account created successfully. Check your email.');
     } catch (error) {
-      Sentry.captureException(error);
+      console.error({ error });
       toastError('An error occurred while creating your account');
     }
   }
@@ -84,7 +83,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
     try {
       await signIn('github');
     } catch (error) {
-      Sentry.captureException(error);
+      console.error({ error });
     }
   }
 
@@ -92,7 +91,7 @@ export default function RegisterForm({ className, ...props }: RegistrationProps)
     try {
       await signIn('google');
     } catch (error) {
-      Sentry.captureException(error);
+      console.error({ error });
     }
   }
 

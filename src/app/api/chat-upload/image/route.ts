@@ -2,7 +2,6 @@ import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { getUser } from '@/utils/auth';
 import { uint8ArrayToArrayBuffer } from '@/utils/buffer';
 import { getFileExtension } from '@/utils/files';
-import * as Sentry from '@sentry/nextjs';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -60,7 +59,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ fileId, signedUrl }, { status: 200 });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error({ error });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

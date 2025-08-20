@@ -1,6 +1,5 @@
 import { generateTTS } from '@/elevenlabs/tts';
 import { getValidSession } from '@/utils/auth';
-import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    Sentry.captureException(error);
+    console.error({ error });
     return NextResponse.json({ error }, { status: 500 });
   }
 }

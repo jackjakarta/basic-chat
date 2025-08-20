@@ -11,7 +11,6 @@ import { summarizeConversationTitle } from '@/openai/text';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
-import * as Sentry from '@sentry/nextjs';
 import { smoothStream, streamText, type Message, type ToolSet } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -174,7 +173,7 @@ export async function POST(request: NextRequest) {
 
     return result.toDataStreamResponse();
   } catch (error) {
-    Sentry.captureException(error);
+    console.error({ error });
 
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
