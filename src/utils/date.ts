@@ -1,15 +1,18 @@
 import { differenceInDays, differenceInMonths } from 'date-fns';
 
-export function formatDateToDayMonthYear(date: Date | undefined): string | undefined {
-  if (date === undefined) return;
+export function formatDateToDayMonthYear(
+  dateLike: Date | string | number,
+  timeZone: string = 'Europe/Berlin',
+  intl: string = 'de-DE',
+): string {
+  const d = dateLike instanceof Date ? dateLike : new Date(dateLike);
 
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'long',
+  return new Intl.DateTimeFormat(intl, {
+    timeZone,
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric',
-  };
-
-  return new Intl.DateTimeFormat('en-UK', options).format(date);
+  }).format(d);
 }
 
 export function formatDateToDayMonthYearTime(date: Date | undefined): string | undefined {

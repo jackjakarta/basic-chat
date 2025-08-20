@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, ilike, sql } from 'drizzle-orm';
 
 import { db } from '..';
 import {
@@ -58,13 +58,23 @@ export async function dbInsertChatContent(chatContent: InsertConversationMessage
   return newChatContent;
 }
 
-export async function dbGetConversations({ userId }: { userId: string }) {
+export async function dbGetConversations({ userId, limit }: { userId: string; limit?: number }) {
+  if (limit !== undefined) {
+    const conversations = await db
+      .select()
+      .from(conversationTable)
+      .where(eq(conversationTable.userId, userId))
+      .orderBy(desc(conversationTable.createdAt))
+      .limit(limit);
+
+    return conversations;
+  }
+
   const conversations = await db
     .select()
     .from(conversationTable)
     .where(eq(conversationTable.userId, userId))
-    .orderBy(desc(conversationTable.createdAt))
-    .limit(20);
+    .orderBy(desc(conversationTable.createdAt));
 
   return conversations;
 }
@@ -165,4 +175,25 @@ export async function dbGetUserConversationMessagesCount({ userId }: { userId: s
     .where(eq(conversationMessageTable.userId, userId));
 
   return messagesCount?.count;
+}
+
+export async function dbSearchConversationsByName({
+  q,
+  userId,
+  limit = 50,
+}: {
+  q: string;
+  userId: string;
+  limit?: number;
+}) {
+  const pattern = `%${q}%`;
+
+  const rows = await db
+    .select()
+    .from(conversationTable)
+    .where(and(ilike(conversationTable.name, pattern), eq(conversationTable.userId, userId)))
+    .orderBy(desc(conversationTable.updatedAt))
+    .limit(limit);
+
+  return rows;
 }

@@ -46,12 +46,6 @@ export async function updateUserPassword(body: UpdatePasswordRequestBody) {
   return updatedUser;
 }
 
-export async function getUserByEmail({ email }: { email: string }) {
-  const user = await dbGetUserByEmail({ email });
-
-  return { email: user?.email };
-}
-
 export async function sendPasswordResetEmail({ email }: { email: string }) {
   const user = await dbGetUserByEmail({ email });
 
@@ -59,11 +53,11 @@ export async function sendPasswordResetEmail({ email }: { email: string }) {
     throw new Error('User not found');
   }
 
-  if (isDevMode) {
-    return undefined;
-  }
+  // if (isDevMode) {
+  //   return { success: false, error: 'Dev mode is enabled, not sending email' };
+  // }
 
-  const emailResult = await sendUserActionEmail({ to: email, action: 'reset-password' });
+  const emailResult = await sendUserActionEmail({ to: user.email, action: 'reset-password' });
 
   return emailResult;
 }

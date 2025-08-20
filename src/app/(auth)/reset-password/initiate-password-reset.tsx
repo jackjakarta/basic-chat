@@ -14,7 +14,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { getUserByEmail, sendPasswordResetEmail } from './actions';
+import { sendPasswordResetEmail } from './actions';
 
 const schema = z.object({
   email: emailSchema,
@@ -43,19 +43,10 @@ export default function InitiatePasswordResetForm({
     const { email } = data;
     const successMessage = `An email has been sent to '${email}'`;
 
-    const user = await getUserByEmail({ email });
-
-    if (user.email === undefined) {
-      toastSuccess(successMessage);
-      console.error({ error: 'User not found', file: 'initiate-password-reset.tsx' });
-      router.push('/login');
-      return;
-    }
-
     try {
       const emailResult = await sendPasswordResetEmail({ email });
 
-      if (!emailResult?.success) {
+      if (!emailResult.success) {
         console.error({ error: emailResult });
         toastError('Failed to send password reset email');
         return;
