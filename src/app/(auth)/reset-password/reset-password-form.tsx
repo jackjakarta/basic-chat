@@ -8,7 +8,6 @@ import { type TokenRow } from '@/db/schema';
 import { emailSchema, passwordSchema } from '@/utils/schemas';
 import { cw } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as Sentry from '@sentry/nextjs';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -59,7 +58,7 @@ export default function ResetPasswordForm({
       router.push('/login');
     } catch (error) {
       toastError('Failed to reset password');
-      Sentry.captureException(error);
+      console.error({ error });
     }
   }
 

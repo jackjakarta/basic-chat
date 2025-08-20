@@ -8,7 +8,6 @@ import { Label } from '@/components/ui/label';
 import { emailSchema } from '@/utils/schemas';
 import { cw, inputFieldErrorClassName, inputFieldErrorMessageClassName } from '@/utils/tailwind';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as Sentry from '@sentry/nextjs';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -61,7 +60,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
       router.push('/');
     } catch (error) {
-      Sentry.captureException(error);
+      console.error({ error });
     }
   }
 
@@ -69,7 +68,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     try {
       await signIn('github');
     } catch (error) {
-      Sentry.captureException(error);
+      console.error({ error });
     }
   }
 
@@ -77,7 +76,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     try {
       await signIn('google');
     } catch (error) {
-      Sentry.captureException(error);
+      console.error({ error });
     }
   }
 
