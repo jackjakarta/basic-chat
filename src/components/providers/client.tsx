@@ -22,7 +22,7 @@ export function ClientProvider({
 
   useKeyboardShortcut({
     key: 'o',
-    callback: () => router.push('/'),
+    callbackFn: () => router.push('/'),
     withShift: true,
   });
 

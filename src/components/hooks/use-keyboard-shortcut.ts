@@ -2,28 +2,30 @@ import React from 'react';
 
 type UseKeyboardShortcutProps = {
   key: string;
-  callback: (e: KeyboardEvent) => void;
+  callbackFn: (e: KeyboardEvent) => void;
   withShift?: boolean;
+  enabled?: boolean;
 };
 
 export function useKeyboardShortcut({
   key,
-  callback,
+  callbackFn,
   withShift = false,
+  enabled = true,
 }: UseKeyboardShortcutProps) {
   React.useEffect(() => {
+    if (!enabled) return;
+
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key !== key) return;
       if (!(e.metaKey || e.ctrlKey)) return;
       if (withShift ? !e.shiftKey : e.shiftKey) return;
 
       e.preventDefault();
-      callback(e);
+      callbackFn(e);
     }
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [key, callback, withShift]);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [key, callbackFn, withShift, enabled]);
 }
