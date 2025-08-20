@@ -53,9 +53,9 @@ export async function sendPasswordResetEmail({ email }: { email: string }) {
     throw new Error('User not found');
   }
 
-  // if (isDevMode) {
-  //   return { success: false, error: 'Dev mode is enabled, not sending email' };
-  // }
+  if (isDevMode) {
+    return { success: false, error: 'Dev mode is enabled, not sending email' };
+  }
 
   const emailResult = await sendUserActionEmail({ to: user.email, action: 'reset-password' });
 
