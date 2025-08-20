@@ -72,6 +72,7 @@ export default function SearchCommandMenu({
         : `/c/${conversationId}`;
 
     router.push(path);
+    setIsOpen(false);
   }
 
   function handleNavigation(path: string) {
@@ -131,7 +132,7 @@ export default function SearchCommandMenu({
             </CommandItem>
           </CommandGroup>
         )}
-        <CommandGroup heading="Navigation">
+        <CommandGroup heading="Chats">
           {showInitialLoad && (
             <>
               {Array.from({ length: 8 }).map((_, index) => (
@@ -161,7 +162,7 @@ export default function SearchCommandMenu({
               >
                 <div className="flex min-w-0 max-w-[calc(100%-130px)] flex-1 items-center gap-1">
                   <MessageCircle className="mr-2 size-5" />
-                  <span className="truncate">{conversation.name}</span>
+                  <span className="truncate">{conversation.name ?? 'New Chat'}</span>
                 </div>
 
                 <span className="text-xs text-muted-foreground/60">
