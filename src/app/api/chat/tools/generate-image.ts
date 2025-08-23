@@ -1,6 +1,6 @@
 import { dbInsertFile } from '@/db/functions/file';
 import { generateImageGemini } from '@/google/image';
-import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
+import { deleteFileFromS3, getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { uint8ArrayToArrayBuffer } from '@/utils/buffer';
 import { cnanoid } from '@/utils/random';
 import { tool } from 'ai';
@@ -42,19 +42,27 @@ async function generateImageFromText({
   const fileName = `${cnanoid(10)}.png`;
   const key = `${userEmail}/generated/${fileName}`;
 
-  await Promise.all([
-    uploadFileToS3({
-      key,
-      fileBuffer: arrayBuffer,
-    }),
-    dbInsertFile({
-      userId,
-      name: fileName,
-      mimeType: 'image/png',
-      size: arrayBuffer.byteLength,
-      s3BucketKey: key,
-    }),
-  ]);
+  const s3Result = await uploadFileToS3({
+    key,
+    fileBuffer: arrayBuffer,
+  });
+
+  if (s3Result.$metadata.httpStatusCode !== 200) {
+    throw new Error('Failed to upload image to S3');
+  }
+
+  const newFile = await dbInsertFile({
+    userId,
+    name: fileName,
+    mimeType: 'image/png',
+    size: arrayBuffer.byteLength,
+    s3BucketKey: key,
+  });
+
+  if (newFile === undefined) {
+    await deleteFileFromS3({ key });
+    throw new Error('Failed to insert file record into database');
+  }
 
   const s3Url = await getSignedUrlFromS3Get({
     key,

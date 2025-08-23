@@ -1,5 +1,5 @@
 import { dbInsertFile } from '@/db/functions/file';
-import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
+import { deleteFileFromS3, getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { getUser } from '@/utils/auth';
 import { getFileExtension } from '@/utils/files';
 import { cnanoid } from '@/utils/random';
@@ -45,20 +45,28 @@ export async function POST(req: NextRequest) {
   const key = `${user.email}/uploaded/files/${keyPrefix}_${file.name}`;
 
   try {
-    await Promise.all([
-      uploadFileToS3({
-        key,
-        fileBuffer: await file.arrayBuffer(),
-        contentType: file.type,
-      }),
-      dbInsertFile({
-        userId: user.id,
-        name: file.name,
-        mimeType: file.type,
-        size: file.size,
-        s3BucketKey: key,
-      }),
-    ]);
+    const s3Result = await uploadFileToS3({
+      key,
+      fileBuffer: await file.arrayBuffer(),
+      contentType: file.type,
+    });
+
+    if (s3Result.$metadata.httpStatusCode !== 200) {
+      return NextResponse.json({ error: 'Failed to upload file to S3' }, { status: 500 });
+    }
+
+    const newFile = await dbInsertFile({
+      userId: user.id,
+      name: file.name,
+      mimeType: file.type,
+      size: file.size,
+      s3BucketKey: key,
+    });
+
+    if (newFile === undefined) {
+      await deleteFileFromS3({ key });
+      return NextResponse.json({ error: 'Failed to record file in database' }, { status: 500 });
+    }
 
     const signedUrl = await getSignedUrlFromS3Get({
       key,

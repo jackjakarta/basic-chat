@@ -48,10 +48,10 @@ export async function uploadFileToS3({
 
 export async function deleteFileFromS3({
   key,
-  bucketName,
+  bucketName = 'chat',
 }: {
   key: string;
-  bucketName: BucketName;
+  bucketName?: BucketName;
 }) {
   const deleteParams: DeleteObjectCommandInput = {
     Bucket: bucketName,
