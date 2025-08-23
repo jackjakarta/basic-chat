@@ -17,7 +17,7 @@ export async function summarizeConversationTitle({
       },
       {
         role: 'user',
-        content: `Summarize this content into a title: User: ${userMessage} Assistant: ${assistantMessage}`,
+        content: `Summarize this content into a title:\n\nUser: ${userMessage}\nAssistant: ${assistantMessage}`,
       },
     ],
   });

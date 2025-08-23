@@ -1,7 +1,8 @@
-import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
+import { dbInsertFile } from '@/db/functions/file';
+import { deleteFileFromS3, getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { getUser } from '@/utils/auth';
 import { getFileExtension } from '@/utils/files';
-import { nanoid } from 'nanoid';
+import { cnanoid } from '@/utils/random';
 import { NextRequest, NextResponse } from 'next/server';
 
 const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 2;
@@ -40,26 +41,41 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const fileId = `${user.email}/uploaded/files/file_${nanoid()}.${fileExtension}`;
+  const keyPrefix = cnanoid(12);
+  const key = `${user.email}/uploaded/files/${keyPrefix}_${file.name}`;
 
   try {
-    const [, signedUrl] = await Promise.all([
-      uploadFileToS3({
-        key: fileId,
-        bucketName: 'chat',
-        fileBuffer: await file.arrayBuffer(),
-        contentType: file.type,
-      }),
-      getSignedUrlFromS3Get({
-        key: fileId,
-        bucketName: 'chat',
-        contentType: file.type,
-        filename: file.name,
-        attachment: false,
-      }),
-    ]);
+    const s3Result = await uploadFileToS3({
+      key,
+      fileBuffer: await file.arrayBuffer(),
+      contentType: file.type,
+    });
 
-    return NextResponse.json({ fileId, signedUrl }, { status: 200 });
+    if (s3Result.$metadata.httpStatusCode !== 200) {
+      return NextResponse.json({ error: 'Failed to upload file to S3' }, { status: 500 });
+    }
+
+    const newFile = await dbInsertFile({
+      userId: user.id,
+      name: file.name,
+      mimeType: file.type,
+      size: file.size,
+      s3BucketKey: key,
+    });
+
+    if (newFile === undefined) {
+      await deleteFileFromS3({ key });
+      return NextResponse.json({ error: 'Failed to record file in database' }, { status: 500 });
+    }
+
+    const signedUrl = await getSignedUrlFromS3Get({
+      key,
+      contentType: file.type,
+      filename: file.name,
+      attachment: false,
+    });
+
+    return NextResponse.json({ fileId: key, signedUrl }, { status: 200 });
   } catch (error) {
     console.error({ error });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

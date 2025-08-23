@@ -1,11 +1,12 @@
+import { dbInsertFile } from '@/db/functions/file';
 import { generateImageGemini } from '@/google/image';
-import { getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
+import { deleteFileFromS3, getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { uint8ArrayToArrayBuffer } from '@/utils/buffer';
+import { cnanoid } from '@/utils/random';
 import { tool } from 'ai';
-import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
-export function getGenerateImageTool({ userEmail }: { userEmail: string }) {
+export function getGenerateImageTool({ userEmail, userId }: { userEmail: string; userId: string }) {
   const generateImageTool = tool({
     description: 'Generate an image based on the provided description.',
     parameters: z.object({
@@ -13,13 +14,7 @@ export function getGenerateImageTool({ userEmail }: { userEmail: string }) {
     }),
     execute: async ({ imageDescription }) => {
       try {
-        const imageUrl = await generateImageFromText({ imageDescription, userEmail });
-        console.debug({ imageUrl });
-
-        if (imageUrl === undefined) {
-          return 'An error occurred while generating the image.';
-        }
-
+        const imageUrl = await generateImageFromText({ imageDescription, userEmail, userId });
         return imageUrl;
       } catch {
         return 'An error occurred while generating the image.';
@@ -33,29 +28,46 @@ export function getGenerateImageTool({ userEmail }: { userEmail: string }) {
 async function generateImageFromText({
   imageDescription,
   userEmail,
+  userId,
 }: {
   imageDescription: string;
   userEmail: string;
+  userId: string;
 }) {
   const imagePrompt = `Generate an image based on the following description: ${imageDescription}`;
+
   const imageBuffer = await generateImageGemini({ imagePrompt });
-
   const arrayBuffer = uint8ArrayToArrayBuffer(imageBuffer);
-  const fileName = `${userEmail}/generated/${nanoid(10)}.png`;
 
-  const [, s3Url] = await Promise.all([
-    uploadFileToS3({
-      key: fileName,
-      fileBuffer: arrayBuffer,
-      bucketName: 'chat',
-    }),
-    getSignedUrlFromS3Get({
-      key: fileName,
-      bucketName: 'chat',
-      contentType: 'image/png',
-      attachment: false,
-    }),
-  ]);
+  const fileName = `${cnanoid(10)}.png`;
+  const key = `${userEmail}/generated/${fileName}`;
+
+  const s3Result = await uploadFileToS3({
+    key,
+    fileBuffer: arrayBuffer,
+  });
+
+  if (s3Result.$metadata.httpStatusCode !== 200) {
+    throw new Error('Failed to upload image to S3');
+  }
+
+  const newFile = await dbInsertFile({
+    userId,
+    name: fileName,
+    mimeType: 'image/png',
+    size: arrayBuffer.byteLength,
+    s3BucketKey: key,
+  });
+
+  if (newFile === undefined) {
+    await deleteFileFromS3({ key });
+    throw new Error('Failed to insert file record into database');
+  }
+
+  const s3Url = await getSignedUrlFromS3Get({
+    key,
+    contentType: 'image/png',
+  });
 
   return s3Url;
 }
