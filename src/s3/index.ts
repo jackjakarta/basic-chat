@@ -34,7 +34,7 @@ export async function uploadFileToS3({
   fileBuffer: ArrayBuffer;
   bucketName?: BucketName;
   contentType?: string;
-}): Promise<string> {
+}) {
   const uploadCommand = new PutObjectCommand({
     Bucket: bucketName,
     Key: key,
@@ -42,9 +42,8 @@ export async function uploadFileToS3({
     ContentType: contentType,
   });
 
-  await s3.send(uploadCommand);
-
-  return key;
+  const result = await s3.send(uploadCommand);
+  return result;
 }
 
 export async function deleteFileFromS3({
@@ -61,7 +60,9 @@ export async function deleteFileFromS3({
 
   try {
     const command = new DeleteObjectCommand(deleteParams);
-    await s3.send(command);
+    const result = await s3.send(command);
+
+    return result;
   } catch (error) {
     console.error('Error deleting file from S3:', error);
     throw error;

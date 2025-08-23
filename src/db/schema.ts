@@ -6,6 +6,7 @@ import {
 import { type Attachment } from 'ai';
 import {
   boolean,
+  // index,
   integer,
   json,
   jsonb,
@@ -14,6 +15,7 @@ import {
   timestamp,
   unique,
   uuid,
+  // vector,
 } from 'drizzle-orm/pg-core';
 import Stripe from 'stripe';
 import { z } from 'zod';
@@ -302,3 +304,43 @@ export const subscriptionPlanTable = appSchema.table('subscription_plan', {
 
 export type SubscriptionPlanRow = typeof subscriptionPlanTable.$inferSelect;
 export type InsertSubscriptionPlanRow = typeof subscriptionPlanTable.$inferInsert;
+
+export const fileTable = appSchema.table('file', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  size: integer('size').notNull(),
+  mimeType: text('mime_type').notNull(),
+  s3BucketKey: text('s3_bucket_key').notNull(),
+  userId: uuid('user_id')
+    .references(() => userTable.id)
+    .notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type FileRow = typeof fileTable.$inferSelect;
+export type InsertFileRow = typeof fileTable.$inferInsert;
+
+// export const fileEmbeddingTable = appSchema.table(
+//   'file_embedding_table',
+//   {
+//     id: uuid('id').defaultRandom().primaryKey(),
+//     fileId: text('file_id')
+//       .references(() => fileTable.id)
+//       .notNull(),
+//     chunk: text('chunk').notNull(),
+//     embedding: vector('embedding', { dimensions: 1024 }).notNull(),
+//     offsetStart: integer('offset_start').notNull(),
+//     offsetEnd: integer('offset_end').notNull(),
+//     createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+//   },
+//   (table) => ({
+//     embeddingIndex: index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
+//   }),
+// );
+
+// export type FileEmbeddingRow = typeof fileEmbeddingTable.$inferSelect;
+// export type InsertFileEmbeddingRow = typeof fileEmbeddingTable.$inferInsert;

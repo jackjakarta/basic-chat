@@ -117,7 +117,9 @@ export async function POST(request: NextRequest) {
       ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
       ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
       ...(imageGenerationActive &&
-        !webSearchActive && { generateImage: getGenerateImageTool({ userEmail: user.email }) }),
+        !webSearchActive && {
+          generateImage: getGenerateImageTool({ userEmail: user.email, userId: user.id }),
+        }),
       ...(!imageGenerationActive &&
         maybeAssistant !== undefined &&
         maybeAssistant.vectorStoreId !== null && {
