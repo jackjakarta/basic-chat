@@ -32,7 +32,7 @@ services:
   web:
     image: jackjakarta/el-chat:${TAG_VERSION}
     deploy:
-      replicas: 4
+      replicas: 5
       placement:
         preferences:
           - spread: node.hostname
