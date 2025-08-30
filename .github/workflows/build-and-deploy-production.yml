@@ -28,60 +28,28 @@ jobs:
         with:
           export-env: true
         env:
-          # CI/CD
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          REMOTE_HOST: 'op://chat-app/github-secrets/REMOTE_HOST'
+          REMOTE_USER: 'op://chat-app/github-secrets/REMOTE_USER'
+          SSH_PRIVATE_KEY: 'op://chat-app/github-secrets/SSH_PRIVATE_KEY'
           DOCKER_USERNAME: 'op://chat-app/github-secrets/DOCKER_USERNAME'
           DOCKER_PASSWORD: 'op://chat-app/github-secrets/DOCKER_PASSWORD'
 
-          # APP
-          NEXTAUTH_SECRET: 'op://chat-app/.env.production/NEXTAUTH_SECRET'
-          NEXTAUTH_URL: 'op://chat-app/.env.production/NEXTAUTH_URL'
-          DATABASE_URL: 'op://chat-app/.env.production/DATABASE_URL'
-          MAILJET_API_KEY: 'op://chat-app/API Keys/MAILJET_API_KEY'
-          MAILJET_API_SECRET: 'op://chat-app/API Keys/MAILJET_API_SECRET'
-          DEV_MODE: 'op://chat-app/.env.production/DEV_MODE'
-          GITHUB_CLIENT_ID: 'op://chat-app/.env.production/GITHUB_CLIENT_ID'
-          GITHUB_CLIENT_SECRET: 'op://chat-app/.env.production/GITHUB_CLIENT_SECRET'
-          AWS_ACCESS_KEY_ID: 'op://chat-app/API Keys/AWS_ACCESS_KEY_ID'
-          AWS_SECRET_ACCESS_KEY: 'op://chat-app/API Keys/AWS_SECRET_ACCESS_KEY'
-          AWS_S3_ENDPOINT_URL: 'op://chat-app/API Keys/AWS_S3_ENDPOINT_URL'
-          UTILS_API_URL: 'op://chat-app/API Keys/UTILS_API_URL'
-          UTILS_API_KEY: 'op://chat-app/API Keys/UTILS_API_KEY'
-          GOOGLE_CLIENT_ID: 'op://chat-app/API Keys/GOOGLE_CLIENT_ID'
-          GOOGLE_CLIENT_SECRET: 'op://chat-app/API Keys/GOOGLE_CLIENT_SECRET'
-          JWT_SECRET: 'op://chat-app/.env.production/JWT_SECRET'
-          OPENAI_API_KEY: 'op://chat-app/API Keys/OPENAI_API_KEY'
-          OPENAI_WEBHOOK_SECRET: 'op://chat-app/API Keys/OPENAI_WEBHOOK_SECRET'
-          ELEVENLABS_API_KEY: 'op://chat-app/API Keys/ELEVENLABS_API_KEY'
-          BRAVE_API_KEY: 'op://chat-app/API Keys/BRAVE_API_KEY'
-          ANTHROPIC_API_KEY: 'op://chat-app/API Keys/ANTHROPIC_API_KEY'
-          GEMINI_API_KEY: 'op://chat-app/API Keys/GEMINI_API_KEY'
-          MISTRAL_API_KEY: 'op://chat-app/API Keys/MISTRAL_API_KEY'
-          XAI_API_KEY: 'op://chat-app/API Keys/XAI_API_KEY'
-          NOTION_CLIENT_ID: 'op://chat-app/API Keys/NOTION_CLIENT_ID'
-          NOTION_CLIENT_SECRET: 'op://chat-app/API Keys/NOTION_CLIENT_SECRET'
-          NOTION_REDIRECT_URI: 'op://chat-app/.env.production/NOTION_REDIRECT_URI'
-          STRIPE_WEBHOOK_SECRET: 'op://chat-app/.env.production/STRIPE_WEBHOOK_SECRET'
-          STRIPE_SECRET_KEY: 'op://chat-app/.env.production/STRIPE_SECRET_KEY'
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: 'op://chat-app/.env.production/NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'
-          GITHUB_ACCESS_TOKEN: 'op://chat-app/API Keys/GITHUB_ACCESS_TOKEN'
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+      - name: Build docker image
+        uses: appleboy/ssh-action@v0.1.6
         with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
+          host: ${{ env.REMOTE_HOST }}
+          username: ${{ env.REMOTE_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/jack/basic-chat
+            git pull
+            export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
-      - name: Build and push docker image
-        run: |
-          docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }} . && \
-          docker push ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }}
+            ENVIRONMENT=production op inject -f -i .env.op -o .env && \
+            echo "TAG_VERSION=${{ env.TAG_VERSION }}" >> .env && \
+            docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }} . && \
+            docker push ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -89,11 +57,6 @@ jobs:
     needs: build
 
     steps:
-      - name: Set up Docker image tags
-        id: vars
-        run: |
-          echo "TAG_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
-
       - name: Load 1password secrets
         uses: 1password/load-secrets-action@v1
         with:
@@ -102,6 +65,7 @@ jobs:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           REMOTE_HOST: 'op://chat-app/github-secrets/REMOTE_HOST'
           REMOTE_USER: 'op://chat-app/github-secrets/REMOTE_USER'
+          DOCKER_USERNAME: 'op://chat-app/github-secrets/DOCKER_USERNAME'
           SSH_PRIVATE_KEY: 'op://chat-app/github-secrets/SSH_PRIVATE_KEY'
 
       - name: Deploy to remote server
@@ -111,12 +75,7 @@ jobs:
           username: ${{ env.REMOTE_USER }}
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }}
-
             cd /home/jack/basic-chat
-            git pull
-            echo "TAG_VERSION=${{ env.TAG_VERSION }}" >> .env
-
             export $(grep -v '^#' .env | xargs) && \
             envsubst < docker-compose.production.yml | docker stack deploy --with-registry-auth -c - el-chat && \
             docker system prune -f
