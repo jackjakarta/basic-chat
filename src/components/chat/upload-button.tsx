@@ -9,36 +9,35 @@ import { TooltipButton } from '../common/tooltip-button';
 import { useToast } from '../hooks/use-toast';
 import { useLlmModel } from '../providers/llm-model';
 
-const uploadResponseSchema = z.object({
-  fileId: z.string(),
-  signedUrl: z.string(),
-});
-
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
   setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
   disabled?: boolean;
 };
 
-export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+const uploadResponseSchema = z.object({
+  fileId: z.string(),
+  signedUrl: z.string(),
+});
 
+const MODELS_WITH_NO_FILES = ['pixtral-large-latest', 'grok-2-vision-1212'];
+
+export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
   const { toastError } = useToast();
   const { model: modelId } = useLlmModel();
 
-  const canUploadFiles = modelId !== 'pixtral-large-latest' && modelId !== 'grok-2-vision-1212';
-  const toolTipMessage = canUploadFiles ? 'images and pdfs' : 'images';
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  function openFileDialog() {
-    fileInputRef.current?.click();
-  }
+  const canUploadFiles = !MODELS_WITH_NO_FILES.includes(modelId);
+  const toolTipMessage = canUploadFiles ? 'images and pdfs' : 'images';
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
 
-    if (!file) return;
-    await handleFileUpload(file);
-    e.target.value = '';
+    if (file !== undefined) {
+      await handleFileUpload(file);
+      e.target.value = '';
+    }
   }
 
   async function handleFileUpload(file: File) {
@@ -103,7 +102,7 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
         type="button"
         className="py-1 transition-colors duration-200 ease-in-out"
         variant="neutral"
-        onClick={openFileDialog}
+        onClick={() => fileInputRef.current?.click()}
         disabled={disabled}
       >
         <Paperclip className="h-4 w-4" />

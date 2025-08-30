@@ -1,7 +1,14 @@
 import { and, eq } from 'drizzle-orm';
 
 import { db } from '..';
-import { fileTable, type FileRow, type InsertFileRow } from '../schema';
+import {
+  fileEmbeddingTable,
+  fileTable,
+  type FileEmbeddingRow,
+  type FileRow,
+  type InsertFileEmbeddingRow,
+  type InsertFileRow,
+} from '../schema';
 
 export async function dbGetFileById({
   fileId,
@@ -57,10 +64,39 @@ export async function dbDeleteFile({
   fileId: string;
   userId: string;
 }): Promise<FileRow | undefined> {
-  const [deleted] = await db
-    .delete(fileTable)
-    .where(and(eq(fileTable.id, fileId), eq(fileTable.userId, userId)))
-    .returning();
+  const maybeDeleted = await db.transaction(async (tx) => {
+    await tx.delete(fileEmbeddingTable).where(eq(fileEmbeddingTable.fileId, fileId));
 
-  return deleted;
+    const [deleted] = await tx
+      .delete(fileTable)
+      .where(and(eq(fileTable.id, fileId), eq(fileTable.userId, userId)))
+      .returning();
+
+    return deleted;
+  });
+
+  return maybeDeleted;
+}
+
+export async function dbInsertEmbedding(
+  data: InsertFileEmbeddingRow,
+): Promise<FileEmbeddingRow | undefined> {
+  const [embeddingRow] = await db.insert(fileEmbeddingTable).values(data).returning();
+
+  return embeddingRow;
+}
+
+export async function dbGetFilesByFolderId({
+  folderId,
+  userId,
+}: {
+  folderId: string;
+  userId: string;
+}): Promise<FileRow[]> {
+  const files = await db
+    .select()
+    .from(fileTable)
+    .where(and(eq(fileTable.folderId, folderId), eq(fileTable.userId, userId)));
+
+  return files;
 }

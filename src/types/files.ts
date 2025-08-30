@@ -1,3 +1,5 @@
+import { type FileRow } from '@/db/schema';
+
 export type AttachmentFileType = 'file' | 'image';
 export type AttachmentFile = { type: AttachmentFileType; signedUrl: string | undefined };
 
@@ -19,3 +21,5 @@ export type SuccessLocalFileState = {
 
 export type LocalFileState = PendingLocalFileState | ErrorLocalFileState | SuccessLocalFileState;
 export type FileStatus = LocalFileState['status'];
+
+export type WithFiles<T> = T & { files: FileRow[] };

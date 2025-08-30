@@ -9,61 +9,28 @@ type LoadingToolProps = {
   message: Message;
 };
 
+type KnownTool = 'searchNotion' | 'generateImage' | 'searchFiles' | 'executeCode' | 'searchTheWeb';
+
+const TOOL_CONFIG: Record<KnownTool, { text: string; icon: JSX.Element }> = {
+  searchNotion: { text: 'Searching notion...', icon: <NotionIcon className="size-4" /> },
+  generateImage: { text: 'Generating image...', icon: <ImageIcon className="size-4" /> },
+  searchFiles: { text: 'Searching my knowledge...', icon: <File className="size-4" /> },
+  executeCode: { text: 'Executing code...', icon: <Braces className="size-4" /> },
+  searchTheWeb: { text: 'Searching the web...', icon: <Globe2 className="size-4" /> },
+};
+
 export default function LoadingTool({ message }: LoadingToolProps) {
-  const isNotionTool =
-    message?.parts?.[0]?.type === 'tool-invocation' &&
-    message?.parts?.[0]?.toolInvocation?.toolName === 'searchNotion';
+  const firstPart = message?.parts?.[0];
+  const isToolInvocation = firstPart?.type === 'tool-invocation';
+  const toolName = isToolInvocation ? firstPart?.toolInvocation?.toolName : '';
 
-  const isImageGenerationTool =
-    message?.parts?.[0]?.type === 'tool-invocation' &&
-    message?.parts?.[0]?.toolInvocation?.toolName === 'generateImage';
+  const config = (toolName && TOOL_CONFIG[toolName as KnownTool]) || null;
 
-  const isFileSearchTool =
-    message?.parts?.[0]?.type === 'tool-invocation' &&
-    message?.parts?.[0]?.toolInvocation?.toolName === 'searchFiles';
-
-  const isCodeExecutionTool =
-    message?.parts?.[0]?.type === 'tool-invocation' &&
-    message?.parts?.[0]?.toolInvocation?.toolName === 'executeCode';
-
-  const isWebSearchTool =
-    message?.parts?.[0]?.type === 'tool-invocation' &&
-    message?.parts?.[0]?.toolInvocation?.toolName === 'searchTheWeb';
-
-  if (isNotionTool) {
-    return (
-      <LoadingToolWithIcon text="Searching notion..." icon={<NotionIcon className="h-4 w-4" />} />
-    );
+  if (config === null) {
+    return <LoadingText>{toolNameMap(toolName) ?? ''}</LoadingText>;
   }
 
-  if (isImageGenerationTool) {
-    return (
-      <LoadingToolWithIcon text="Generating image..." icon={<ImageIcon className="h-4 w-4" />} />
-    );
-  }
-
-  if (isFileSearchTool) {
-    return (
-      <LoadingToolWithIcon text="Searching my knowledge..." icon={<File className="h-4 w-4" />} />
-    );
-  }
-
-  if (isCodeExecutionTool) {
-    return <LoadingToolWithIcon text="Executing code..." icon={<Braces className="h-4 w-4" />} />;
-  }
-
-  if (isWebSearchTool) {
-    return (
-      <LoadingToolWithIcon text="Searching the web..." icon={<Globe2 className="h-4 w-4" />} />
-    );
-  }
-
-  const toolName =
-    message?.parts?.[0]?.type === 'tool-invocation'
-      ? message?.parts?.[0]?.toolInvocation?.toolName
-      : '';
-
-  return <LoadingText>{toolNameMap(toolName) ?? ''}</LoadingText>;
+  return <LoadingToolWithIcon text={config.text} icon={config.icon} />;
 }
 
 function LoadingToolWithIcon({ text, icon }: { text: string; icon: React.ReactNode }) {

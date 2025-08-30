@@ -74,6 +74,10 @@ export const models: InsertAIModelRow[] = [
     provider: 'mistral',
     type: 'text',
     isEnabled: true,
+    features: {
+      vision: true,
+      files: false,
+    },
   },
   {
     id: 'grok-2-vision-1212',
@@ -82,5 +86,9 @@ export const models: InsertAIModelRow[] = [
     provider: 'xai',
     type: 'text',
     isEnabled: true,
+    features: {
+      vision: true,
+      files: false,
+    },
   },
 ];
