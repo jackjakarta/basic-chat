@@ -1,6 +1,7 @@
 import Header from '@/components/common/header';
 import LoadingPage from '@/components/common/loading-page';
 import PageContainer from '@/components/common/page-container';
+import { UICard } from '@/components/common/ui-card';
 import { dbGetFoldersByUserId } from '@/db/functions/folder';
 import { getUser } from '@/utils/auth';
 import { getTranslations } from 'next-intl/server';

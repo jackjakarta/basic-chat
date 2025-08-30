@@ -36,6 +36,8 @@ export default async function Page() {
     (s) => s.status === 'active' || s.status === 'trialing',
   );
 
+  console.debug({ validSubscriptionExists });
+
   if (!validSubscriptionExists) {
     return (
       <PageContainer className="mx-auto w-full pb-16 pt-4">

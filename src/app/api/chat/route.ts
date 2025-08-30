@@ -6,6 +6,7 @@ import {
   dbUpdateConversationTitle,
 } from '@/db/functions/chat';
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
+import { dbGetFolderById } from '@/db/functions/folder';
 import { dbGetAmountOfTokensUsedByUserId, dbInsertConversationUsage } from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
@@ -22,6 +23,7 @@ import { getGenerateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
 import { getActiveNotionIntegration, getSearchNotionTool } from './tools/notion-search';
 import { getWebSearchTool } from './tools/openai-search';
+import { getDocumentFolderSearchTool } from './tools/search-document-folders';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -32,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (subscriptionPlan === undefined) {
       return NextResponse.json(
         { error: 'Invalid subscription state. Please check your subscription.' },
-        { status: 400 },
+        { status: 402 },
       );
     }
 
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
     if (limits.tokenLimit !== null && totalTokens >= limits.tokenLimit) {
       return NextResponse.json(
         { error: 'Token limit exceeded. Please upgrade your subscription.' },
-        { status: 403 },
+        { status: 402 },
       );
     }
 
@@ -52,6 +54,7 @@ export async function POST(request: NextRequest) {
       messages,
       modelId,
       assistantId,
+      folderId,
       webSearchActive,
       imageGenerationActive,
     }: {
@@ -59,6 +62,7 @@ export async function POST(request: NextRequest) {
       messages: Message[];
       modelId: string;
       assistantId?: string;
+      folderId?: string;
       webSearchActive: boolean;
       imageGenerationActive: boolean;
     } = await request.json();
@@ -79,6 +83,9 @@ export async function POST(request: NextRequest) {
       assistantId !== undefined
         ? await dbGetAssistantById({ assistantId, userId: user.id })
         : undefined;
+
+    const maybeFolder =
+      folderId !== undefined ? await dbGetFolderById({ folderId, userId: user.id }) : undefined;
 
     const conversation = await dbGetOrCreateConversation({
       conversationId: chatId,
@@ -102,6 +109,8 @@ export async function POST(request: NextRequest) {
       orderNumber: messages.length,
     });
 
+    const mockDocumentFolderActive = true;
+
     const systemPrompt = constructSystemPrompt({
       assistantInstructions: maybeAssistant?.instructions,
       userCustomInstructions: user.settings?.customInstructions,
@@ -116,6 +125,14 @@ export async function POST(request: NextRequest) {
       ...(webSearchActive && !imageGenerationActive && { searchTheWeb: getWebSearchTool() }),
       ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
       ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
+      ...(!imageGenerationActive &&
+        mockDocumentFolderActive &&
+        maybeFolder !== undefined && {
+          searchDocuments: getDocumentFolderSearchTool({
+            userId: user.id,
+            folderId: maybeFolder.id,
+          }),
+        }),
       ...(imageGenerationActive &&
         !webSearchActive && {
           generateImage: getGenerateImageTool({ userEmail: user.email, userId: user.id }),

@@ -3,6 +3,8 @@ import { getUser } from '@/utils/auth';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 
+import UploadToFolderButton from './upload-to-folder-button';
+
 const pageContextSchema = z.object({
   params: z.object({
     folderId: z.string().uuid(),
@@ -24,5 +26,10 @@ export default async function Page(context: unknown) {
     return notFound();
   }
 
-  return <h1>{folderAndFiles.id}</h1>;
+  return (
+    <div>
+      <h1>{folderAndFiles.name}</h1>
+      <UploadToFolderButton folderId={folderAndFiles.id} />
+    </div>
+  );
 }

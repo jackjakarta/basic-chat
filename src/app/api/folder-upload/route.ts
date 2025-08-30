@@ -9,7 +9,7 @@ import { cnanoid } from '@/utils/random';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 2;
+const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 5;
 const SUPPORTED_FILE_EXTENSIONS = ['pdf'];
 
 export async function POST(req: NextRequest) {
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   }
 
   const keyPrefix = cnanoid(12);
-  const key = `${user.email}/uploaded/files/${keyPrefix}_${file.name}`;
+  const key = `${user.email}/uploaded/files/${folder.name}/${keyPrefix}_${file.name}`;
 
   try {
     const s3Result = await uploadFileToS3({
@@ -105,6 +105,7 @@ export async function POST(req: NextRequest) {
       size: file.size,
       folderId: folder.id,
       s3BucketKey: key,
+      content: extractedText,
     });
 
     if (newFile === undefined) {
