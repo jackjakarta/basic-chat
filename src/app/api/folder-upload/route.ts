@@ -1,5 +1,5 @@
 import { extractTextFromPdf } from '@/anthropic/pdf';
-import { dbInsertEmbedding, dbInsertFile } from '@/db/functions/file';
+import { dbDeleteFile, dbInsertEmbedding, dbInsertFile } from '@/db/functions/file';
 import { dbGetFolderById } from '@/db/functions/folder';
 import { getTextEmbedding } from '@/openai/embed';
 import { deleteFileFromS3, getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (folder === undefined) {
-    return NextResponse.json({ error: 'Folder not found' }, { status: 404 });
+    return NextResponse.json({ status: 403 });
   }
 
   const fileExtension = getFileExtension(file.name);
@@ -77,6 +77,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to upload file to S3' }, { status: 500 });
     }
 
+    const signedUrl = await getSignedUrlFromS3Get({
+      key,
+      contentType: file.type,
+      filename: file.name,
+      attachment: false,
+    });
+
+    const extractedText = await extractTextFromPdf({ pdfUrl: signedUrl });
+
+    if (extractedText === undefined) {
+      await deleteFileFromS3({ key });
+      return NextResponse.json({ error: 'Failed to extract text from PDF' }, { status: 500 });
+    }
+
+    const embedding = await getTextEmbedding({ input: extractedText });
+
+    if (embedding === undefined) {
+      await deleteFileFromS3({ key });
+      return NextResponse.json({ error: 'Failed to create text embedding' }, { status: 500 });
+    }
+
     const newFile = await dbInsertFile({
       userId: user.id,
       name: file.name,
@@ -91,25 +112,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to record file in database' }, { status: 500 });
     }
 
-    const signedUrl = await getSignedUrlFromS3Get({
-      key,
-      contentType: newFile.mimeType,
-      filename: newFile.name,
-      attachment: false,
-    });
-
-    const extractedText = await extractTextFromPdf({ pdfUrl: signedUrl });
-
-    if (extractedText === undefined) {
-      return NextResponse.json({ error: 'Failed to extract text from PDF' }, { status: 500 });
-    }
-
-    const embedding = await getTextEmbedding({ input: extractedText });
-
-    if (embedding === undefined) {
-      return NextResponse.json({ error: 'Failed to create text embedding' }, { status: 500 });
-    }
-
     const embeddingRow = await dbInsertEmbedding({
       fileId: newFile.id,
       content: extractedText,
@@ -117,6 +119,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (embeddingRow === undefined) {
+      await Promise.all([
+        deleteFileFromS3({ key }),
+        dbDeleteFile({ fileId: newFile.id, userId: user.id }),
+      ]);
+
       return NextResponse.json(
         { error: 'Failed to record embedding in database' },
         { status: 500 },
