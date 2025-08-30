@@ -320,6 +320,7 @@ export const fileTable = appSchema.table('file', {
   size: integer('size').notNull(),
   mimeType: text('mime_type').notNull(),
   s3BucketKey: text('s3_bucket_key').notNull(),
+  content: text('content'),
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),

@@ -1,5 +1,5 @@
 {
-  "id": "3ea51f06-5a78-49f7-8e8c-704b38f0f45d",
+  "id": "ac7b9738-65f3-46a3-b1f3-52e3f7b5c9ca",
   "prevId": "a85f8ccd-faff-4a58-b8eb-26649daef399",
   "version": "7",
   "dialect": "postgresql",
@@ -144,8 +144,12 @@
           "tableFrom": "assistant",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -154,8 +158,12 @@
           "tableFrom": "assistant",
           "tableTo": "vector_store",
           "schemaTo": "app",
-          "columnsFrom": ["vector_store_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "vector_store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -239,8 +247,12 @@
           "tableFrom": "conversation_message",
           "tableTo": "conversation",
           "schemaTo": "app",
-          "columnsFrom": ["conversation_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "conversation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -249,8 +261,12 @@
           "tableFrom": "conversation_message",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -309,8 +325,12 @@
           "tableFrom": "conversation",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -319,8 +339,12 @@
           "tableFrom": "conversation",
           "tableTo": "assistant",
           "schemaTo": "app",
-          "columnsFrom": ["assistant_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "assistant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -526,8 +550,12 @@
           "tableFrom": "data_source_integration_user_mapping",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -536,8 +564,12 @@
           "tableFrom": "data_source_integration_user_mapping",
           "tableTo": "data_source_integration",
           "schemaTo": "app",
-          "columnsFrom": ["data_source_integration_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "data_source_integration_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -547,9 +579,93 @@
         "data_source_integration_user_mapping_user_id_data_source_integration_id_unique": {
           "name": "data_source_integration_user_mapping_user_id_data_source_integration_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id", "data_source_integration_id"]
+          "columns": [
+            "user_id",
+            "data_source_integration_id"
+          ]
         }
       }
+    },
+    "app.file_embedding_table": {
+      "name": "file_embedding_table",
+      "schema": "app",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "file_id": {
+          "name": "file_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "embeddingIndex": {
+          "name": "embeddingIndex",
+          "columns": [
+            {
+              "expression": "embedding",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "file_embedding_table_file_id_file_id_fk": {
+          "name": "file_embedding_table_file_id_file_id_fk",
+          "tableFrom": "file_embedding_table",
+          "tableTo": "file",
+          "schemaTo": "app",
+          "columnsFrom": [
+            "file_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "app.file": {
       "name": "file",
@@ -586,11 +702,23 @@
           "primaryKey": false,
           "notNull": true
         },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "user_id": {
           "name": "user_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "folder_id": {
+          "name": "folder_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -614,8 +742,84 @@
           "tableFrom": "file",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "file_folder_id_folder_id_fk": {
+          "name": "file_folder_id_folder_id_fk",
+          "tableFrom": "file",
+          "tableTo": "folder",
+          "schemaTo": "app",
+          "columnsFrom": [
+            "folder_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "app.folder": {
+      "name": "folder",
+      "schema": "app",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "folder_user_id_user_entity_id_fk": {
+          "name": "folder_user_id_user_entity_id_fk",
+          "tableFrom": "folder",
+          "tableTo": "user_entity",
+          "schemaTo": "app",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -736,12 +940,17 @@
         "action_token_token_unique": {
           "name": "action_token_token_unique",
           "nullsNotDistinct": false,
-          "columns": ["token"]
+          "columns": [
+            "token"
+          ]
         },
         "action_token_email_action_unique": {
           "name": "action_token_email_action_unique",
           "nullsNotDistinct": false,
-          "columns": ["email", "action"]
+          "columns": [
+            "email",
+            "action"
+          ]
         }
       }
     },
@@ -842,7 +1051,9 @@
         "user_entity_email_unique": {
           "name": "user_entity_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       }
     },
@@ -896,8 +1107,12 @@
           "tableFrom": "vector_store",
           "tableTo": "user_entity",
           "schemaTo": "app",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -910,42 +1125,70 @@
     "app.ai_provider": {
       "name": "ai_provider",
       "schema": "app",
-      "values": ["openai", "google", "anthropic", "mistral", "xai"]
+      "values": [
+        "openai",
+        "google",
+        "anthropic",
+        "mistral",
+        "xai"
+      ]
     },
     "app.auth_provider": {
       "name": "auth_provider",
       "schema": "app",
-      "values": ["credentials", "github", "google"]
+      "values": [
+        "credentials",
+        "github",
+        "google"
+      ]
     },
     "app.conversation_role": {
       "name": "conversation_role",
       "schema": "app",
-      "values": ["user", "assistant", "system"]
+      "values": [
+        "user",
+        "assistant",
+        "system"
+      ]
     },
     "app.data_source_integration_state": {
       "name": "data_source_integration_state",
       "schema": "app",
-      "values": ["active", "comingSoon"]
+      "values": [
+        "active",
+        "comingSoon"
+      ]
     },
     "app.data_source_integration_type": {
       "name": "data_source_integration_type",
       "schema": "app",
-      "values": ["notion"]
+      "values": [
+        "notion"
+      ]
     },
     "app.model_type": {
       "name": "model_type",
       "schema": "app",
-      "values": ["text", "image"]
+      "values": [
+        "text",
+        "image"
+      ]
     },
     "app.subscription_id": {
       "name": "subscription_id",
       "schema": "app",
-      "values": ["free", "premium"]
+      "values": [
+        "free",
+        "premium"
+      ]
     },
     "app.token_action": {
       "name": "token_action",
       "schema": "app",
-      "values": ["verify-email", "reset-password"]
+      "values": [
+        "verify-email",
+        "reset-password"
+      ]
     }
   },
   "schemas": {

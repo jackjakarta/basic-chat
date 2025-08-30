@@ -166,29 +166,8 @@
     {
       "idx": 23,
       "version": "7",
-      "when": 1756504723619,
-      "tag": "0023_quiet_morph",
-      "breakpoints": true
-    },
-    {
-      "idx": 24,
-      "version": "7",
-      "when": 1756511011680,
-      "tag": "0024_deep_mentallo",
-      "breakpoints": true
-    },
-    {
-      "idx": 25,
-      "version": "7",
-      "when": 1756511406566,
-      "tag": "0025_icy_romulus",
-      "breakpoints": true
-    },
-    {
-      "idx": 26,
-      "version": "7",
-      "when": 1756517229525,
-      "tag": "0026_lush_unus",
+      "when": 1756517920126,
+      "tag": "0023_slim_wendigo",
       "breakpoints": true
     }
   ]

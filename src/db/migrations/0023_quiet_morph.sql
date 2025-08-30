@@ -1,1 +1,0 @@
-ALTER TABLE "app"."ai_model" ADD COLUMN "features" jsonb DEFAULT '{"vision":true,"files":true}'::jsonb NOT NULL;
