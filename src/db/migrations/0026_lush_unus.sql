@@ -1,0 +1,1 @@
+ALTER TABLE "app"."file_embedding_table" ADD COLUMN "content" text NOT NULL;

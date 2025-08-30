@@ -6,7 +6,7 @@ import {
 import { type Attachment } from 'ai';
 import {
   boolean,
-  // index,
+  index,
   integer,
   json,
   jsonb,
@@ -15,7 +15,7 @@ import {
   timestamp,
   unique,
   uuid,
-  // vector,
+  vector,
 } from 'drizzle-orm/pg-core';
 import Stripe from 'stripe';
 import { z } from 'zod';
@@ -245,6 +245,11 @@ const aiProviderSchema = z.enum(['openai', 'google', 'anthropic', 'mistral', 'xa
 export const aiProviderPgEnum = appSchema.enum('ai_provider', aiProviderSchema.options);
 export type AIProvider = z.infer<typeof aiProviderSchema>;
 
+export type AIModelFeatures = {
+  vision: boolean;
+  files: boolean;
+};
+
 export const aiModelTable = appSchema.table('ai_model', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -253,6 +258,10 @@ export const aiModelTable = appSchema.table('ai_model', {
   provider: aiProviderPgEnum('provider').notNull(),
   isEnabled: boolean('is_enabled').default(false).notNull(),
   isDefault: boolean('is_default').default(false).notNull(),
+  features: jsonb('features')
+    .$type<AIModelFeatures>()
+    .default({ vision: true, files: true })
+    .notNull(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -314,6 +323,7 @@ export const fileTable = appSchema.table('file', {
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),
+  folderId: uuid('folder_id').references(() => folderTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -324,23 +334,44 @@ export const fileTable = appSchema.table('file', {
 export type FileRow = typeof fileTable.$inferSelect;
 export type InsertFileRow = typeof fileTable.$inferInsert;
 
-// export const fileEmbeddingTable = appSchema.table(
-//   'file_embedding_table',
-//   {
-//     id: uuid('id').defaultRandom().primaryKey(),
-//     fileId: text('file_id')
-//       .references(() => fileTable.id)
-//       .notNull(),
-//     chunk: text('chunk').notNull(),
-//     embedding: vector('embedding', { dimensions: 1024 }).notNull(),
-//     offsetStart: integer('offset_start').notNull(),
-//     offsetEnd: integer('offset_end').notNull(),
-//     createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
-//   },
-//   (table) => ({
-//     embeddingIndex: index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
-//   }),
-// );
+export const fileEmbeddingTable = appSchema.table(
+  'file_embedding_table',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    fileId: uuid('file_id')
+      .references(() => fileTable.id)
+      .notNull(),
+    // chunk: text('chunk').notNull(),
+    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+    content: text('content').notNull(),
+    // offsetStart: integer('offset_start').notNull(),
+    // offsetEnd: integer('offset_end').notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    embeddingIndex: index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
+  }),
+);
 
-// export type FileEmbeddingRow = typeof fileEmbeddingTable.$inferSelect;
-// export type InsertFileEmbeddingRow = typeof fileEmbeddingTable.$inferInsert;
+export type FileEmbeddingRow = typeof fileEmbeddingTable.$inferSelect;
+export type InsertFileEmbeddingRow = typeof fileEmbeddingTable.$inferInsert;
+
+export const folderTable = appSchema.table('folder', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  userId: uuid('user_id')
+    .references(() => userTable.id)
+    .notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type FolderRow = typeof folderTable.$inferSelect;
+export type InsertFolderRow = typeof folderTable.$inferInsert;
