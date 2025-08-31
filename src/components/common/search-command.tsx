@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/command';
 import { formatDateToDayMonthYear } from '@/utils/date';
 import { cw } from '@/utils/tailwind';
-import { Bot, MessageCircle, Plus, Settings, Unplug } from 'lucide-react';
+import { Bot, Images, MessageCircle, Plus, Settings, Unplug } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -112,6 +112,15 @@ export default function SearchCommandMenu({
             >
               <Bot className="size-5" />
               <span>Assistants</span>
+            </CommandItem>
+
+            <CommandItem
+              value="Gallery"
+              className="flex cursor-pointer items-center gap-3 rounded-xl"
+              onSelect={() => handleNavigation('/gallery')}
+            >
+              <Images className="size-5" />
+              <span>Gallery</span>
             </CommandItem>
 
             <CommandItem

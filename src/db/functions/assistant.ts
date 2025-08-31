@@ -8,8 +8,8 @@ import {
   vectorStoreTable,
   type AssistantRow,
   type InsertAssistantRow,
+  type UpdateAssistantRow,
 } from '../schema';
-import { type UpdateDbRow } from '../types';
 
 export async function dbGetAssistantsByUserId({
   userId,
@@ -48,8 +48,6 @@ export async function dbGetAssistantById({
 
   return assistant;
 }
-
-export type UpdateAssistantRow = UpdateDbRow<AssistantRow>;
 
 export async function dbUpdateAssistant({
   assistantId,

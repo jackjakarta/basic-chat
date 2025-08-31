@@ -19,6 +19,8 @@ import {
 import Stripe from 'stripe';
 import { z } from 'zod';
 
+import { type UpdateDbRow } from './types';
+
 export const appSchema = pgSchema('app');
 
 export const authProviderSchema = z.enum(['credentials', 'github', 'google']);
@@ -52,6 +54,7 @@ export const userTable = appSchema.table('user_entity', {
 
 export type UserRow = typeof userTable.$inferSelect;
 export type InsertUserRow = typeof userTable.$inferInsert;
+export type UpdateUserRow = Omit<UpdateDbRow<UserRow>, 'email'>;
 
 export const customerSubscriptionsStripeTable = appSchema.table('customer_subscriptions_stripe', {
   customerId: text('customer_id').primaryKey(),
@@ -66,6 +69,10 @@ export const customerSubscriptionsStripeTable = appSchema.table('customer_subscr
 export type CustomerSubscriptionsStripeInsertModel =
   typeof customerSubscriptionsStripeTable.$inferInsert;
 export type CustomerSubscriptionsStripeModel = typeof customerSubscriptionsStripeTable.$inferSelect;
+export type UpdateCustomerSubscriptionsStripeModel = Omit<
+  UpdateDbRow<CustomerSubscriptionsStripeModel>,
+  'customerId'
+>;
 
 export const tokenActionSchema = z.enum(['verify-email', 'reset-password']);
 export const tokenActionPgEnum = appSchema.enum('token_action', tokenActionSchema.options);
@@ -111,6 +118,7 @@ export const conversationTable = appSchema.table('conversation', {
 
 export type ConversationRow = typeof conversationTable.$inferSelect;
 export type InsertConversationRow = typeof conversationTable.$inferInsert;
+export type UpdateConversationRow = UpdateDbRow<ConversationRow>;
 
 export const conversationRoleSchema = z.enum(['user', 'assistant', 'system']);
 export const conversationRolePgEnum = appSchema.enum(
@@ -142,6 +150,10 @@ export const conversationMessageTable = appSchema.table('conversation_message', 
 
 export type ConversationMessageRow = typeof conversationMessageTable.$inferSelect;
 export type InsertConversationMessageRow = typeof conversationMessageTable.$inferInsert;
+export type UpdateConversationMessageRow = Omit<
+  UpdateDbRow<ConversationMessageRow>,
+  'conversationId'
+>;
 
 export const assistantTable = appSchema.table('assistant', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -161,6 +173,7 @@ export const assistantTable = appSchema.table('assistant', {
 
 export type AssistantRow = typeof assistantTable.$inferSelect;
 export type InsertAssistantRow = typeof assistantTable.$inferInsert;
+export type UpdateAssistantRow = UpdateDbRow<AssistantRow>;
 
 export const vectorFileSchema = z.object({
   fileId: z.string(),
@@ -185,6 +198,7 @@ export const vectorStoreTable = appSchema.table('vector_store', {
 
 export type VectorStoreRow = typeof vectorStoreTable.$inferSelect;
 export type InsertVectorStoreRow = typeof vectorStoreTable.$inferInsert;
+export type UpdateVectorStoreRow = UpdateDbRow<VectorStoreRow>;
 
 export const dataSourceIntegrationStateEnum = appSchema.enum(
   'data_source_integration_state',
@@ -210,6 +224,7 @@ export const dataSourceIntegrationTable = appSchema.table('data_source_integrati
 
 export type DataSourceIntegrationInsertModel = typeof dataSourceIntegrationTable.$inferInsert;
 export type DataSourceIntegrationModel = typeof dataSourceIntegrationTable.$inferSelect;
+export type UpdateDataSourceIntegrationModel = UpdateDbRow<DataSourceIntegrationModel>;
 
 export const dataSourceIntegrationUserMappingTable = appSchema.table(
   'data_source_integration_user_mapping',
@@ -261,6 +276,7 @@ export const aiModelTable = appSchema.table('ai_model', {
 
 export type AIModelRow = typeof aiModelTable.$inferSelect;
 export type InsertAIModelRow = typeof aiModelTable.$inferInsert;
+export type UpdateAIModelRow = UpdateDbRow<AIModelRow>;
 
 export const conversationUsageTrackingTable = appSchema.table('conversation_usage_tracking', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -322,6 +338,7 @@ export const fileTable = appSchema.table('file', {
 
 export type FileRow = typeof fileTable.$inferSelect;
 export type InsertFileRow = typeof fileTable.$inferInsert;
+export type UpdateFileRow = UpdateDbRow<FileRow>;
 
 // export const fileEmbeddingTable = appSchema.table(
 //   'file_embedding_table',

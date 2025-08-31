@@ -1,8 +1,7 @@
 import { and, eq, like } from 'drizzle-orm';
 
 import { db } from '..';
-import { fileTable, type FileRow, type InsertFileRow } from '../schema';
-import { type UpdateDbRow } from '../types';
+import { fileTable, type FileRow, type InsertFileRow, type UpdateFileRow } from '../schema';
 
 export async function dbGetFileById({
   fileId,
@@ -30,8 +29,6 @@ export async function dbInsertFile(data: InsertFileRow): Promise<FileRow | undef
 
   return file;
 }
-
-export type UpdateFileRow = UpdateDbRow<FileRow>;
 
 export async function dbUpdateFile({
   fileId,
