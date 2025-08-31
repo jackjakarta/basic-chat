@@ -4,7 +4,6 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 
 const databaseUrl = env.databaseUrl;
-
 const databaseConnection = drizzle(postgres(databaseUrl, { max: 1 }));
 
 async function main() {
@@ -12,10 +11,11 @@ async function main() {
     await migrate(databaseConnection, {
       migrationsFolder: './src/db/migrations',
     });
-    console.log('Migration complete');
+    console.info('Migration complete');
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
+
   process.exit(0);
 }
 

@@ -6,7 +6,6 @@ import {
 import { type Attachment } from 'ai';
 import {
   boolean,
-  // index,
   integer,
   json,
   jsonb,
@@ -310,7 +309,7 @@ export const fileTable = appSchema.table('file', {
   name: text('name').notNull(),
   size: integer('size').notNull(),
   mimeType: text('mime_type').notNull(),
-  s3BucketKey: text('s3_bucket_key').notNull(),
+  s3BucketKey: text('s3_bucket_key').notNull().unique(),
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),

@@ -1,7 +1,8 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, like } from 'drizzle-orm';
 
 import { db } from '..';
 import { fileTable, type FileRow, type InsertFileRow } from '../schema';
+import { type UpdateDbRow } from '../types';
 
 export async function dbGetFileById({
   fileId,
@@ -30,7 +31,7 @@ export async function dbInsertFile(data: InsertFileRow): Promise<FileRow | undef
   return file;
 }
 
-type UpdateFileRow = Omit<FileRow, 'id' | 'userId'>;
+export type UpdateFileRow = UpdateDbRow<FileRow>;
 
 export async function dbUpdateFile({
   fileId,
@@ -39,7 +40,7 @@ export async function dbUpdateFile({
 }: {
   fileId: string;
   userId: string;
-  data: Partial<UpdateFileRow>;
+  data: UpdateFileRow;
 }): Promise<FileRow | undefined> {
   const [file] = await db
     .update(fileTable)
@@ -63,4 +64,21 @@ export async function dbDeleteFile({
     .returning();
 
   return deleted;
+}
+
+export async function dbGetGeneratedImagesByUserId({
+  userId,
+  userEmail,
+}: {
+  userId: string;
+  userEmail: string;
+}): Promise<FileRow[]> {
+  const likeQuery = `${userEmail}/generated/%`;
+
+  const files = await db
+    .select()
+    .from(fileTable)
+    .where(and(eq(fileTable.userId, userId), like(fileTable.s3BucketKey, likeQuery)));
+
+  return files;
 }
