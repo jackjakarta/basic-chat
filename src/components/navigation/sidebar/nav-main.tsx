@@ -8,7 +8,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { cw } from '@/utils/tailwind';
-import { ArrowBigUp, Bot, Command, Plus, Search } from 'lucide-react';
+import { ArrowBigUp, Bot, Command, Images, Plus, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -78,6 +78,22 @@ export function NavMain({ onClickMobile }: NavMainProps) {
             <Link href="/assistants" className="flex items-center gap-2">
               <Bot />
               <span>{t('assistants')}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            onClick={onClickMobile}
+            className={cw(
+              'cursor-pointer',
+              pathname.startsWith('/gallery') && 'bg-sidebar-accent text-sidebar-accent-foreground',
+            )}
+            asChild
+          >
+            <Link href="/gallery" className="flex items-center gap-2">
+              <Images />
+              <span>Gallery</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
