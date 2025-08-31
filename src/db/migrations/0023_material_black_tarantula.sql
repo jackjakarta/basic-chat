@@ -1,0 +1,1 @@
+ALTER TABLE "app"."file" ADD CONSTRAINT "file_s3_bucket_key_unique" UNIQUE("s3_bucket_key");

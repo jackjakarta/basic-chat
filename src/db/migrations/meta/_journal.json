@@ -162,6 +162,13 @@
       "when": 1755958303369,
       "tag": "0022_gifted_sage",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1756638513064,
+      "tag": "0023_material_black_tarantula",
+      "breakpoints": true
     }
   ]
 }

@@ -9,6 +9,7 @@ import {
   type AssistantRow,
   type InsertAssistantRow,
 } from '../schema';
+import { type UpdateDbRow } from '../types';
 
 export async function dbGetAssistantsByUserId({
   userId,
@@ -48,6 +49,8 @@ export async function dbGetAssistantById({
   return assistant;
 }
 
+export type UpdateAssistantRow = UpdateDbRow<AssistantRow>;
+
 export async function dbUpdateAssistant({
   assistantId,
   userId,
@@ -55,7 +58,7 @@ export async function dbUpdateAssistant({
 }: {
   assistantId: string;
   userId: string;
-  data: Partial<AssistantRow>;
+  data: UpdateAssistantRow;
 }): Promise<AssistantRow | undefined> {
   const assistant = (
     await db
