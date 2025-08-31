@@ -14,7 +14,7 @@ export default function DownloadButton({ url, className }: DownloadButtonProps) 
       variant="ghost"
       size="icon"
       className={className}
-      onClick={() => window.open(url, '_blank')}
+      onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}
       tooltip="Download"
       tooltipClassName="bg-accent text-sidebar-foreground"
     >

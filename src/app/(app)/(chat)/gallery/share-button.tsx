@@ -10,11 +10,16 @@ type ShareButtonProps = {
 };
 
 export default function ShareButton({ url, className }: ShareButtonProps) {
-  const { toastSuccess } = useToast();
+  const { toastSuccess, toastError } = useToast();
 
-  function handleCopy() {
-    navigator.clipboard.writeText(url);
-    toastSuccess('Image URL copied to clipboard');
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(url);
+      toastSuccess('Image URL copied to clipboard');
+    } catch (error) {
+      console.error({ error });
+      toastError('Failed to copy URL.');
+    }
   }
 
   return (
