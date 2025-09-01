@@ -24,5 +24,9 @@ export default async function Page() {
     }),
   );
 
-  return <ImageGrid images={imagesWithSignedUrls} />;
+  return (
+    <div className="min-h-screen w-full">
+      <ImageGrid images={imagesWithSignedUrls} />
+    </div>
+  );
 }
