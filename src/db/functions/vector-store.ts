@@ -4,7 +4,7 @@ import {
   type VectorFile,
   type VectorStoreRow,
 } from '@/db/schema';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import { db } from '..';
 
@@ -38,16 +38,9 @@ export async function dbAddFileIdsToVectorStore({
   userId: string;
   files: VectorFile[];
 }) {
-  const filesJson = JSON.stringify(files);
-
   const [vectorStore] = await db
     .update(vectorStoreTable)
-    .set({
-      files: sql`
-        COALESCE(${vectorStoreTable.files}, '[]'::jsonb)
-        || ${filesJson}::jsonb
-      `,
-    })
+    .set({ files })
     .where(and(eq(vectorStoreTable.id, vectorStoreId), eq(vectorStoreTable.userId, userId)))
     .returning();
 

@@ -8,30 +8,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { siteLanguageSchema } from '@/utils/schemas';
-import { type SiteLanguage } from '@/utils/types';
+import { type AppLocale } from '@/types/utils';
+import { appLocaleSchema } from '@/utils/schemas';
 import React from 'react';
 
-import { setLanguageCookie } from './actions';
+import { setLanguageCookieAction } from './actions';
 
-export default function SetLanguageSelect() {
-  const { toastSuccess, toastError, toastLoading } = useToast();
-  const [language, setLanguage] = React.useState('en');
-
-  React.useEffect(() => {
-    if (typeof document !== 'undefined') {
-      setLanguage(document.documentElement.lang);
-    }
-  }, []);
+export default function LanguageSelect({ currentLocale }: { currentLocale: string }) {
+  const { toastSuccess, toastError } = useToast();
 
   async function handleSetLanguage(newLanguage: string) {
-    if (newLanguage === language) return;
-    toastLoading('Setting language...');
+    if (newLanguage === currentLocale) return;
 
     try {
-      await setLanguageCookie({ newLanguage });
+      await setLanguageCookieAction({ newLanguage });
       toastSuccess('Language set successfully');
-      window.location.reload();
     } catch (error) {
       console.error({ error });
       toastError('Failed to set language');
@@ -39,12 +30,12 @@ export default function SetLanguageSelect() {
   }
 
   return (
-    <Select value={language} onValueChange={(val) => handleSetLanguage(val)}>
+    <Select value={currentLocale} onValueChange={(value) => handleSetLanguage(value)}>
       <SelectTrigger className="w-[180px] hover:bg-muted">
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
       <SelectContent>
-        {siteLanguageSchema.options.map((language) => (
+        {appLocaleSchema.options.map((language) => (
           <SelectItem key={language} value={language} className="cursor-pointer hover:bg-muted">
             {languageNameMap(language)}
           </SelectItem>
@@ -54,12 +45,12 @@ export default function SetLanguageSelect() {
   );
 }
 
-function languageNameMap(language: SiteLanguage | undefined) {
+function languageNameMap(language: AppLocale | undefined) {
   if (language === undefined) {
     return undefined;
   }
 
-  const mapping: Record<SiteLanguage, string> = {
+  const mapping: Record<AppLocale, string> = {
     en: 'English',
     de: 'Deutsch',
     ro: 'Română',

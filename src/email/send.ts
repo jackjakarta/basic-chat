@@ -1,8 +1,9 @@
 import { type TokenAction } from '@/db/schema';
+import { isDevMode } from '@/utils/dev-mode';
 
-import { mailjet } from './client';
 import { createInformationMailTemplate, createUserActionMailTemplate } from './templates';
 import { type EmailActionResult, type InformationEmailMetadata } from './types';
+import { mailjetSendEmail, sendTestEmail } from './utils';
 
 export type SendUserActionEmail = typeof sendUserActionEmail;
 
@@ -38,23 +39,24 @@ export async function sendUserActionEmail({
   }
 
   try {
-    const request = await mailjet.post('send', { version: 'v3.1' }).request({
-      Messages: [
-        {
-          From: {
-            Email: 'info@elchat.app',
-            Name: 'El Chat',
-          },
-          To: [
-            {
-              Email: to,
-            },
-          ],
-          Subject: subject,
-          HTMLPart: mailTemplate,
-          TextPart: textPart,
-        },
-      ],
+    if (isDevMode) {
+      const testEmailResult = await sendTestEmail({
+        to,
+        subject,
+        html: mailTemplate,
+        text: textPart,
+      });
+
+      console.info('Email successfully sent:', testEmailResult);
+
+      return { success: true };
+    }
+
+    const request = await mailjetSendEmail({
+      to,
+      subject,
+      html: mailTemplate,
+      text: textPart,
     });
 
     console.info('Email successfully sent:', request.body);
@@ -99,23 +101,24 @@ export async function sendUserActionInformationEmail({
   const { subject, mailTemplate, textPart } = result;
 
   try {
-    const request = await mailjet.post('send', { version: 'v3.1' }).request({
-      Messages: [
-        {
-          From: {
-            Email: 'info@elchat.app',
-            Name: 'AI Chat App',
-          },
-          To: [
-            {
-              Email: to,
-            },
-          ],
-          Subject: subject,
-          HTMLPart: mailTemplate,
-          TextPart: textPart,
-        },
-      ],
+    if (isDevMode) {
+      const result = await sendTestEmail({
+        to,
+        subject,
+        html: mailTemplate,
+        text: textPart,
+      });
+
+      console.info('Email successfully sent:', result);
+
+      return { success: true };
+    }
+
+    const request = await mailjetSendEmail({
+      to,
+      subject,
+      html: mailTemplate,
+      text: textPart,
     });
 
     console.info('Email successfully sent:', request.body);

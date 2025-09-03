@@ -1,4 +1,4 @@
-import { dbGetEnabledModelById } from '@/db/functions/ai-model';
+import { dbGetEnabledImageModels, dbGetEnabledModelById } from '@/db/functions/ai-model';
 import { dbGetAssistantById } from '@/db/functions/assistant';
 import {
   dbGetOrCreateConversation,
@@ -75,6 +75,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const [defaultImageModel] = await dbGetEnabledImageModels();
+
     const maybeAssistant =
       assistantId !== undefined
         ? await dbGetAssistantById({ assistantId, userId: user.id })
@@ -118,7 +120,11 @@ export async function POST(request: NextRequest) {
       ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
       ...(imageGenerationActive &&
         !webSearchActive && {
-          generateImage: getGenerateImageTool({ userEmail: user.email, userId: user.id }),
+          generateImage: getGenerateImageTool({
+            userEmail: user.email,
+            userId: user.id,
+            model: defaultImageModel,
+          }),
         }),
       ...(!imageGenerationActive &&
         maybeAssistant !== undefined &&

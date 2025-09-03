@@ -1,6 +1,6 @@
 import PageContainer from '@/components/common/page-container';
 import { type FileRow } from '@/db/schema';
-import { type WithSignedUrl } from '@/utils/types';
+import { type WithSignedUrl } from '@/types/utils';
 import Image from 'next/image';
 
 import DownloadButton from './download-button';

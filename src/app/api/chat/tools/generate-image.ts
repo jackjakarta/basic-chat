@@ -1,4 +1,5 @@
 import { dbInsertFile } from '@/db/functions/file';
+import { type AIModelRow } from '@/db/schema';
 import { generateImageGemini } from '@/google/image';
 import { deleteFileFromS3, getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { uint8ArrayToArrayBuffer } from '@/utils/buffer';
@@ -6,7 +7,15 @@ import { cnanoid } from '@/utils/random';
 import { tool } from 'ai';
 import { z } from 'zod';
 
-export function getGenerateImageTool({ userEmail, userId }: { userEmail: string; userId: string }) {
+export function getGenerateImageTool({
+  userEmail,
+  userId,
+  model,
+}: {
+  userEmail: string;
+  userId: string;
+  model: AIModelRow | undefined;
+}) {
   const generateImageTool = tool({
     description: 'Generate an image based on the provided description.',
     parameters: z.object({
@@ -14,7 +23,12 @@ export function getGenerateImageTool({ userEmail, userId }: { userEmail: string;
     }),
     execute: async ({ imageDescription }) => {
       try {
-        const imageUrl = await generateImageFromText({ imageDescription, userEmail, userId });
+        const imageUrl = await generateImageFromText({
+          imageDescription,
+          userEmail,
+          userId,
+          model,
+        });
         return imageUrl;
       } catch {
         return 'An error occurred while generating the image.';
@@ -29,14 +43,16 @@ async function generateImageFromText({
   imageDescription,
   userEmail,
   userId,
+  model,
 }: {
   imageDescription: string;
   userEmail: string;
   userId: string;
+  model: AIModelRow | undefined;
 }) {
   const imagePrompt = `Generate an image based on the following description: ${imageDescription}`;
 
-  const imageBuffer = await generateImageGemini({ imagePrompt });
+  const imageBuffer = await generateImageGemini({ imagePrompt, model });
   const arrayBuffer = uint8ArrayToArrayBuffer(imageBuffer);
 
   const fileName = `${cnanoid(10)}.png`;

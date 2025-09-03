@@ -13,11 +13,31 @@ export async function dbGetAllTextModels() {
   return models;
 }
 
+export async function dbGetAllImageModels() {
+  const models = await db
+    .select()
+    .from(aiModelTable)
+    .where(eq(aiModelTable.type, 'image'))
+    .orderBy(desc(aiModelTable.name));
+
+  return models;
+}
+
 export async function dbGetEnabledModels() {
   const models = await db
     .select()
     .from(aiModelTable)
     .where(and(eq(aiModelTable.isEnabled, true), eq(aiModelTable.type, 'text')))
+    .orderBy(desc(aiModelTable.name));
+
+  return models;
+}
+
+export async function dbGetEnabledImageModels() {
+  const models = await db
+    .select()
+    .from(aiModelTable)
+    .where(and(eq(aiModelTable.isEnabled, true), eq(aiModelTable.type, 'image')))
     .orderBy(desc(aiModelTable.name));
 
   return models;
