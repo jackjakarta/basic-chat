@@ -83,4 +83,20 @@ export const models: InsertAIModelRow[] = [
     type: 'text',
     isEnabled: true,
   },
+  {
+    id: 'imagen-4.0-generate-001',
+    name: 'Imagen 4.0',
+    description: 'Imagen 4.0 - Generate images from text prompts.',
+    provider: 'google',
+    type: 'image',
+    isEnabled: true,
+  },
+  {
+    id: 'imagen-3.0-generate-002',
+    name: 'Imagen 3.0',
+    description: 'Imagen 3.0 - Generate images from text prompts.',
+    provider: 'google',
+    type: 'image',
+    isEnabled: false,
+  },
 ];

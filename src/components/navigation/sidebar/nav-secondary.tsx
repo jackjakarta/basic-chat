@@ -1,3 +1,4 @@
+import ShortcutsDialog from '@/components/common/shortcuts-dialog';
 import GithubIcon from '@/components/icons/github';
 import {
   SidebarGroup,
@@ -6,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { Command } from 'lucide-react';
 import Link from 'next/link';
 
 const menuItems = [
@@ -21,6 +23,17 @@ export function NavSecondary({ ...props }: React.ComponentPropsWithoutRef<typeof
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <ShortcutsDialog
+              trigger={
+                <SidebarMenuButton className="cursor-pointer" size="sm">
+                  <Command />
+                  <span>Shortcuts</span>
+                </SidebarMenuButton>
+              }
+            />
+          </SidebarMenuItem>
+
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">

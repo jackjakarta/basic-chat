@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import ShortcutsDialog from '../common/shortcuts-dialog';
 import { useKeyboardShortcut } from '../hooks/use-keyboard-shortcut';
 import { CommandMenuProvider } from './command-menu';
 
@@ -19,6 +20,7 @@ export function ClientProvider({
   session: Session | null;
 }) {
   const router = useRouter();
+  const shortcutsDialogRef = React.useRef<HTMLButtonElement | null>(null);
 
   useKeyboardShortcut({
     key: 'o',
@@ -26,10 +28,18 @@ export function ClientProvider({
     withShift: true,
   });
 
+  useKeyboardShortcut({
+    key: '/',
+    callbackFn: () => shortcutsDialogRef.current?.click(),
+  });
+
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <CommandMenuProvider>{children}</CommandMenuProvider>
+        <CommandMenuProvider>
+          {children}
+          <ShortcutsDialog hidden buttonRef={shortcutsDialogRef} />
+        </CommandMenuProvider>
       </SessionProvider>
     </QueryClientProvider>
   );

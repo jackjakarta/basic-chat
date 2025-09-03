@@ -4,7 +4,6 @@ import { dbCreateNewUser, dbUpdateUserCustomerId } from '@/db/functions/user';
 import { authProviderSchema } from '@/db/schema';
 import { sendUserActionEmail } from '@/email/send';
 import { createCustomerByEmailStripe } from '@/stripe/customer';
-import { isDevMode } from '@/utils/dev-mode';
 import { emailSchema, firstNameSchema, lastNameSchema, passwordSchema } from '@/utils/schemas';
 import { z } from 'zod';
 
@@ -25,15 +24,8 @@ export async function registerNewUserAction(body: RegisterUserRequestBody) {
     throw new Error('Invalid request body');
   }
 
-  const { firstName, lastName, email, password, authProvider } = parsedBody.data;
-
-  const newUser = await dbCreateNewUser({
-    email,
-    password,
-    firstName,
-    lastName,
-    authProvider,
-  });
+  const userData = parsedBody.data;
+  const newUser = await dbCreateNewUser(userData);
 
   const stripeCustomer = await createCustomerByEmailStripe({
     email: newUser.email,
@@ -45,7 +37,7 @@ export async function registerNewUserAction(body: RegisterUserRequestBody) {
     customerId: stripeCustomer.id,
   });
 
-  if (authProvider === 'credentials' && !isDevMode) {
+  if (userData.authProvider === 'credentials') {
     await sendUserActionEmail({
       to: newUser.email,
       action: 'verify-email',

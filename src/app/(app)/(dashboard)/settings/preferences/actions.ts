@@ -1,14 +1,16 @@
 'use server';
 
 import { setCookie } from '@/utils/cookies';
-import { siteLanguageSchema } from '@/utils/schemas';
+import { appLocaleSchema } from '@/utils/schemas';
+import { revalidatePath } from 'next/cache';
 
-export async function setLanguageCookie({ newLanguage }: { newLanguage: string }) {
-  const parsedLanguage = siteLanguageSchema.safeParse(newLanguage);
+export async function setLanguageCookieAction({ newLanguage }: { newLanguage: string }) {
+  const parsedLanguage = appLocaleSchema.safeParse(newLanguage);
 
   if (!parsedLanguage.success) {
     throw new Error('Invalid language');
   }
 
-  setCookie('lang', parsedLanguage.data, { path: '/' });
+  setCookie('site_language', parsedLanguage.data, { path: '/' });
+  revalidatePath('/');
 }

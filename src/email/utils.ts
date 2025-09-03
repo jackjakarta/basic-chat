@@ -1,15 +1,46 @@
-import { toErrorMessage } from '@/utils/error';
 import nodemailer from 'nodemailer';
 
+import { mailjet } from './client';
 import { type EmailActionResult } from './types';
 
-export async function sendTestEmail({
-  email,
+export async function mailjetSendEmail({
+  to,
   subject,
   html,
   text,
 }: {
-  email: string;
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+}) {
+  return await mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: 'info@sharedocs.app',
+          Name: 'PDF Exporter App',
+        },
+        To: [
+          {
+            Email: to,
+          },
+        ],
+        Subject: subject,
+        HTMLPart: html,
+        TextPart: text,
+      },
+    ],
+  });
+}
+
+export async function sendTestEmail({
+  to,
+  subject,
+  html,
+  text,
+}: {
+  to: string;
   subject: string;
   html: string;
   text?: string;
@@ -25,8 +56,8 @@ export async function sendTestEmail({
   });
 
   const mailOptions = {
-    from: 'info@elchat.app',
-    to: email,
+    from: 'info@codebyalex.dev',
+    to,
     subject,
     html,
     text: text ?? 'This is a test email. Please ignore it.',
@@ -38,6 +69,9 @@ export async function sendTestEmail({
     return { success: true };
   } catch (error) {
     console.error({ error });
-    return { success: false, error: toErrorMessage(error) };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
+    };
   }
 }
