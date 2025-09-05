@@ -15,6 +15,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: production
 
     steps:
@@ -45,6 +46,7 @@ jobs:
             cd /home/jack/basic-chat
             git pull
             export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+            echo "${{ env.DOCKER_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
             ENVIRONMENT=production op inject -f -i .env.op -o .env && \
             echo "TAG_VERSION=${{ env.TAG_VERSION }}" >> .env && \
@@ -53,6 +55,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment: production
     needs: build
 
@@ -76,6 +79,8 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd /home/jack/basic-chat
+            echo "${{ env.DOCKER_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+
             export $(grep -v '^#' .env | xargs) && \
             envsubst < docker-compose.production.yml | docker stack deploy --with-registry-auth -c - el-chat && \
             docker system prune -f
