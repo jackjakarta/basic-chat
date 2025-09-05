@@ -4,14 +4,17 @@ services:
     command:
       - --api.insecure=false
       - --providers.docker.swarmMode=true
+      - --providers.docker.exposedbydefault=false
       - --providers.docker.endpoint=unix:///var/run/docker.sock
       - --providers.docker.watch=true
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-      # Configure Let's Encrypt
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --certificatesresolvers.myresolver.acme.tlschallenge=true
       - --certificatesresolvers.myresolver.acme.email=al.termure@gmail.com
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+    networks: [edge]
     ports:
       - target: 80
         published: 80
@@ -31,22 +34,45 @@ services:
 
   web:
     image: jackjakarta/el-chat:${TAG_VERSION}
+    networks: [edge]
     deploy:
       replicas: 5
       placement:
         preferences:
           - spread: node.hostname
       update_config:
+        order: start-first
         parallelism: 1
-        delay: 15s
+        delay: 5s
+        failure_action: rollback
+        monitor: 15s
+        max_failure_ratio: 0.2
+      rollback_config:
+        order: stop-first
       restart_policy:
         condition: on-failure
       labels:
-        - 'traefik.enable=true'
-        - 'traefik.http.routers.el-chat.rule=Host(`elchat.app`)'
-        - 'traefik.http.routers.el-chat.entrypoints=websecure'
-        - 'traefik.http.routers.el-chat.tls.certresolver=myresolver'
-        - 'traefik.http.services.el-chat.loadbalancer.server.port=3000'
+        - traefik.enable=true
+        - traefik.docker.network=el-chat_edge
+        - traefik.http.routers.el-chat.rule=Host(`elchat.app`)
+        - traefik.http.routers.el-chat.entrypoints=websecure
+        - traefik.http.routers.el-chat.tls=true
+        - traefik.http.routers.el-chat.tls.certresolver=myresolver
+        - traefik.http.services.el-chat.loadbalancer.server.port=3000
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+networks:
+  edge:
+    driver: overlay
 
 volumes:
   traefik-lets-encrypt:
