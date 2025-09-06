@@ -117,26 +117,14 @@ export async function dbDeleteChatProject({
   userId: string;
 }) {
   const deleted = await db.transaction(async (tx) => {
-    const chats = await tx
-      .select()
-      .from(conversationTable)
+    await tx
+      .delete(conversationTable)
       .where(
         and(
           eq(conversationTable.chatProjectId, chatProjectId),
           eq(conversationTable.userId, userId),
         ),
       );
-
-    if (chats.length > 0) {
-      await Promise.all(
-        chats.map(
-          async (chat) =>
-            await tx
-              .delete(conversationTable)
-              .where(and(eq(conversationTable.id, chat.id), eq(conversationTable.userId, userId))),
-        ),
-      );
-    }
 
     await tx
       .delete(fileTable)
