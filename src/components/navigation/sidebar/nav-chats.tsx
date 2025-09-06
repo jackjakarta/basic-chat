@@ -21,7 +21,11 @@ type NavChatsProps = {
 
 export function NavChats({ onClickMobile }: NavChatsProps) {
   const t = useTranslations('sidebar');
-  const { data: conversations = [], isLoading, isError } = useConversationsQuery();
+  const {
+    data: conversations = [],
+    isLoading,
+    isError,
+  } = useConversationsQuery({ refetchOnWindowFocus: false });
 
   return (
     <>

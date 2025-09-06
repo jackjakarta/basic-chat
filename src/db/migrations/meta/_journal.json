@@ -169,6 +169,13 @@
       "when": 1756638513064,
       "tag": "0023_material_black_tarantula",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1757109941428,
+      "tag": "0024_odd_the_spike",
+      "breakpoints": true
     }
   ]
 }

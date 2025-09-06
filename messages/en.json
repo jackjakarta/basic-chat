@@ -44,7 +44,7 @@
         "title": "Login to your account",
         "description": "Enter your email below to login to your account",
         "or": "Or continue with",
-        "login-with": "Login with",
+        "login-with": "Continue with",
         "email": {
           "label": "Email",
           "placeholder": "Enter email"

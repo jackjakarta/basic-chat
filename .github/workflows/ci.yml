@@ -3,11 +3,13 @@ name: Checks
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
 
   workflow_dispatch:
 
 jobs:
   checks:
+    if: ${{ github.event.pull_request.draft == false }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:

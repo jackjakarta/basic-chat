@@ -1,6 +1,6 @@
 {
   "name": "elchat",
-  "version": "1.8.1",
+  "version": "1.9.11",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -14,6 +14,9 @@
     "dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next dev --hostname 127.0.0.1",
     "dev:email": "email dev --dir src/email/emails --port 3001",
     "dev:turbo": "pnpm dev --turbo",
+    "e2e": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- playwright test",
+    "e2e:server": "pnpm build && pnpm start",
+    "e2e:ui": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- playwright test --ui",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "next lint",
@@ -94,6 +97,7 @@
   },
   "devDependencies": {
     "@jackjakarta/prettier-config": "0.2.7",
+    "@playwright/test": "1.55.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.3.0",
     "@types/js-cookie": "3.0.6",

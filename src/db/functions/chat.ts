@@ -11,14 +11,16 @@ export async function dbGetOrCreateConversation({
   conversationId,
   userId,
   assistantId,
+  chatProjectId,
 }: {
   conversationId: string;
   userId: string;
   assistantId?: string;
+  chatProjectId?: string;
 }) {
   const [conversation] = await db
     .insert(conversationTable)
-    .values({ id: conversationId, userId, assistantId })
+    .values({ id: conversationId, userId, assistantId, chatProjectId })
     .onConflictDoUpdate({
       target: conversationTable.id,
       set: { id: conversationId },

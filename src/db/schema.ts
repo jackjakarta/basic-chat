@@ -14,7 +14,6 @@ import {
   timestamp,
   unique,
   uuid,
-  // vector,
 } from 'drizzle-orm/pg-core';
 import Stripe from 'stripe';
 import { z } from 'zod';
@@ -109,6 +108,7 @@ export const conversationTable = appSchema.table('conversation', {
     .references(() => userTable.id)
     .notNull(),
   assistantId: uuid('assistant_id').references(() => assistantTable.id),
+  chatProjectId: uuid('chat_project_id').references(() => chatProjectTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -329,6 +329,7 @@ export const fileTable = appSchema.table('file', {
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),
+  chatProjectId: uuid('chat_project_id').references(() => chatProjectTable.id),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -340,23 +341,35 @@ export type FileRow = typeof fileTable.$inferSelect;
 export type InsertFileRow = typeof fileTable.$inferInsert;
 export type UpdateFileRow = UpdateDbRow<FileRow>;
 
-// export const fileEmbeddingTable = appSchema.table(
-//   'file_embedding_table',
-//   {
-//     id: uuid('id').defaultRandom().primaryKey(),
-//     fileId: text('file_id')
-//       .references(() => fileTable.id)
-//       .notNull(),
-//     chunk: text('chunk').notNull(),
-//     embedding: vector('embedding', { dimensions: 1024 }).notNull(),
-//     offsetStart: integer('offset_start').notNull(),
-//     offsetEnd: integer('offset_end').notNull(),
-//     createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
-//   },
-//   (table) => ({
-//     embeddingIndex: index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
-//   }),
-// );
+export const iconColorSchema = z.enum([
+  'red',
+  'pink',
+  'purple',
+  'deep-purple',
+  'indigo',
+  'blue',
+  'light-blue',
+  'grey',
+  'cyan',
+]);
+export type IconColor = z.infer<typeof iconColorSchema>;
 
-// export type FileEmbeddingRow = typeof fileEmbeddingTable.$inferSelect;
-// export type InsertFileEmbeddingRow = typeof fileEmbeddingTable.$inferInsert;
+export const chatProjectTable = appSchema.table('chat_project', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  systemPrompt: text('system_prompt'),
+  userId: uuid('user_id')
+    .references(() => userTable.id)
+    .notNull(),
+  icon: text('icon').notNull(),
+  iconColor: text('icon_color').$type<IconColor>().default('grey').notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type ChatProjectRow = typeof chatProjectTable.$inferSelect;
+export type InsertChatProjectRow = typeof chatProjectTable.$inferInsert;
+export type UpdateChatProjectRow = UpdateDbRow<ChatProjectRow>;

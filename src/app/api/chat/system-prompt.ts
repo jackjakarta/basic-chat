@@ -3,12 +3,14 @@ export function constructSystemPrompt({
   userCustomInstructions,
   webSearchActive,
   imageGenerationActive,
+  chatProjectName,
 }: {
   assistantInstructions?: string | null;
   userCustomInstructions?: string;
+  chatProjectName?: string;
   webSearchActive: boolean;
   imageGenerationActive: boolean;
-}) {
+}): string {
   if (imageGenerationActive) {
     return imageGenerationPrompt;
   }
@@ -48,9 +50,16 @@ export function constructSystemPrompt({
       userCustomInstructions,
     );
 
-    const fullPrompt = promptWithUserInstructions.replace(
+    const promptWithSearchAndUserInstructions = promptWithUserInstructions.replace(
       '$SEARCH_INSTRUCTIONS',
       searchInstructions,
+    );
+
+    const fullPrompt = promptWithSearchAndUserInstructions.replace(
+      '$CHAT_PROJECT_INSTRUCTIONS',
+      chatProjectName
+        ? `You are aware that you are part of a project called "${chatProjectName}". Keep this in mind when interacting with the user.`
+        : '',
     );
 
     return fullPrompt;
@@ -63,7 +72,14 @@ export function constructSystemPrompt({
 
   const finalPrompt = promptWithSearchInstructions.replace('$USER_CUSTOM_INSTRUCTIONS', '');
 
-  return finalPrompt;
+  const fullPrompt = finalPrompt.replace(
+    '$CHAT_PROJECT_INSTRUCTIONS',
+    chatProjectName
+      ? `You are aware that you are part of a project called "${chatProjectName}". Keep this in mind when interacting with the user.`
+      : '',
+  );
+
+  return fullPrompt;
 }
 
 const defaultSystemPrompt = `Role and Objective:
@@ -99,6 +115,8 @@ Tool Usage:
 $USER_CUSTOM_INSTRUCTIONS
 
 $SEARCH_INSTRUCTIONS
+
+$CHAT_PROJECT_INSTRUCTIONS
 `;
 
 const imageGenerationPrompt = `You are Carla, a friendly and helpful AI assistant. You primary goal is to generate images based on user description. 
