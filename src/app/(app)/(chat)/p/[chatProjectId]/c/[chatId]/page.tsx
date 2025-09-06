@@ -1,0 +1,85 @@
+import Chat from '@/components/chat/chat';
+import { dbGetEnabledModels } from '@/db/functions/ai-model';
+import { dbGetConversationById, dbGetCoversationMessages } from '@/db/functions/chat';
+import { dbGetChatProjectAndConversations } from '@/db/functions/chat-project';
+import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
+import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
+import { getUser } from '@/utils/auth';
+import { filterChatMessages } from '@/utils/chat';
+import { type Message } from 'ai';
+import { notFound } from 'next/navigation';
+import { z } from 'zod';
+
+export const dynamic = 'force-dynamic';
+
+const pageContextSchema = z.object({
+  params: z.object({
+    chatProjectId: z.string().uuid(),
+    chatId: z.string().uuid(),
+  }),
+});
+
+export default async function Page(context: unknown) {
+  const user = await getUser();
+  const parsedParams = pageContextSchema.safeParse(context);
+
+  if (!parsedParams.success) {
+    return notFound();
+  }
+
+  const { chatProjectId, chatId } = parsedParams.data.params;
+
+  const [models, chatProject, tokensUsed, subscriptionPlan] = await Promise.all([
+    dbGetEnabledModels(),
+    dbGetChatProjectAndConversations({ chatProjectId, userId: user.id }),
+    dbGetAmountOfTokensUsedByUserId({ userId: user.id }),
+    getSubscriptionPlanBySubscriptionState(user.subscription),
+  ]);
+
+  if (subscriptionPlan === undefined) {
+    console.error('No subscription plan found for user:', user.id);
+    throw new Error('No subscription plan found');
+  }
+
+  const { limits } = subscriptionPlan;
+  const { totalTokens } = tokensUsed;
+
+  if (chatProject === undefined) {
+    return notFound();
+  }
+
+  const chat = await dbGetConversationById({
+    conversationId: chatId,
+    userId: user.id,
+    chatProjectId: chatProject.id,
+  });
+
+  if (chat === undefined) {
+    return notFound();
+  }
+
+  const chatMessages = await dbGetCoversationMessages({
+    conversationId: chat.id,
+    userId: user.id,
+  });
+
+  const filteredMessages = filterChatMessages(chatMessages);
+
+  const messagesWithAttachments: Message[] = filteredMessages.map((message) => ({
+    ...message,
+    experimental_attachments: message.attachments ?? undefined,
+    attachments: null,
+  }));
+
+  return (
+    <Chat
+      key={chat.id}
+      id={chat.id}
+      initialMessages={messagesWithAttachments}
+      models={models}
+      tokensUsed={totalTokens}
+      userLimits={limits}
+      chatProject={chatProject}
+    />
+  );
+}

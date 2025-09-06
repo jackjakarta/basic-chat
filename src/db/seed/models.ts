@@ -26,7 +26,7 @@ export const models: InsertAIModelRow[] = [
     isEnabled: false,
   },
   {
-    id: 'gemini-2.5-pro-preview-06-05',
+    id: 'gemini-2.5-pro',
     name: 'Gemini 2.5 Pro',
     description: 'Gemini 2.5 Pro model',
     provider: 'google',
@@ -34,7 +34,7 @@ export const models: InsertAIModelRow[] = [
     isEnabled: true,
   },
   {
-    id: 'gemini-2.5-flash-preview-05-20',
+    id: 'gemini-2.5-flash',
     name: 'Gemini 2.5 Flash',
     description: 'Gemini 2.5 Flash model',
     provider: 'google',

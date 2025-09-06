@@ -11,14 +11,16 @@ export async function dbGetOrCreateConversation({
   conversationId,
   userId,
   assistantId,
+  chatProjectId,
 }: {
   conversationId: string;
   userId: string;
   assistantId?: string;
+  chatProjectId?: string;
 }) {
   const [conversation] = await db
     .insert(conversationTable)
-    .values({ id: conversationId, userId, assistantId })
+    .values({ id: conversationId, userId, assistantId, chatProjectId })
     .onConflictDoUpdate({
       target: conversationTable.id,
       set: { id: conversationId },
@@ -83,11 +85,28 @@ export async function dbGetConversationById({
   conversationId,
   userId,
   assistantId,
+  chatProjectId,
 }: {
   conversationId: string;
   userId: string;
   assistantId?: string;
+  chatProjectId?: string;
 }) {
+  if (chatProjectId !== undefined) {
+    const [chatProjectConversation] = await db
+      .select()
+      .from(conversationTable)
+      .where(
+        and(
+          eq(conversationTable.id, conversationId),
+          eq(conversationTable.userId, userId),
+          eq(conversationTable.chatProjectId, chatProjectId),
+        ),
+      );
+
+    return chatProjectConversation;
+  }
+
   if (assistantId !== undefined) {
     const [assistantConversation] = await db
       .select()
@@ -196,4 +215,22 @@ export async function dbSearchConversationsByName({
     .limit(limit);
 
   return rows;
+}
+
+export async function dbUpdateConversationProjectId({
+  conversationId,
+  chatProjectId,
+  userId,
+}: {
+  conversationId: string;
+  chatProjectId: string | null;
+  userId: string;
+}) {
+  const [updatedConversation] = await db
+    .update(conversationTable)
+    .set({ chatProjectId })
+    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
+    .returning();
+
+  return updatedConversation;
 }

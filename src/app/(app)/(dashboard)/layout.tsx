@@ -13,7 +13,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <SidebarProvider defaultOpen={false}>
       <AppSidebar user={user} avatarUrl={avatarUrl} />
       <SidebarInset>
-        <Header title={t('title')} />
+        <Header assistantName={t('title')} />
         {children}
       </SidebarInset>
     </SidebarProvider>

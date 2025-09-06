@@ -5,6 +5,7 @@ import {
   dbInsertChatContent,
   dbUpdateConversationTitle,
 } from '@/db/functions/chat';
+import { dbGetChatProjectById } from '@/db/functions/chat-project';
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
 import { dbGetAmountOfTokensUsedByUserId, dbInsertConversationUsage } from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
@@ -37,6 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     const tokenUsed = await dbGetAmountOfTokensUsedByUserId({ userId: user.id });
+
     const { limits } = subscriptionPlan;
     const { totalTokens } = tokenUsed;
 
@@ -52,6 +54,7 @@ export async function POST(request: NextRequest) {
       messages,
       modelId,
       assistantId,
+      chatProjectId,
       webSearchActive,
       imageGenerationActive,
     }: {
@@ -59,6 +62,7 @@ export async function POST(request: NextRequest) {
       messages: Message[];
       modelId: string;
       assistantId?: string;
+      chatProjectId?: string;
       webSearchActive: boolean;
       imageGenerationActive: boolean;
     } = await request.json();
@@ -82,33 +86,28 @@ export async function POST(request: NextRequest) {
         ? await dbGetAssistantById({ assistantId, userId: user.id })
         : undefined;
 
+    const maybeChatProject =
+      chatProjectId !== undefined
+        ? await dbGetChatProjectById({ chatProjectId, userId: user.id })
+        : undefined;
+
     const conversation = await dbGetOrCreateConversation({
       conversationId: chatId,
       userId: user.id,
       assistantId: maybeAssistant?.id,
+      chatProjectId: maybeChatProject?.id,
     });
 
     if (conversation === undefined) {
       return NextResponse.json({ error: 'Could not get or create conversation' }, { status: 500 });
     }
 
-    const userMessage = getUserMessage(messages);
-    const userMessageAttachments = getUserMessageAttachments(messages);
-
-    await dbInsertChatContent({
-      conversationId: conversation.id,
-      content: userMessage ?? '',
-      role: 'user',
-      userId: user.id,
-      attachments: userMessageAttachments,
-      orderNumber: messages.length,
-    });
-
     const systemPrompt = constructSystemPrompt({
       assistantInstructions: maybeAssistant?.instructions,
       userCustomInstructions: user.settings?.customInstructions,
       webSearchActive,
       imageGenerationActive,
+      chatProjectName: maybeChatProject?.name,
     });
 
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
@@ -145,7 +144,19 @@ export async function POST(request: NextRequest) {
       experimental_transform: smoothStream({ delayInMs: 20 }),
       tools,
       async onFinish(assistantMessage) {
+        const userMessage = getUserMessage(messages);
+        const userMessageAttachments = getUserMessageAttachments(messages);
+
         await Promise.all([
+          dbInsertChatContent({
+            conversationId: conversation.id,
+            content: userMessage ?? '',
+            role: 'user',
+            userId: user.id,
+            attachments: userMessageAttachments,
+            orderNumber: messages.length,
+          }),
+
           dbInsertChatContent({
             content: assistantMessage.text,
             role: 'assistant',
@@ -154,15 +165,15 @@ export async function POST(request: NextRequest) {
             orderNumber: messages.length + 1,
             conversationId: conversation.id,
           }),
-
-          dbInsertConversationUsage({
-            conversationId: conversation.id,
-            userId: user.id,
-            modelId: model.id,
-            promptTokens: assistantMessage.usage.promptTokens,
-            completionTokens: assistantMessage.usage.completionTokens,
-          }),
         ]);
+
+        await dbInsertConversationUsage({
+          conversationId: conversation.id,
+          userId: user.id,
+          modelId: model.id,
+          promptTokens: assistantMessage.usage.promptTokens,
+          completionTokens: assistantMessage.usage.completionTokens,
+        });
 
         if (messages.length <= 2 || conversation.name === null) {
           const conversationTitle = await summarizeConversationTitle({

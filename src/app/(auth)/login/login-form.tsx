@@ -58,7 +58,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         return;
       }
 
-      router.push('/');
+      router.replace('/');
     } catch (error) {
       console.error({ error });
     }

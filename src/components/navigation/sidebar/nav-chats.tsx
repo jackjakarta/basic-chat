@@ -1,5 +1,6 @@
 'use client';
 
+import { useChatProjectsQuery } from '@/components/hooks/use-chat-projects-query';
 import { useConversationsQuery } from '@/components/hooks/use-conversations-query';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import {
@@ -21,7 +22,26 @@ type NavChatsProps = {
 
 export function NavChats({ onClickMobile }: NavChatsProps) {
   const t = useTranslations('sidebar');
-  const { data: conversations = [], isLoading, isError } = useConversationsQuery();
+
+  const {
+    data: conversations = [],
+    isLoading: isConversationsLoading,
+    isError: isConversationsError,
+  } = useConversationsQuery({
+    refetchOnWindowFocus: false,
+  });
+
+  const {
+    data: chatProjects = [],
+    isLoading: isProjectsLoading,
+    isError: isProjectsError,
+  } = useChatProjectsQuery({
+    refetchOnWindowFocus: false,
+  });
+
+  const isError = isConversationsError || isProjectsError;
+  const isLoading = isConversationsLoading || isProjectsLoading;
+  const itemsLoaded = !isLoading && !isError;
 
   return (
     <>
@@ -43,14 +63,14 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                     <span className="text-xs dark:opacity-70">{t('error-loading-chats')}</span>
                   )}
 
-                  {!isLoading &&
-                    !isError &&
+                  {itemsLoaded &&
                     (conversations.length > 0 ? (
                       conversations.map((conversation) => (
                         <ConversationItem
                           key={conversation.id}
                           conversation={conversation}
                           onClickMobile={onClickMobile}
+                          chatProjects={chatProjects.length > 0 ? chatProjects : []}
                         />
                       ))
                     ) : (
