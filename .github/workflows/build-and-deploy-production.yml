@@ -30,9 +30,9 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          REMOTE_HOST: 'op://chat-app/github-secrets/REMOTE_HOST'
+          REMOTE_HOST: 'op://chat-app/github-secrets/REMOTE_HOST_BUILDER'
           REMOTE_USER: 'op://chat-app/github-secrets/REMOTE_USER'
-          SSH_PRIVATE_KEY: 'op://chat-app/github-secrets/SSH_PRIVATE_KEY'
+          SSH_PRIVATE_KEY: 'op://chat-app/github-secrets/SSH_PRIVATE_KEY_BUILDER'
           DOCKER_USERNAME: 'op://chat-app/github-secrets/DOCKER_USERNAME'
           DOCKER_PASSWORD: 'op://chat-app/github-secrets/DOCKER_PASSWORD'
 
@@ -43,13 +43,12 @@ jobs:
           username: ${{ env.REMOTE_USER }}
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/jack/basic-chat
+            cd /home/jack/repos/basic-chat
             git pull
             export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
             echo "${{ env.DOCKER_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
             ENVIRONMENT=production op inject -f -i .env.op -o .env && \
-            echo "TAG_VERSION=${{ env.TAG_VERSION }}" >> .env && \
             docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }} . && \
             docker push ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }}
 
@@ -60,6 +59,11 @@ jobs:
     needs: build
 
     steps:
+      - name: Set up Docker image tags
+        id: vars
+        run: |
+          echo "TAG_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+
       - name: Load 1password secrets
         uses: 1password/load-secrets-action@v1
         with:
@@ -79,7 +83,14 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd /home/jack/basic-chat
+            git pull
+
+            export OP_SERVICE_ACCOUNT_TOKEN=${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+            ENVIRONMENT=production op inject -f -i .env.op -o .env 
+            echo "TAG_VERSION=${{ env.TAG_VERSION }}" >> .env
+
             echo "${{ env.DOCKER_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+            docker pull ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }}
 
             export $(grep -v '^#' .env | xargs) && \
             envsubst < docker-compose.production.yml | docker stack deploy --with-registry-auth -c - el-chat && \
