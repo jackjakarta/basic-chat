@@ -13,6 +13,8 @@ import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import { z } from 'zod';
 
+const isCI = !!process.env.CI;
+
 const credentialsSchema = z.object({
   email: z.string(),
   password: z.string(),
@@ -95,5 +97,16 @@ export const authOptions = {
   pages: {
     signIn: '/login',
     error: '/login',
+  },
+  cookies: {
+    sessionToken: {
+      name: 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: isCI ? false : undefined,
+      },
+    },
   },
 } satisfies AuthOptions;
