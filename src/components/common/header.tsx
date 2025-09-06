@@ -1,18 +1,21 @@
 'use client';
 
-import { AIModelRow } from '@/db/schema';
+import { AIModelRow, type ChatProjectRow } from '@/db/schema';
+import { type WithConversations } from '@/db/types';
 
 import SelectLlmModel from '../chat/select-llm';
 import { SidebarTrigger, useSidebar } from '../ui/sidebar';
+import DynamicIcon from './dynamic-icon';
 import NewChatButton from './new-chat-button';
 
 type HeaderProps = {
-  title?: string;
+  assistantName?: string;
+  chatProject?: WithConversations<ChatProjectRow>;
   models?: AIModelRow[];
   isEmptyChat?: boolean;
 };
 
-export default function Header({ title, models, isEmptyChat }: HeaderProps) {
+export default function Header({ assistantName, chatProject, models, isEmptyChat }: HeaderProps) {
   const { open: isSidebarOpen } = useSidebar();
 
   return (
@@ -21,8 +24,19 @@ export default function Header({ title, models, isEmptyChat }: HeaderProps) {
       {!isSidebarOpen && <NewChatButton className="mr-2" disabled={isEmptyChat} />}
       {models !== undefined && models.length > 0 && <SelectLlmModel models={models} />}
 
-      {title !== undefined && (
-        <h1 className="text-md font-normal text-secondary-foreground">{title}</h1>
+      {assistantName !== undefined && (
+        <span className="text-md font-normal text-secondary-foreground">{assistantName}</span>
+      )}
+
+      {chatProject !== undefined && (
+        <div className="flex items-center gap-2">
+          <DynamicIcon
+            name={chatProject.icon}
+            iconColor={chatProject.iconColor}
+            className="size-4"
+          />
+          <span className="text-sm font-normal text-secondary-foreground">{chatProject.name}</span>
+        </div>
       )}
     </div>
   );

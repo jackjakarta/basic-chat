@@ -96,7 +96,7 @@ export default function ChatMessages({ messages, status, onReload }: ChatMessage
                         'mt-1 rounded-md p-2 hover:bg-secondary/65',
                         'text-primary dark:text-sidebar-accent',
                       )}
-                      iconClassName="w-3.5 h-3.5"
+                      iconClassName="size-3.5"
                     />
                     {isLastNonUser && (
                       <button

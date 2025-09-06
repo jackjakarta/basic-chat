@@ -3,6 +3,7 @@ import {
   dataSourceIntegrationTypeSchema,
   type OAuthTokenMetadata,
 } from '@/app/api/auth/notion/types';
+import { type AllowedIcon, type IconColor } from '@/utils/icons';
 import { type Attachment } from 'ai';
 import {
   boolean,
@@ -109,6 +110,7 @@ export const conversationTable = appSchema.table('conversation', {
     .notNull(),
   assistantId: uuid('assistant_id').references(() => assistantTable.id),
   chatProjectId: uuid('chat_project_id').references(() => chatProjectTable.id),
+  isPinned: boolean('is_pinned').default(false).notNull(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
     .defaultNow()
@@ -341,19 +343,6 @@ export type FileRow = typeof fileTable.$inferSelect;
 export type InsertFileRow = typeof fileTable.$inferInsert;
 export type UpdateFileRow = UpdateDbRow<FileRow>;
 
-export const iconColorSchema = z.enum([
-  'red',
-  'pink',
-  'purple',
-  'deep-purple',
-  'indigo',
-  'blue',
-  'light-blue',
-  'grey',
-  'cyan',
-]);
-export type IconColor = z.infer<typeof iconColorSchema>;
-
 export const chatProjectTable = appSchema.table('chat_project', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
@@ -361,7 +350,7 @@ export const chatProjectTable = appSchema.table('chat_project', {
   userId: uuid('user_id')
     .references(() => userTable.id)
     .notNull(),
-  icon: text('icon').notNull(),
+  icon: text('icon').$type<AllowedIcon>().notNull(),
   iconColor: text('icon_color').$type<IconColor>().default('grey').notNull(),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })

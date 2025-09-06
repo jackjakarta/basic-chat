@@ -24,3 +24,23 @@ export function extractFileNameFromSignedUrl(url: string | undefined): string | 
     return undefined;
   }
 }
+
+export function buildConversationPath({
+  chatProjectId,
+  assistantId,
+  chatId,
+}: {
+  chatProjectId?: string;
+  assistantId?: string;
+  chatId: string;
+}) {
+  if (assistantId !== undefined) {
+    return `/assistants/${assistantId}/c/${chatId}`;
+  }
+
+  if (chatProjectId !== undefined) {
+    return `/p/${chatProjectId}/c/${chatId}`;
+  }
+
+  return `/c/${chatId}`;
+}

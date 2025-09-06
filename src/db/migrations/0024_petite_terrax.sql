@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS "app"."chat_project" (
 );
 --> statement-breakpoint
 ALTER TABLE "app"."conversation" ADD COLUMN "chat_project_id" uuid;--> statement-breakpoint
+ALTER TABLE "app"."conversation" ADD COLUMN "is_pinned" boolean DEFAULT false NOT NULL;--> statement-breakpoint
 ALTER TABLE "app"."file" ADD COLUMN "chat_project_id" uuid;--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "app"."chat_project" ADD CONSTRAINT "chat_project_user_id_user_entity_id_fk" FOREIGN KEY ("user_id") REFERENCES "app"."user_entity"("id") ON DELETE no action ON UPDATE no action;

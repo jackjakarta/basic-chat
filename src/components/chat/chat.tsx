@@ -1,6 +1,9 @@
 'use client';
 
-import { type AIModelRow, type SubscriptionLimits } from '@/db/schema';
+import ConversationsDisplay from '@/app/(app)/(chat)/p/[chatProjectId]/conversations-display';
+import SystemPromptDialog from '@/app/(app)/(chat)/p/[chatProjectId]/system-prompt';
+import { type AIModelRow, type ChatProjectRow, type SubscriptionLimits } from '@/db/schema';
+import { type WithConversations } from '@/db/types';
 import {
   type AttachmentFile,
   type LocalFileState,
@@ -23,6 +26,9 @@ import ChatInput from './chat-input';
 import ChatMessages from './chat-messages';
 import ErrorDisplay from './error-display';
 import LoadingDisplay from './loading-display';
+import { buildConversationPath } from './utils';
+
+type ChatProjectWithConversations = WithConversations<ChatProjectRow>;
 
 type ChatProps = {
   id: string;
@@ -33,6 +39,7 @@ type ChatProps = {
   userFirstName?: string;
   assistantId?: string;
   assistantName?: string;
+  chatProject?: ChatProjectWithConversations;
 };
 
 export default function Chat({
@@ -44,6 +51,7 @@ export default function Chat({
   userFirstName,
   assistantId,
   assistantName,
+  chatProject,
 }: ChatProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -65,6 +73,7 @@ export default function Chat({
         chatId: id,
         modelId,
         assistantId,
+        chatProjectId: chatProject?.id,
         webSearchActive: isWebSearchActive,
         imageGenerationActive: isImageGenerationActive,
       },
@@ -126,7 +135,11 @@ export default function Chat({
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   }
 
-  const chatPath = assistantId !== undefined ? `/assistants/${assistantId}/c/${id}` : `/c/${id}`;
+  const chatPath = buildConversationPath({
+    chatProjectId: chatProject?.id,
+    assistantId,
+    chatId: id,
+  });
 
   function customHandleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -145,24 +158,28 @@ export default function Chat({
 
   return (
     <>
-      <Header title={assistantName} models={models} isEmptyChat={messages.length === 0} />
+      <Header
+        assistantName={assistantName}
+        chatProject={chatProject}
+        models={models}
+        isEmptyChat={messages.length === 0}
+      />
       <div
         ref={scrollRef}
         className="flex h-full w-full flex-col overflow-y-auto"
         style={{ maxHeight: 'calc(100vh - 70px)' }}
       >
-        <div className="flex w-full flex-1 flex-col items-center justify-center">
+        <div
+          className={cw(
+            'flex w-full flex-1 flex-col items-center',
+            messages.length === 0 && chatProject === undefined && 'justify-center',
+          )}
+        >
           <div
             className={cw('w-full max-w-[50rem] p-4 pb-[5rem]', messages.length > 0 && 'flex-grow')}
           >
             {messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center">
-                {userFirstName && (
-                  <h1 className="text-3xl font-normal text-primary dark:text-primary-foreground">
-                    {getTimeBasedGreeting(userFirstName)}
-                  </h1>
-                )}
-              </div>
+              <EmptyChat chatProject={chatProject} userFirstName={userFirstName} />
             ) : (
               <>
                 <ChatMessages messages={messages} status={status} onReload={reload} />
@@ -171,6 +188,7 @@ export default function Chat({
             )}
             {status === 'error' && <ErrorDisplay error={error} onReload={reload} />}
           </div>
+
           <ChatInput
             messages={messages}
             customHandleSubmit={customHandleSubmit}
@@ -186,9 +204,40 @@ export default function Chat({
             setIsImageGenerationActive={setIsImageGenerationActive}
             chatDisabled={hasReachedLimit}
             onStop={stop}
+            isProjectChat={chatProject !== undefined}
           />
         </div>
       </div>
     </>
+  );
+}
+
+function EmptyChat({
+  chatProject,
+  userFirstName,
+}: {
+  chatProject?: ChatProjectWithConversations;
+  userFirstName?: string;
+}) {
+  if (chatProject === undefined) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center">
+        {userFirstName && (
+          <h1 className="text-3xl font-normal text-primary dark:text-primary-foreground">
+            {getTimeBasedGreeting(userFirstName)}
+          </h1>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <SystemPromptDialog
+        chatProjectId={chatProject.id}
+        currentSystemPrompt={chatProject.systemPrompt}
+      />
+      <ConversationsDisplay chatProjectId={chatProject.id} />
+    </div>
   );
 }

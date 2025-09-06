@@ -18,7 +18,7 @@ import { useLlmModel } from '../providers/llm-model';
 export default function SelectLlmModel({ models }: { models: AIModelRow[] }) {
   const { model, setModel } = useLlmModel();
   const pathname = usePathname();
-  const isChatRoute = pathname === '/' || pathname.includes('/c');
+  const isChatRoute = pathname === '/' || pathname.includes('/c') || pathname.includes('/p/');
 
   const openaiModels = models.filter((model) => model.provider === 'openai');
   const googleModels = models.filter((model) => model.provider === 'google');

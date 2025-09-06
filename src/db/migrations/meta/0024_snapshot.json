@@ -1,5 +1,5 @@
 {
-  "id": "e2320195-e0d6-45d1-aeb0-6adbe724b41b",
+  "id": "51a430d8-deab-42b9-8c75-8b61faa0612b",
   "prevId": "8398f072-d273-4158-898c-7702fec0fdf5",
   "version": "7",
   "dialect": "postgresql",
@@ -358,6 +358,13 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "is_pinned": {
+          "name": "is_pinned",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",

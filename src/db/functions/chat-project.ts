@@ -7,8 +7,12 @@ import {
   fileTable,
   type ChatProjectRow,
   type ConversationRow,
+  type InsertChatProjectRow,
   type UpdateChatProjectRow,
 } from '../schema';
+import { type WithConversations } from '../types';
+
+export type ChatProjectWithConversations = WithConversations<ChatProjectRow>;
 
 export async function dbGetChatProjectsByUserId({ userId }: { userId: string }) {
   const rows = await db
@@ -75,7 +79,7 @@ export async function dbGetChatProjectAndConversations({
     return undefined;
   }
 
-  const chatProject = rows[0]?.chat_project;
+  const chatProject = rows[0]!.chat_project;
   const conversations: ConversationRow[] = [];
 
   for (const row of rows) {
@@ -147,4 +151,10 @@ export async function dbDeleteChatProject({
   });
 
   return deleted;
+}
+
+export async function dbCreateChatProject(data: InsertChatProjectRow) {
+  const [chatProject] = await db.insert(chatProjectTable).values(data).returning();
+
+  return chatProject;
 }

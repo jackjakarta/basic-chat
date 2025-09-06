@@ -1,6 +1,10 @@
 'use server';
 
-import { dbDeleteConversationById, dbUpdateConversationTitle } from '@/db/functions/chat';
+import {
+  dbDeleteConversationById,
+  dbUpdateConversationProjectId,
+  dbUpdateConversationTitle,
+} from '@/db/functions/chat';
 import { getUser } from '@/utils/auth';
 
 export async function updateConversationTitleAction({
@@ -28,4 +32,26 @@ export async function updateConversationTitleAction({
 export async function deleteConversationAction({ conversationId }: { conversationId: string }) {
   const user = await getUser();
   await dbDeleteConversationById({ conversationId, userId: user.id });
+}
+
+export async function moveConversationToProjectAction({
+  conversationId,
+  chatProjectId,
+}: {
+  conversationId: string;
+  chatProjectId: string | null;
+}) {
+  const user = await getUser();
+
+  const updatedConversation = await dbUpdateConversationProjectId({
+    conversationId,
+    chatProjectId,
+    userId: user.id,
+  });
+
+  if (updatedConversation === undefined) {
+    throw new Error('Failed to move conversation to project');
+  }
+
+  return updatedConversation;
 }
