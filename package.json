@@ -15,7 +15,7 @@
     "dev:email": "email dev --dir src/email/emails --port 3001",
     "dev:turbo": "pnpm dev --turbo",
     "e2e": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- playwright test",
-    "e2e:server": "pnpm build && pnpm start",
+    "e2e:server": "next dev --turbo --hostname 127.0.0.1",
     "e2e:ui": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- playwright test --ui",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
