@@ -42,7 +42,8 @@ export function getBarcaMatchesTool() {
           success: true,
           result: matches,
         };
-      } catch {
+      } catch (error) {
+        console.error({ error });
         return {
           success: false,
           error: 'An error occurred while fetching match data. We are sorry.',
