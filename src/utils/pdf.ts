@@ -1,11 +1,15 @@
 import crypto from 'node:crypto';
 
 import { fileEmbeddingTable, type InsertFileEmbeddingRow } from '@/db/schema';
+import { env } from '@/env';
 import { getEmbedding } from '@/openai/embed';
 import { eq, max } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { db } from '../db';
+
+const url = env.utilsApiUrl;
+const apiKey = env.utilsApiKey;
 
 const CHARS_PER_CHUNK = 3200;
 const CHUNK_OVERLAP_CHARS = 320;
@@ -69,10 +73,12 @@ export async function extractTextFromPdf(pdfFile: File) {
   const formData = new FormData();
   formData.append('file', pdfFile);
 
-  const response = await fetch('https://api.jackjakarta.xyz/api/v1/extract-pdf', {
+  const fullUrl = `${url}/extract-pdf`;
+
+  const response = await fetch(fullUrl, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer VeBH1tl44p_jPmvSLqiXJbHItpV28Cxgx3KOPYOU4b`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: formData,
   });
