@@ -1,88 +1,28 @@
-export function constructSystemPrompt({
+export function getFullSystemPrompt({
   assistantInstructions,
   userCustomInstructions,
   webSearchActive,
   imageGenerationActive,
   chatProjectName,
+  chatProjectSystemPrompt,
+  chatProjectFileNames = [],
+  availableToolNames,
 }: {
   assistantInstructions?: string | null;
   userCustomInstructions?: string;
   chatProjectName?: string;
+  chatProjectSystemPrompt?: string;
   webSearchActive: boolean;
   imageGenerationActive: boolean;
-}): string {
+  chatProjectFileNames?: string[];
+  availableToolNames: string[];
+}) {
   if (imageGenerationActive) {
+    const imageGenerationPrompt = getImageGenerationPrompt();
     return imageGenerationPrompt;
   }
 
-  const searchInstructions = webSearchActive
-    ? 'IMPORTANT: Please always search the web when the user asks something, regardless if you know the answer or not. You always search the web based on the user question and then provide the user with an accurate response.'
-    : '';
-
-  if (
-    assistantInstructions !== null &&
-    assistantInstructions !== undefined &&
-    assistantInstructions.length > 0
-  ) {
-    const assistantSystemPrompt = `Below are custom instructions provided by the user that you must strictly follow: 
-
-    Your task is to help the user with special kind of tasks based on 
-    the instructions that are provided below. You will assume the role that the 
-    user provided in the instructions. 
-
-    $SEARCH_INSTRUCTIONS
-    
-    These are the instructions provided by the user: 
-    
-    ${assistantInstructions}`;
-
-    const promptWithSearchInstructions = assistantSystemPrompt.replace(
-      '$SEARCH_INSTRUCTIONS',
-      searchInstructions,
-    );
-
-    return promptWithSearchInstructions;
-  }
-
-  if (userCustomInstructions !== undefined) {
-    const promptWithUserInstructions = defaultSystemPrompt.replace(
-      '$USER_CUSTOM_INSTRUCTIONS',
-      userCustomInstructions,
-    );
-
-    const promptWithSearchAndUserInstructions = promptWithUserInstructions.replace(
-      '$SEARCH_INSTRUCTIONS',
-      searchInstructions,
-    );
-
-    const fullPrompt = promptWithSearchAndUserInstructions.replace(
-      '$CHAT_PROJECT_INSTRUCTIONS',
-      chatProjectName
-        ? `You are aware that you are part of a project called "${chatProjectName}". Keep this in mind when interacting with the user.`
-        : '',
-    );
-
-    return fullPrompt;
-  }
-
-  const promptWithSearchInstructions = defaultSystemPrompt.replace(
-    '$SEARCH_INSTRUCTIONS',
-    searchInstructions,
-  );
-
-  const finalPrompt = promptWithSearchInstructions.replace('$USER_CUSTOM_INSTRUCTIONS', '');
-
-  const fullPrompt = finalPrompt.replace(
-    '$CHAT_PROJECT_INSTRUCTIONS',
-    chatProjectName
-      ? `You are aware that you are part of a project called "${chatProjectName}". Keep this in mind when interacting with the user.`
-      : '',
-  );
-
-  return fullPrompt;
-}
-
-const defaultSystemPrompt = `Role and Objective:
+  const defaultSystemPrompt = `Role and Objective:
 
 - You are Carla, a friendly, warm, and supportive AI assistant. Your mission is to help users with their queries and tasks in a positive and approachable manner.
 
@@ -108,17 +48,107 @@ General Principles:
 - If unsure, proactively ask the user for clarification.
 
 Tool Usage:
-- Use the code execution tool for complex math or when computation is needed.
-- Before any significant tool call, state in one line the purpose and minimal needed inputs.
 - When executing a tool call, invoke the tool directly with no extra descriptive text about the action.
 
-$USER_CUSTOM_INSTRUCTIONS
+You have access to the following tools:
 
-$SEARCH_INSTRUCTIONS
+${availableToolNames.map((toolName) => `- ${getToolFullName(toolName)}`).join('\n')}
 
-$CHAT_PROJECT_INSTRUCTIONS
+${webSearchActive ? getSearchInstructions() : ''}
+
+${userCustomInstructions !== undefined ? getUserCustomInstructions({ userCustomInstructions }) : ''}
+
+${assistantInstructions !== undefined && assistantInstructions !== null ? getAssistantPrompt({ assistantInstructions }) : ''}
+
+${chatProjectName !== undefined ? getChatProjectPrompt({ chatProjectName, chatProjectSystemPrompt, chatProjectFileNames }) : ''}
+
 `;
 
-const imageGenerationPrompt = `You are Carla, a friendly and helpful AI assistant. You primary goal is to generate images based on user description. 
+  return defaultSystemPrompt.trim();
+}
+
+function getUserCustomInstructions({ userCustomInstructions }: { userCustomInstructions: string }) {
+  const userInstructions = `User specific instructions:
+- ${userCustomInstructions
+    .trim()
+    .split('\n')
+    .map((line) => line.trim())
+    .join('\n- ')}
+`;
+
+  return userInstructions;
+}
+
+function getSearchInstructions() {
+  return 'IMPORTANT: Please always search the web when the user asks something, regardless if you know the answer or not. You always search the web based on the user question and then provide the user with an accurate response.';
+}
+
+function getAssistantPrompt({ assistantInstructions }: { assistantInstructions: string }) {
+  const assistantSystemPrompt = `Below are custom instructions provided by the user that you must strictly follow: 
+
+    Your task is to help the user with special kind of tasks based on 
+    the instructions that are provided below. You will assume the role that the 
+    user provided in the instructions. 
+    
+    These are the instructions provided by the user: 
+    
+    ${assistantInstructions}`;
+
+  return assistantSystemPrompt;
+}
+
+function getChatProjectPrompt({
+  chatProjectName,
+  chatProjectSystemPrompt,
+  chatProjectFileNames,
+}: {
+  chatProjectName: string;
+  chatProjectSystemPrompt?: string;
+  chatProjectFileNames: string[];
+}) {
+  const chatProjectPrompt = `You are aware that you are part of a project called "${chatProjectName}". 
+Keep this in mind when interacting with the user.
+
+
+${
+  chatProjectFileNames.length > 0
+    ? "These are the files that the user has uploaded to the project and that you can use to answer the user's questions:\n\n" +
+      chatProjectFileNames.map((f) => `- ${f}`).join('\n')
+    : ''
+}
+
+${
+  chatProjectSystemPrompt !== undefined && chatProjectSystemPrompt.trim().length > 0
+    ? "Here are the user's instructions for this project:\n\n" + chatProjectSystemPrompt
+    : 'The user has not provided any specific instructions for this project.'
+}
+`;
+
+  return chatProjectPrompt;
+}
+
+function getImageGenerationPrompt() {
+  const imageGenerationPrompt = `You are Carla, a friendly and helpful AI assistant. You primary goal is to generate images based on user description. 
 You use the generateImage tool whenever the user asks you something, you always assume it is an image description and you generate an image based on the description provided by the user.
 When using the image generation tool, make sure to display the url of the generated image in markdown format so that the user can see the image directly in the chat.`;
+
+  return imageGenerationPrompt;
+}
+
+function getToolFullName(inputString: string | undefined): string | undefined {
+  if (inputString === undefined) {
+    return undefined;
+  }
+
+  const mapping: Record<string, string> = {
+    searchTheWeb: 'Web search tool',
+    generateImage: 'Image generation tool',
+    getBarcaMatches: 'FC Barcelona matches tool',
+    assistantSearchFiles: 'File search tool',
+    searchNotion: 'Notion search tool',
+    executeCode: 'Code execution tool',
+    searchProjectFiles: 'Project files search tool',
+  };
+
+  return mapping[inputString];
+}

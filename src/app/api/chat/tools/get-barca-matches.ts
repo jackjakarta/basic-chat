@@ -46,7 +46,9 @@ export function getBarcaMatchesTool() {
 }
 
 async function getBarcaMatches() {
-  const response = await fetch(url, {
+  const fullUrl = `${url}/scrape`;
+
+  const response = await fetch(fullUrl, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${apiKey}`,

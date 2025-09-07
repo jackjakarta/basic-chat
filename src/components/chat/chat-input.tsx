@@ -30,8 +30,8 @@ type ChatInputProps = {
   setIsImageGenerationActive: React.Dispatch<React.SetStateAction<boolean>>;
   status: ChatResponseStatus;
   chatDisabled: boolean;
-  isProjectChat?: boolean;
   onStop: () => void;
+  chatProjectId?: string;
 };
 
 export default function ChatInput({
@@ -48,8 +48,8 @@ export default function ChatInput({
   setIsImageGenerationActive,
   status,
   chatDisabled,
-  isProjectChat = false,
   onStop,
+  chatProjectId,
 }: ChatInputProps) {
   const [isUploading, setIsUploading] = React.useState(false);
 
@@ -91,7 +91,7 @@ export default function ChatInput({
     <div
       className={cw(
         '-mt-14 w-full max-w-[25rem] px-4 md:max-w-[30rem] lg:max-w-[42rem]',
-        (messages.length > 0 || isProjectChat) && 'fixed bottom-4',
+        (messages.length > 0 || chatProjectId !== undefined) && 'fixed bottom-4',
       )}
     >
       <div className="flex flex-col">
@@ -164,6 +164,7 @@ export default function ChatInput({
                 <UploadButton
                   setFiles={setFiles}
                   setIsUploading={setIsUploading}
+                  chatProjectId={chatProjectId}
                   disabled={chatDisabled}
                 />
                 <TooltipButton

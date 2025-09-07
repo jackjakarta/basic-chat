@@ -39,6 +39,8 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
     refetchOnWindowFocus: false,
   });
 
+  const filteredConversations = conversations.filter((conv) => conv.chatProjectId === null);
+
   const isError = isConversationsError || isProjectsError;
   const isLoading = isConversationsLoading || isProjectsLoading;
   const itemsLoaded = !isLoading && !isError;
@@ -64,8 +66,8 @@ export function NavChats({ onClickMobile }: NavChatsProps) {
                   )}
 
                   {itemsLoaded &&
-                    (conversations.length > 0 ? (
-                      conversations.map((conversation) => (
+                    (filteredConversations.length > 0 ? (
+                      filteredConversations.map((conversation) => (
                         <ConversationItem
                           key={conversation.id}
                           conversation={conversation}

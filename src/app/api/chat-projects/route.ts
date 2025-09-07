@@ -5,7 +5,6 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   const user = await getUser();
   const chatProjects = await dbGetChatProjectsByUserId({ userId: user.id });
-  console.debug({ chatProjects });
 
   return NextResponse.json({ chatProjects });
 }

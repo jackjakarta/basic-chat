@@ -4,8 +4,9 @@ export const toolsSchema = z.enum([
   'searchTheWeb',
   'generateImage',
   'getBarcaMatches',
-  'searchFiles',
+  'assistantSearchFiles',
   'searchNotion',
+  'searchProjectFiles',
 ]);
 
 export type ToolName = z.infer<typeof toolsSchema>;

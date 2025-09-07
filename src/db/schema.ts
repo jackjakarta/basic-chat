@@ -7,6 +7,7 @@ import { type AllowedIcon, type IconColor } from '@/utils/icons';
 import { type Attachment } from 'ai';
 import {
   boolean,
+  index,
   integer,
   json,
   jsonb,
@@ -15,6 +16,7 @@ import {
   timestamp,
   unique,
   uuid,
+  vector,
 } from 'drizzle-orm/pg-core';
 import Stripe from 'stripe';
 import { z } from 'zod';
@@ -327,6 +329,7 @@ export const fileTable = appSchema.table('file', {
   name: text('name').notNull(),
   size: integer('size').notNull(),
   mimeType: text('mime_type').notNull(),
+  content: text('content'),
   s3BucketKey: text('s3_bucket_key').notNull().unique(),
   userId: uuid('user_id')
     .references(() => userTable.id)
@@ -342,6 +345,40 @@ export const fileTable = appSchema.table('file', {
 export type FileRow = typeof fileTable.$inferSelect;
 export type InsertFileRow = typeof fileTable.$inferInsert;
 export type UpdateFileRow = UpdateDbRow<FileRow>;
+
+export const fileEmbeddingTable = appSchema.table(
+  'file_embedding',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    fileId: uuid('file_id')
+      .references(() => fileTable.id)
+      .notNull(),
+    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+    chunkText: text('chunk_text').notNull(),
+    chunkIndex: integer('chunk_index').notNull(),
+    pageNumber: integer('page_number').default(1).notNull(),
+    tokenCount: integer('token_count'),
+    contentHash: text('content_hash'),
+    createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => {
+    return {
+      fileIdChunkIndexIdx: index().on(table.fileId, table.chunkIndex),
+      embeddingIndex: index('embeddingIndex').using(
+        'hnsw',
+        table.embedding.op('vector_cosine_ops'),
+      ),
+    };
+  },
+);
+
+export type FileEmbeddingRow = typeof fileEmbeddingTable.$inferSelect;
+export type InsertFileEmbeddingRow = typeof fileEmbeddingTable.$inferInsert;
+export type UpdateFileEmbeddingRow = Omit<UpdateDbRow<FileEmbeddingRow>, 'fileId'>;
 
 export const chatProjectTable = appSchema.table('chat_project', {
   id: uuid('id').defaultRandom().primaryKey(),

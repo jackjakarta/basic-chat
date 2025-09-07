@@ -20,6 +20,7 @@
     "format:check": "prettier --check .",
     "lint": "next lint",
     "pipeline": "chmod +x $(git rev-parse --show-toplevel)/scripts/pipeline.sh && $(git rev-parse --show-toplevel)/scripts/pipeline.sh",
+    "search:em": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- tsx ./src/db/functions/vector-search.ts",
     "start": "next start",
     "start:dev": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- next start",
     "test": "vitest --run",

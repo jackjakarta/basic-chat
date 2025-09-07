@@ -1,0 +1,1 @@
+ALTER TABLE "app"."file_embedding" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;

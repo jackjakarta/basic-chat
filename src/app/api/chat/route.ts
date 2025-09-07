@@ -7,6 +7,7 @@ import {
 } from '@/db/functions/chat';
 import { dbGetChatProjectById } from '@/db/functions/chat-project';
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
+import { dbGetChatProjectFiles } from '@/db/functions/file';
 import { dbGetAmountOfTokensUsedByUserId, dbInsertConversationUsage } from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
@@ -16,13 +17,14 @@ import { smoothStream, streamText, type Message, type ToolSet } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getModel } from './models';
-import { constructSystemPrompt } from './system-prompt';
-import { getExecuteCodeTool } from './tools/code-execution';
-import { getFileSearchTool } from './tools/file-search';
+import { getFullSystemPrompt } from './system-prompt';
+// import { getExecuteCodeTool } from './tools/code-execution';
+import { getAssistantFileSearchTool } from './tools/file-search';
 import { getGenerateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
 import { getActiveNotionIntegration, getSearchNotionTool } from './tools/notion-search';
 import { getWebSearchTool } from './tools/openai-search';
+import { getProjectFilesSearchTool } from './tools/project-files-search';
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -79,17 +81,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const [defaultImageModel] = await dbGetEnabledImageModels();
-
-    const maybeAssistant =
-      assistantId !== undefined
-        ? await dbGetAssistantById({ assistantId, userId: user.id })
-        : undefined;
-
-    const maybeChatProject =
+    const [maybeAssistant, maybeChatProject, imageModels] = await Promise.all([
+      assistantId !== undefined ? dbGetAssistantById({ assistantId, userId: user.id }) : undefined,
       chatProjectId !== undefined
-        ? await dbGetChatProjectById({ chatProjectId, userId: user.id })
-        : undefined;
+        ? dbGetChatProjectById({ chatProjectId, userId: user.id })
+        : undefined,
+      dbGetEnabledImageModels(),
+    ]);
+
+    const chatProjectFiles =
+      maybeChatProject !== undefined
+        ? await dbGetChatProjectFiles({ chatProjectId: maybeChatProject.id, userId: user.id })
+        : [];
+
+    const chatProjectFileNames = chatProjectFiles.map((f) => f.name);
 
     const conversation = await dbGetOrCreateConversation({
       conversationId: chatId,
@@ -102,21 +107,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Could not get or create conversation' }, { status: 500 });
     }
 
-    const systemPrompt = constructSystemPrompt({
-      assistantInstructions: maybeAssistant?.instructions,
-      userCustomInstructions: user.settings?.customInstructions,
-      webSearchActive,
-      imageGenerationActive,
-      chatProjectName: maybeChatProject?.name,
-    });
-
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
     const notionDataSource = getActiveNotionIntegration(activeDataSources);
 
+    const [defaultImageModel] = imageModels;
+
     const tools: ToolSet = {
       ...(webSearchActive && !imageGenerationActive && { searchTheWeb: getWebSearchTool() }),
-      ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
+      // ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
       ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
+      ...(!imageGenerationActive &&
+        maybeChatProject !== undefined && {
+          searchProjectFiles: getProjectFilesSearchTool({
+            userId: user.id,
+            chatProjectId: maybeChatProject.id,
+          }),
+        }),
       ...(imageGenerationActive &&
         !webSearchActive && {
           generateImage: getGenerateImageTool({
@@ -128,13 +134,30 @@ export async function POST(request: NextRequest) {
       ...(!imageGenerationActive &&
         maybeAssistant !== undefined &&
         maybeAssistant.vectorStoreId !== null && {
-          searchFiles: getFileSearchTool({ vectorStoreId: maybeAssistant.vectorStoreId }),
+          assistantSearchFiles: getAssistantFileSearchTool({
+            vectorStoreId: maybeAssistant.vectorStoreId,
+          }),
         }),
       ...(!imageGenerationActive &&
         notionDataSource !== undefined && {
           searchNotion: await getSearchNotionTool({ notionDataSource }),
         }),
     };
+
+    const availableToolNames = Object.keys(tools);
+
+    const systemPrompt = getFullSystemPrompt({
+      assistantInstructions: maybeAssistant?.instructions,
+      userCustomInstructions: user.settings?.customInstructions,
+      webSearchActive,
+      imageGenerationActive,
+      chatProjectName: maybeChatProject?.name,
+      chatProjectSystemPrompt: maybeChatProject?.systemPrompt ?? undefined,
+      chatProjectFileNames,
+      availableToolNames,
+    });
+
+    console.debug({ systemPrompt });
 
     const result = streamText({
       model: getModel(model),
@@ -158,12 +181,12 @@ export async function POST(request: NextRequest) {
           }),
 
           dbInsertChatContent({
+            conversationId: conversation.id,
             content: assistantMessage.text,
             role: 'assistant',
             userId: user.id,
-            metadata: { modelId: model.id },
             orderNumber: messages.length + 1,
-            conversationId: conversation.id,
+            metadata: { modelId: model.id },
           }),
         ]);
 

@@ -1,4 +1,4 @@
-import { and, eq, like } from 'drizzle-orm';
+import { and, desc, eq, like } from 'drizzle-orm';
 
 import { db } from '..';
 import { fileTable, type FileRow, type InsertFileRow, type UpdateFileRow } from '../schema';
@@ -76,6 +76,22 @@ export async function dbGetGeneratedImagesByUserId({
     .select()
     .from(fileTable)
     .where(and(eq(fileTable.userId, userId), like(fileTable.s3BucketKey, likeQuery)));
+
+  return files;
+}
+
+export async function dbGetChatProjectFiles({
+  chatProjectId,
+  userId,
+}: {
+  chatProjectId: string;
+  userId: string;
+}): Promise<FileRow[]> {
+  const files = await db
+    .select()
+    .from(fileTable)
+    .where(and(eq(fileTable.chatProjectId, chatProjectId), eq(fileTable.userId, userId)))
+    .orderBy(desc(fileTable.updatedAt));
 
   return files;
 }
