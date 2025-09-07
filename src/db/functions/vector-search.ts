@@ -1,4 +1,3 @@
-import { getEmbedding } from '@/openai/embed';
 import { getSignedUrlFromS3Get } from '@/s3';
 import { cosineDistance, desc, eq, inArray, sql } from 'drizzle-orm';
 
@@ -9,21 +8,20 @@ import { dbGetChatProjectFiles } from './file';
 export async function dbSearchChatProjectFiles({
   chatProjectId,
   userId,
-  searchQuery,
+  queryEmbedding,
 }: {
   chatProjectId: string;
   userId: string;
-  searchQuery: string;
+  queryEmbedding: number[];
 }) {
-  const queryEmbedding = await getEmbedding({ input: searchQuery });
-
-  if (queryEmbedding === undefined) {
-    throw new Error('Failed to get embedding for search query');
-  }
-
   const similarity = sql<number>`1 - (${cosineDistance(fileEmbeddingTable.embedding, queryEmbedding)})`;
 
   const chatProjectFiles = await dbGetChatProjectFiles({ userId, chatProjectId });
+
+  if (chatProjectFiles.length === 0) {
+    return [];
+  }
+
   const fileIds = chatProjectFiles.map((file) => file.id);
 
   const relevantDocuments = await db
@@ -73,8 +71,8 @@ export async function dbSearchChatProjectFiles({
 
       return {
         ...doc,
-        s3BucketKey: 'hidden',
         url,
+        s3BucketKey: 'hidden',
       };
     }),
   );
