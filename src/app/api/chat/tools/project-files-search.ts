@@ -1,6 +1,20 @@
 import { dbSearchChatProjectFiles } from '@/db/functions/vector-search';
+import { getEmbedding } from '@/openai/embed';
 import { tool } from 'ai';
 import { z } from 'zod';
+
+import { getToolResultSchema, type ToolError } from './types';
+
+const searchResultSchema = z.object({
+  fileName: z.string().describe('The name of the file where the content was found.'),
+  content: z.string().describe('The content from the file that is relevant to the search query.'),
+  url: z.string().url().describe('A URL to access the file.'),
+});
+const projectSearchToolResultSchema = getToolResultSchema(searchResultSchema);
+
+export type ProjectSearchResult = z.infer<typeof searchResultSchema>;
+export type ProjectSearchToolResult = z.infer<typeof projectSearchToolResultSchema>;
+export type ProjectSearchToolResponse = ProjectSearchToolResult | ToolError;
 
 export function getProjectFilesSearchTool({
   userId,
@@ -11,30 +25,32 @@ export function getProjectFilesSearchTool({
 }) {
   const webSearchTool = tool({
     description:
-      'Use this tool if the user is in a chat project and asks a question related to the files they have uploaded. The user will provide the chatProjectId and their userId along with the search query. If the user does not provide these, do not use this tool. Instead, use the web search tool. Always return your answer in the context of the files uploaded by the user. If you cannot find any relevant information in the files, respond with "I could not find any relevant information about [searchQuery] in your files." Do not make up answers. Never return information that is not found in the files. Never return URLs or references to web pages. Always format your answer in markdown. If the user asks a question that is not related to their files, do not use this tool. Instead, use the web search tool.',
+      'Use this tool if the user is in a chat project and asks a question related to the files they have uploaded.',
     parameters: z.object({
       searchQuery: z.string().describe('The search query provided by the user.'),
     }),
-    execute: async ({ searchQuery }) => {
+    execute: async ({ searchQuery }): Promise<ProjectSearchToolResponse> => {
       try {
         const toolResults = await filesSearch({ searchQuery, userId, chatProjectId });
-        console.debug({ toolResults });
+        console.info({ toolResults });
 
-        if (!toolResults) {
-          return `I could not find any relevant information about '${searchQuery}'.`;
+        if (toolResults.length === 0) {
+          return {
+            success: false,
+            error: `I could not find any relevant information about '${searchQuery}'.`,
+          };
         }
 
-        return toolResults;
+        return {
+          success: true,
+          result: toolResults,
+        };
       } catch (error) {
-        const errorMessage = `An error occurred while searching the web. We are sorry.`;
-
-        if (error instanceof Error) {
-          console.error({ error: error.message });
-          throw new Error(errorMessage);
-        }
-
         console.error({ error });
-        throw new Error(errorMessage);
+        return {
+          success: false,
+          error: 'An error occurred while searching the files. We are sorry.',
+        };
       }
     },
   });
@@ -50,20 +66,22 @@ async function filesSearch({
   searchQuery: string;
   userId: string;
   chatProjectId: string;
-}) {
-  try {
-    const searchResults = await dbSearchChatProjectFiles({ searchQuery, userId, chatProjectId });
+}): Promise<ProjectSearchResult[]> {
+  const queryEmbedding = await getEmbedding({ input: searchQuery });
 
-    const formatedResults = searchResults.map((r) => {
-      return {
-        fileName: r.fileName,
-        content: r.content,
-      };
-    });
-
-    return formatedResults;
-  } catch (error) {
-    console.error({ error });
-    return undefined;
+  if (queryEmbedding === undefined) {
+    throw new Error('Failed to get embedding for search query');
   }
+
+  const searchResults = await dbSearchChatProjectFiles({ queryEmbedding, userId, chatProjectId });
+
+  const formatedResults = searchResults.map((r) => {
+    return {
+      fileName: r.fileName,
+      content: r.content,
+      url: r.url,
+    };
+  });
+
+  return formatedResults;
 }

@@ -2,6 +2,8 @@ import { env } from '@/env';
 import { tool } from 'ai';
 import { z } from 'zod';
 
+import { getToolResultSchema, type ToolError } from './types';
+
 const url = env.utilsApiUrl;
 const apiKey = env.utilsApiKey;
 
@@ -14,30 +16,37 @@ const apiResponseSchema = z.object({
   matches: z.array(matchSchema),
 });
 
+const barcaMatchesToolResultSchema = getToolResultSchema(matchSchema);
+
+export type BarcaMatch = z.infer<typeof matchSchema>;
+export type BarcaMatchesToolResult = z.infer<typeof barcaMatchesToolResultSchema>;
+export type BarcaMatchesToolResponse = BarcaMatchesToolResult | ToolError;
+
 export function getBarcaMatchesTool() {
   const getBarcaMatchesTool = tool({
     description: 'Get information for the FC Barcelona upcoming football matches.',
     parameters: z.object({}),
-    execute: async () => {
+    execute: async (): Promise<BarcaMatchesToolResponse> => {
       try {
         const matches = await getBarcaMatches();
-        console.debug({ matches });
+        console.info({ matches });
 
         if (matches.length === 0) {
-          return 'An error occurred while getting the information.';
+          return {
+            success: false,
+            error: 'An error occurred while getting the information.',
+          };
         }
 
-        return matches;
+        return {
+          success: true,
+          result: matches,
+        };
       } catch (error) {
-        const errorMessage = 'An error occurred while fetching match data. We are sorry.';
-
-        if (error instanceof Error) {
-          console.error({ error: error.message });
-          throw new Error(errorMessage);
-        }
-
-        console.error({ error });
-        throw new Error(errorMessage);
+        return {
+          success: false,
+          error: 'An error occurred while fetching match data. We are sorry.',
+        };
       }
     },
   });
@@ -45,7 +54,7 @@ export function getBarcaMatchesTool() {
   return getBarcaMatchesTool;
 }
 
-async function getBarcaMatches() {
+async function getBarcaMatches(): Promise<BarcaMatch[]> {
   const fullUrl = `${url}/scrape`;
 
   const response = await fetch(fullUrl, {
