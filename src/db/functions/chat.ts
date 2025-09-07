@@ -4,7 +4,8 @@ import { db } from '..';
 import {
   conversationMessageTable,
   conversationTable,
-  InsertConversationMessageRow,
+  type InsertConversationMessageRow,
+  type UpdateConversationRow,
 } from '../schema';
 
 export async function dbGetOrCreateConversation({
@@ -130,24 +131,6 @@ export async function dbGetConversationById({
   return conversation;
 }
 
-export async function dbUpdateConversationTitle({
-  conversationId,
-  name,
-  userId,
-}: {
-  conversationId: string;
-  name: string;
-  userId: string;
-}) {
-  const [updatedConversation] = await db
-    .update(conversationTable)
-    .set({ name })
-    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
-    .returning();
-
-  return updatedConversation;
-}
-
 export async function dbDeleteConversationById({
   conversationId,
   userId,
@@ -196,6 +179,24 @@ export async function dbGetUserConversationMessagesCount({ userId }: { userId: s
   return messagesCount?.count;
 }
 
+export async function dbUpdateConversation({
+  conversationId,
+  userId,
+  data,
+}: {
+  conversationId: string;
+  userId: string;
+  data: UpdateConversationRow;
+}) {
+  const [updatedConversation] = await db
+    .update(conversationTable)
+    .set(data)
+    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
+    .returning();
+
+  return updatedConversation;
+}
+
 export async function dbSearchConversationsByName({
   q,
   userId,
@@ -215,22 +216,4 @@ export async function dbSearchConversationsByName({
     .limit(limit);
 
   return rows;
-}
-
-export async function dbUpdateConversationProjectId({
-  conversationId,
-  chatProjectId,
-  userId,
-}: {
-  conversationId: string;
-  chatProjectId: string | null;
-  userId: string;
-}) {
-  const [updatedConversation] = await db
-    .update(conversationTable)
-    .set({ chatProjectId })
-    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
-    .returning();
-
-  return updatedConversation;
 }

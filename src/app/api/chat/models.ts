@@ -49,3 +49,12 @@ export function getModel(model: AIModelRow) {
       throw new Error(`Model ${modelId} not found`);
   }
 }
+
+export function getXAiProviderOptions() {
+  return {
+    reasoningEffort: 'high',
+    searchParameters: {
+      mode: 'off',
+    },
+  };
+}

@@ -14,6 +14,12 @@ import { type WithConversations } from '../types';
 
 export type ChatProjectWithConversations = WithConversations<ChatProjectRow>;
 
+export async function dbCreateChatProject(data: InsertChatProjectRow) {
+  const [chatProject] = await db.insert(chatProjectTable).values(data).returning();
+
+  return chatProject;
+}
+
 export async function dbGetChatProjectsByUserId({ userId }: { userId: string }) {
   const rows = await db
     .select()
@@ -139,10 +145,4 @@ export async function dbDeleteChatProject({
   });
 
   return deleted;
-}
-
-export async function dbCreateChatProject(data: InsertChatProjectRow) {
-  const [chatProject] = await db.insert(chatProjectTable).values(data).returning();
-
-  return chatProject;
 }
