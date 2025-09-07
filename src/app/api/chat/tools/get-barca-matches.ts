@@ -16,7 +16,7 @@ const apiResponseSchema = z.object({
   matches: z.array(matchSchema),
 });
 
-const barcaMatchesToolResultSchema = getToolResultSchema(matchSchema);
+export const barcaMatchesToolResultSchema = getToolResultSchema(matchSchema);
 
 export type BarcaMatch = z.infer<typeof matchSchema>;
 export type BarcaMatchesToolResult = z.infer<typeof barcaMatchesToolResultSchema>;
@@ -42,7 +42,7 @@ export function getBarcaMatchesTool() {
           success: true,
           result: matches,
         };
-      } catch (error) {
+      } catch {
         return {
           success: false,
           error: 'An error occurred while fetching match data. We are sorry.',

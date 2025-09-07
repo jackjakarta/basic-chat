@@ -10,7 +10,7 @@ const searchResultSchema = z.object({
   content: z.string().describe('The content from the file that is relevant to the search query.'),
   url: z.string().url().describe('A URL to access the file.'),
 });
-const projectSearchToolResultSchema = getToolResultSchema(searchResultSchema);
+export const projectSearchToolResultSchema = getToolResultSchema(searchResultSchema);
 
 export type ProjectSearchResult = z.infer<typeof searchResultSchema>;
 export type ProjectSearchToolResult = z.infer<typeof projectSearchToolResultSchema>;
