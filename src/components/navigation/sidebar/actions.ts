@@ -1,10 +1,6 @@
 'use server';
 
-import {
-  dbDeleteConversationById,
-  dbUpdateConversationProjectId,
-  dbUpdateConversationTitle,
-} from '@/db/functions/chat';
+import { dbDeleteConversationById, dbUpdateConversation } from '@/db/functions/chat';
 import { getUser } from '@/utils/auth';
 
 export async function updateConversationTitleAction({
@@ -16,9 +12,9 @@ export async function updateConversationTitleAction({
 }) {
   const user = await getUser();
 
-  const updatedConversation = await dbUpdateConversationTitle({
+  const updatedConversation = await dbUpdateConversation({
     conversationId,
-    name: title,
+    data: { name: title },
     userId: user.id,
   });
 
@@ -43,10 +39,10 @@ export async function moveConversationToProjectAction({
 }) {
   const user = await getUser();
 
-  const updatedConversation = await dbUpdateConversationProjectId({
+  const updatedConversation = await dbUpdateConversation({
     conversationId,
-    chatProjectId,
     userId: user.id,
+    data: { chatProjectId },
   });
 
   if (updatedConversation === undefined) {

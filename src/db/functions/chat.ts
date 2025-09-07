@@ -1,10 +1,13 @@
+import { type LanguageModelUsage } from 'ai';
 import { and, desc, eq, ilike, sql } from 'drizzle-orm';
 
 import { db } from '..';
 import {
   conversationMessageTable,
   conversationTable,
-  InsertConversationMessageRow,
+  conversationUsageTrackingTable,
+  type InsertConversationMessageRow,
+  type UpdateConversationRow,
 } from '../schema';
 
 export async function dbGetOrCreateConversation({
@@ -51,13 +54,36 @@ export async function dbGetCoversationMessages({
   return messages.map((message) => message.conversation_message);
 }
 
-export async function dbInsertChatContent(chatContent: InsertConversationMessageRow) {
-  const [newChatContent] = await db
-    .insert(conversationMessageTable)
-    .values(chatContent)
-    .returning();
+export async function dbInsertChatContentWithUsage({
+  chatContent,
+  usage,
+}: {
+  chatContent: InsertConversationMessageRow;
+  usage?: LanguageModelUsage;
+}) {
+  const _chatContent = await db.transaction(async (tx) => {
+    const [newChatContent] = await tx
+      .insert(conversationMessageTable)
+      .values(chatContent)
+      .returning();
 
-  return newChatContent;
+    if (newChatContent !== undefined && newChatContent.userId !== null && usage !== undefined) {
+      await tx
+        .insert(conversationUsageTrackingTable)
+        .values({
+          promptTokens: usage.promptTokens,
+          completionTokens: usage.completionTokens,
+          userId: newChatContent.userId,
+          conversationId: newChatContent.conversationId,
+          modelId: newChatContent.metadata?.modelId ?? '',
+        })
+        .returning();
+    }
+
+    return newChatContent;
+  });
+
+  return _chatContent;
 }
 
 export async function dbGetConversations({ userId, limit }: { userId: string; limit?: number }) {
@@ -130,24 +156,6 @@ export async function dbGetConversationById({
   return conversation;
 }
 
-export async function dbUpdateConversationTitle({
-  conversationId,
-  name,
-  userId,
-}: {
-  conversationId: string;
-  name: string;
-  userId: string;
-}) {
-  const [updatedConversation] = await db
-    .update(conversationTable)
-    .set({ name })
-    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
-    .returning();
-
-  return updatedConversation;
-}
-
 export async function dbDeleteConversationById({
   conversationId,
   userId,
@@ -196,6 +204,24 @@ export async function dbGetUserConversationMessagesCount({ userId }: { userId: s
   return messagesCount?.count;
 }
 
+export async function dbUpdateConversation({
+  conversationId,
+  userId,
+  data,
+}: {
+  conversationId: string;
+  userId: string;
+  data: UpdateConversationRow;
+}) {
+  const [updatedConversation] = await db
+    .update(conversationTable)
+    .set(data)
+    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
+    .returning();
+
+  return updatedConversation;
+}
+
 export async function dbSearchConversationsByName({
   q,
   userId,
@@ -215,22 +241,4 @@ export async function dbSearchConversationsByName({
     .limit(limit);
 
   return rows;
-}
-
-export async function dbUpdateConversationProjectId({
-  conversationId,
-  chatProjectId,
-  userId,
-}: {
-  conversationId: string;
-  chatProjectId: string | null;
-  userId: string;
-}) {
-  const [updatedConversation] = await db
-    .update(conversationTable)
-    .set({ chatProjectId })
-    .where(and(eq(conversationTable.id, conversationId), eq(conversationTable.userId, userId)))
-    .returning();
-
-  return updatedConversation;
 }

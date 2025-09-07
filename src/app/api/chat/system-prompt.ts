@@ -54,7 +54,7 @@ You have access to the following tools:
 
 ${availableToolNames.map((toolName) => `- ${getToolFullName(toolName)}`).join('\n')}
 
-${webSearchActive ? getSearchInstructions() : ''}
+${webSearchActive ? getWebSearchInstructions() : ''}
 
 ${userCustomInstructions !== undefined ? getUserCustomInstructions({ userCustomInstructions }) : ''}
 
@@ -69,17 +69,14 @@ ${chatProjectName !== undefined ? getChatProjectPrompt({ chatProjectName, chatPr
 
 function getUserCustomInstructions({ userCustomInstructions }: { userCustomInstructions: string }) {
   const userInstructions = `User specific instructions:
-- ${userCustomInstructions
-    .trim()
-    .split('\n')
-    .map((line) => line.trim())
-    .join('\n- ')}
+
+${userCustomInstructions.trim()}
 `;
 
   return userInstructions;
 }
 
-function getSearchInstructions() {
+function getWebSearchInstructions() {
   return 'IMPORTANT: Please always search the web when the user asks something, regardless if you know the answer or not. You always search the web based on the user question and then provide the user with an accurate response.';
 }
 
@@ -146,8 +143,8 @@ function getToolFullName(inputString: string | undefined): string | undefined {
     getBarcaMatches: 'FC Barcelona matches tool',
     assistantSearchFiles: 'File search tool',
     searchNotion: 'Notion search tool',
-    executeCode: 'Code execution tool',
     searchProjectFiles: 'Project files search tool',
+    // executeCode: 'Code execution tool',
   };
 
   return mapping[inputString];
