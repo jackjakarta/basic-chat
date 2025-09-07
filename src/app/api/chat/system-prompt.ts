@@ -89,8 +89,6 @@ function getAssistantPrompt({ assistantInstructions }: { assistantInstructions: 
     Your task is to help the user with special kind of tasks based on 
     the instructions that are provided below. You will assume the role that the 
     user provided in the instructions. 
-
-    $SEARCH_INSTRUCTIONS
     
     These are the instructions provided by the user: 
     
