@@ -1,9 +1,11 @@
+import { type LanguageModelUsage } from 'ai';
 import { and, desc, eq, ilike, sql } from 'drizzle-orm';
 
 import { db } from '..';
 import {
   conversationMessageTable,
   conversationTable,
+  conversationUsageTrackingTable,
   type InsertConversationMessageRow,
   type UpdateConversationRow,
 } from '../schema';
@@ -52,13 +54,36 @@ export async function dbGetCoversationMessages({
   return messages.map((message) => message.conversation_message);
 }
 
-export async function dbInsertChatContent(chatContent: InsertConversationMessageRow) {
-  const [newChatContent] = await db
-    .insert(conversationMessageTable)
-    .values(chatContent)
-    .returning();
+export async function dbInsertChatContentWithUsage({
+  chatContent,
+  usage,
+}: {
+  chatContent: InsertConversationMessageRow;
+  usage?: LanguageModelUsage;
+}) {
+  const _chatContent = await db.transaction(async (tx) => {
+    const [newChatContent] = await tx
+      .insert(conversationMessageTable)
+      .values(chatContent)
+      .returning();
 
-  return newChatContent;
+    if (newChatContent !== undefined && newChatContent.userId !== null && usage !== undefined) {
+      await tx
+        .insert(conversationUsageTrackingTable)
+        .values({
+          promptTokens: usage.promptTokens,
+          completionTokens: usage.completionTokens,
+          userId: newChatContent.userId,
+          conversationId: newChatContent.conversationId,
+          modelId: newChatContent.metadata?.modelId ?? '',
+        })
+        .returning();
+    }
+
+    return newChatContent;
+  });
+
+  return _chatContent;
 }
 
 export async function dbGetConversations({ userId, limit }: { userId: string; limit?: number }) {

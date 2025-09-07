@@ -2,13 +2,13 @@ import { dbGetEnabledImageModels, dbGetEnabledModelById } from '@/db/functions/a
 import { dbGetAssistantById } from '@/db/functions/assistant';
 import {
   dbGetOrCreateConversation,
-  dbInsertChatContent,
+  dbInsertChatContentWithUsage,
   dbUpdateConversation,
 } from '@/db/functions/chat';
 import { dbGetChatProjectById } from '@/db/functions/chat-project';
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
 import { dbGetChatProjectFiles } from '@/db/functions/file';
-import { dbGetAmountOfTokensUsedByUserId, dbInsertConversationUsage } from '@/db/functions/usage';
+import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
@@ -19,13 +19,14 @@ import { z } from 'zod';
 
 import { getModel, getXAiProviderOptions } from './models';
 import { getFullSystemPrompt } from './system-prompt';
-// import { getExecuteCodeTool } from './tools/code-execution';
 import { getAssistantFileSearchTool } from './tools/file-search';
 import { getGenerateImageTool } from './tools/generate-image';
 import { getBarcaMatchesTool } from './tools/get-barca-matches';
 import { getActiveNotionIntegration, getSearchNotionTool } from './tools/notion-search';
 import { getWebSearchTool } from './tools/openai-search';
 import { getProjectFilesSearchTool } from './tools/project-files-search';
+
+// import { getExecuteCodeTool } from './tools/code-execution';
 
 const tokenUsageSchema = z.object({
   promptTokens: z.number().min(0),
@@ -117,13 +118,15 @@ export async function POST(request: NextRequest) {
     const userMessage = getUserMessage(messages);
     const userMessageAttachments = getUserMessageAttachments(messages);
 
-    await dbInsertChatContent({
-      conversationId: conversation.id,
-      content: userMessage ?? '',
-      role: 'user',
-      userId: user.id,
-      attachments: userMessageAttachments,
-      orderNumber: messages.length,
+    await dbInsertChatContentWithUsage({
+      chatContent: {
+        conversationId: conversation.id,
+        content: userMessage ?? '',
+        role: 'user',
+        userId: user.id,
+        attachments: userMessageAttachments,
+        orderNumber: messages.length,
+      },
     });
 
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
@@ -133,7 +136,6 @@ export async function POST(request: NextRequest) {
 
     const tools: ToolSet = {
       ...(webSearchActive && !imageGenerationActive && { searchTheWeb: getWebSearchTool() }),
-      // ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
       ...(!imageGenerationActive && { getBarcaMatches: getBarcaMatchesTool() }),
       ...(!imageGenerationActive &&
         maybeChatProject !== undefined && {
@@ -161,6 +163,7 @@ export async function POST(request: NextRequest) {
         notionDataSource !== undefined && {
           searchNotion: await getSearchNotionTool({ notionDataSource }),
         }),
+      // ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
     };
 
     const availableToolNames = Object.keys(tools);
@@ -187,26 +190,17 @@ export async function POST(request: NextRequest) {
         xai: getXAiProviderOptions(),
       },
       async onFinish({ text: assistantMessage, usage }) {
-        const { promptTokens, completionTokens } = safeParseUsage(usage);
-
-        await Promise.all([
-          dbInsertChatContent({
+        await dbInsertChatContentWithUsage({
+          chatContent: {
             conversationId: conversation.id,
             content: assistantMessage,
             role: 'assistant',
             userId: user.id,
             orderNumber: messages.length + 1,
             metadata: { modelId: model.id },
-          }),
-
-          dbInsertConversationUsage({
-            conversationId: conversation.id,
-            userId: user.id,
-            modelId: model.id,
-            promptTokens,
-            completionTokens,
-          }),
-        ]);
+          },
+          usage: safeParseUsage(usage),
+        });
 
         if (messages.length <= 2 || conversation.name === null) {
           const conversationTitle = await summarizeConversationTitle({
