@@ -1,0 +1,1 @@
+ALTER TABLE "app"."file_embedding" ALTER COLUMN "page_number" SET DEFAULT 1;

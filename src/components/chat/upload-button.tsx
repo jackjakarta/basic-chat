@@ -9,6 +9,8 @@ import { TooltipButton } from '../common/tooltip-button';
 import { useToast } from '../hooks/use-toast';
 import { useLlmModel } from '../providers/llm-model';
 
+const MODELS_NOT_SUPPORTING_FILE_UPLOAD = ['grok-2-vision-1212', 'pixtral-large-latest'];
+
 const uploadResponseSchema = z.object({
   fileId: z.string(),
   signedUrl: z.string(),
@@ -17,16 +19,22 @@ const uploadResponseSchema = z.object({
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
   setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
+  chatProjectId?: string;
   disabled?: boolean;
 };
 
-export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
+export default function UploadButton({
+  setFiles,
+  setIsUploading,
+  chatProjectId,
+  disabled,
+}: UploadButtonProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const { toastError } = useToast();
   const { model: modelId } = useLlmModel();
 
-  const canUploadFiles = modelId !== 'pixtral-large-latest' && modelId !== 'grok-2-vision-1212';
+  const canUploadFiles = !MODELS_NOT_SUPPORTING_FILE_UPLOAD.includes(modelId);
   const toolTipMessage = canUploadFiles ? 'images and pdfs' : 'images';
 
   function openFileDialog() {
@@ -48,6 +56,10 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
 
     const formData = new FormData();
     formData.append('file', file);
+
+    if (chatProjectId !== undefined) {
+      formData.append('chatProjectId', chatProjectId);
+    }
 
     try {
       const response = await fetch(`/api/chat-upload/${endpoint}`, {
@@ -111,9 +123,9 @@ export default function UploadButton({ setFiles, setIsUploading, disabled }: Upl
       <input
         type="file"
         ref={fileInputRef}
+        className="hidden"
         accept={`image/*, ${canUploadFiles && 'application/pdf'}`}
         onChange={handleFileChange}
-        style={{ display: 'none' }}
       />
     </div>
   );

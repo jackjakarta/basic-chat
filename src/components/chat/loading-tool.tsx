@@ -18,9 +18,9 @@ export default function LoadingTool({ message }: LoadingToolProps) {
     message?.parts?.[0]?.type === 'tool-invocation' &&
     message?.parts?.[0]?.toolInvocation?.toolName === 'generateImage';
 
-  const isFileSearchTool =
+  const isAssistantFileSearchTool =
     message?.parts?.[0]?.type === 'tool-invocation' &&
-    message?.parts?.[0]?.toolInvocation?.toolName === 'searchFiles';
+    message?.parts?.[0]?.toolInvocation?.toolName === 'assistantSearchFiles';
 
   const isCodeExecutionTool =
     message?.parts?.[0]?.type === 'tool-invocation' &&
@@ -42,7 +42,7 @@ export default function LoadingTool({ message }: LoadingToolProps) {
     );
   }
 
-  if (isFileSearchTool) {
+  if (isAssistantFileSearchTool) {
     return (
       <LoadingToolWithIcon text="Searching my knowledge..." icon={<File className="h-4 w-4" />} />
     );

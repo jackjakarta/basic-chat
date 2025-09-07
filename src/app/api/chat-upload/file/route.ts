@@ -1,9 +1,12 @@
+import { dbGetChatProjectById } from '@/db/functions/chat-project';
 import { dbInsertFile } from '@/db/functions/file';
 import { deleteFileFromS3, getSignedUrlFromS3Get, uploadFileToS3 } from '@/s3';
 import { getUser } from '@/utils/auth';
 import { getFileExtension } from '@/utils/files';
+import { extractTextFromPdf, ingestPdf } from '@/utils/pdf';
 import { cnanoid } from '@/utils/random';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 2;
 const SUPPORTED_FILE_EXTENSIONS = ['pdf'];
@@ -13,6 +16,7 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
   const file = formData.get('file');
+  const chatProjectId = formData.get('chatProjectId');
 
   if (file === null) {
     return NextResponse.json({ error: 'Could not find file in form data' }, { status: 400 });
@@ -23,6 +27,22 @@ export async function POST(req: NextRequest) {
       { error: 'file FormData entry value was of type "string", but expected type "File"' },
       { status: 400 },
     );
+  }
+
+  const maybeChatProjectId = z.string().optional().parse(chatProjectId);
+
+  if (maybeChatProjectId !== undefined) {
+    const chatProject = await dbGetChatProjectById({
+      chatProjectId: maybeChatProjectId,
+      userId: user.id,
+    });
+
+    if (chatProject === undefined) {
+      return NextResponse.json(
+        { error: 'Chat project not found or access denied' },
+        { status: 403 },
+      );
+    }
   }
 
   const fileExtension = getFileExtension(file.name);
@@ -61,12 +81,16 @@ export async function POST(req: NextRequest) {
       mimeType: file.type,
       size: file.size,
       s3BucketKey: key,
+      chatProjectId: maybeChatProjectId,
     });
 
     if (newFile === undefined) {
       await deleteFileFromS3({ key });
       return NextResponse.json({ error: 'Failed to record file in database' }, { status: 500 });
     }
+
+    const extractedPages = await extractTextFromPdf(file);
+    await ingestPdf({ fileId: newFile.id, pages: extractedPages });
 
     const signedUrl = await getSignedUrlFromS3Get({
       key,

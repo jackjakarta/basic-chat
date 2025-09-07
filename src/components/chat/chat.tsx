@@ -1,8 +1,14 @@
 'use client';
 
 import ConversationsDisplay from '@/app/(app)/(chat)/p/[chatProjectId]/conversations-display';
+import ProjectFilesDisplay from '@/app/(app)/(chat)/p/[chatProjectId]/files-display';
 import SystemPromptDialog from '@/app/(app)/(chat)/p/[chatProjectId]/system-prompt';
-import { type AIModelRow, type ChatProjectRow, type SubscriptionLimits } from '@/db/schema';
+import {
+  type AIModelRow,
+  type ChatProjectRow,
+  type FileRow,
+  type SubscriptionLimits,
+} from '@/db/schema';
 import { type WithConversations } from '@/db/types';
 import {
   type AttachmentFile,
@@ -40,6 +46,7 @@ type ChatProps = {
   assistantId?: string;
   assistantName?: string;
   chatProject?: ChatProjectWithConversations;
+  chatProjectFiles?: FileRow[];
 };
 
 export default function Chat({
@@ -52,6 +59,7 @@ export default function Chat({
   assistantId,
   assistantName,
   chatProject,
+  chatProjectFiles = [],
 }: ChatProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -179,7 +187,11 @@ export default function Chat({
             className={cw('w-full max-w-[50rem] p-4 pb-[5rem]', messages.length > 0 && 'flex-grow')}
           >
             {messages.length === 0 ? (
-              <EmptyChat chatProject={chatProject} userFirstName={userFirstName} />
+              <EmptyChat
+                chatProject={chatProject}
+                userFirstName={userFirstName}
+                chatProjectFiles={chatProjectFiles}
+              />
             ) : (
               <>
                 <ChatMessages messages={messages} status={status} onReload={reload} />
@@ -204,7 +216,7 @@ export default function Chat({
             setIsImageGenerationActive={setIsImageGenerationActive}
             chatDisabled={hasReachedLimit}
             onStop={stop}
-            isProjectChat={chatProject !== undefined}
+            chatProjectId={chatProject?.id}
           />
         </div>
       </div>
@@ -215,8 +227,10 @@ export default function Chat({
 function EmptyChat({
   chatProject,
   userFirstName,
+  chatProjectFiles,
 }: {
   chatProject?: ChatProjectWithConversations;
+  chatProjectFiles?: FileRow[];
   userFirstName?: string;
 }) {
   if (chatProject === undefined) {
@@ -237,6 +251,7 @@ function EmptyChat({
         chatProjectId={chatProject.id}
         currentSystemPrompt={chatProject.systemPrompt}
       />
+      <ProjectFilesDisplay files={chatProjectFiles ?? []} />
       <ConversationsDisplay chatProjectId={chatProject.id} />
     </div>
   );
