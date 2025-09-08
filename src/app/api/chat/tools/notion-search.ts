@@ -26,8 +26,6 @@ export async function getSearchNotionTool({
           (await notionClient?.search(searchQuery, { filter: 'page', limit: 3 }).catch(() => [])) ??
           [];
 
-        console.info({ toolResult });
-
         if (toolResult.length === 0) {
           return 'An error occurred while searching the data source. We are sorry.';
         }
