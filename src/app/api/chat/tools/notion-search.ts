@@ -2,7 +2,7 @@ import { ActiveIntegration } from '@/db/functions/data-source-integrations';
 import { tool } from 'ai';
 import { z } from 'zod';
 
-import { NotionSearchClient, type NotionSource } from '../../auth/notion/client';
+import { NotionSearchClient } from '../../auth/notion/client';
 import { type NotionIntegration } from '../types';
 
 export async function getSearchNotionTool({
@@ -16,7 +16,7 @@ export async function getSearchNotionTool({
       : null;
 
   const finalTool = tool({
-    description: 'If the user wants to search his Notion pages you should use this function.',
+    description: 'If the user wants to search his Notion pages you should use this tool.',
     parameters: z.object({
       searchQuery: z.string().describe('The search query provided by the user.'),
     }),
@@ -24,7 +24,9 @@ export async function getSearchNotionTool({
       try {
         const toolResult =
           (await notionClient?.search(searchQuery, { filter: 'page', limit: 3 }).catch(() => [])) ??
-          ([] as NotionSource[]);
+          [];
+
+        console.info({ toolResult });
 
         if (toolResult.length === 0) {
           return 'An error occurred while searching the data source. We are sorry.';
