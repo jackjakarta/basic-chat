@@ -56,39 +56,38 @@ export const authOptions = {
       return session;
     },
     async jwt({ token, user, account }) {
-      if (user) {
-        let dbUser;
+      if (!user) return token;
 
-        try {
-          dbUser = await dbGetUserByEmail({ email: user.email ?? '' });
+      const email = user.email ?? '';
+      const [firstName = '', lastName = ''] = (user.name ?? '').split(' ');
+      const authProvider = account?.provider === 'github' ? 'github' : 'google';
 
-          if (dbUser === undefined) {
-            throw new Error('User not found');
-          }
-        } catch {
-          dbUser = await dbCreateNewUser({
-            email: user.email ?? '',
-            firstName: user.name?.split(' ')[0] ?? '',
-            lastName: user.name?.split(' ')[1] ?? '',
-            password: '',
-            emailVerified: true,
-            authProvider: account?.provider === 'github' ? 'github' : 'google',
-          });
+      const maybeUser = await dbGetUserByEmail({ email: user.email ?? '' });
 
-          const stripeCustomer = await createCustomerByEmailStripe({
-            email: dbUser.email,
-            userId: dbUser.id,
-          });
+      if (maybeUser === undefined) {
+        const newUser = await dbCreateNewUser({
+          email,
+          firstName,
+          lastName,
+          password: '',
+          emailVerified: true,
+          authProvider,
+        });
 
-          await dbUpdateUserCustomerId({
-            userId: dbUser.id,
-            customerId: stripeCustomer.id,
-          });
-        }
-        return { user: dbUser };
+        const stripeCustomer = await createCustomerByEmailStripe({
+          email: newUser.email,
+          userId: newUser.id,
+        });
+
+        await dbUpdateUserCustomerId({
+          userId: newUser.id,
+          customerId: stripeCustomer.id,
+        });
+
+        return { ...token, user: newUser };
       }
 
-      return token;
+      return { ...token, user: maybeUser };
     },
   },
   jwt: {
