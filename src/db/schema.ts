@@ -132,6 +132,7 @@ export const conversationRolePgEnum = appSchema.enum(
 export type ConversationRole = z.infer<typeof conversationRoleSchema>;
 export type ConversationMessageMetadata = {
   modelId?: string;
+  usedTools?: string[];
 };
 
 export const conversationMessageTable = appSchema.table('conversation_message', {

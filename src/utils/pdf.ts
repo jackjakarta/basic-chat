@@ -46,8 +46,7 @@ export async function ingestPdf({ fileId, pages }: IngestOptions) {
       const chunkText = c.text.trim();
       if (!chunkText) continue;
 
-      const [embedding] = await Promise.all([getEmbedding({ input: chunkText })]);
-
+      const embedding = await getEmbedding({ input: chunkText });
       const contentHash = sha256(chunkText);
 
       rows.push({

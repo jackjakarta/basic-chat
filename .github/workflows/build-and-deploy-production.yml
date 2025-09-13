@@ -49,7 +49,7 @@ jobs:
             echo "${{ env.DOCKER_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
             ENVIRONMENT=production op inject -f -i .env.op -o .env && \
-            docker build --no-cache -t ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }} . && \
+            docker build -t ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }} . && \
             docker push ${{ env.DOCKER_USERNAME }}/el-chat:${{ env.TAG_VERSION }}
 
   deploy:

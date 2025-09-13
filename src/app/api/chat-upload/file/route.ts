@@ -64,10 +64,12 @@ export async function POST(req: NextRequest) {
   const keyPrefix = cnanoid(12);
   const key = `${user.email}/uploaded/files/${keyPrefix}_${file.name}`;
 
+  const fileBuffer = await file.arrayBuffer();
+
   try {
     const s3Result = await uploadFileToS3({
       key,
-      fileBuffer: await file.arrayBuffer(),
+      fileBuffer,
       contentType: file.type,
     });
 
@@ -89,8 +91,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to record file in database' }, { status: 500 });
     }
 
-    const extractedPages = await extractTextFromPdf(file);
-    await ingestPdf({ fileId: newFile.id, pages: extractedPages });
+    if (maybeChatProjectId !== undefined) {
+      const extractedPages = await extractTextFromPdf(file);
+      await ingestPdf({ fileId: newFile.id, pages: extractedPages });
+    }
 
     const signedUrl = await getSignedUrlFromS3Get({
       key,
