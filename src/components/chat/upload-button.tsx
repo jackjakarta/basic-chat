@@ -19,16 +19,10 @@ const uploadResponseSchema = z.object({
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
   setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
-
   disabled?: boolean;
 };
 
-export default function UploadButton({
-  setFiles,
-  setIsUploading,
-
-  disabled,
-}: UploadButtonProps) {
+export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const { toastError } = useToast();
