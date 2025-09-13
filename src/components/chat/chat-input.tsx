@@ -164,7 +164,6 @@ export default function ChatInput({
                 <UploadButton
                   setFiles={setFiles}
                   setIsUploading={setIsUploading}
-                  chatProjectId={chatProjectId}
                   disabled={chatDisabled}
                 />
                 <TooltipButton
