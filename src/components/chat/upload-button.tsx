@@ -19,16 +19,10 @@ const uploadResponseSchema = z.object({
 type UploadButtonProps = {
   setFiles: React.Dispatch<React.SetStateAction<Map<string, LocalFileState>>>;
   setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
-  chatProjectId?: string;
   disabled?: boolean;
 };
 
-export default function UploadButton({
-  setFiles,
-  setIsUploading,
-  chatProjectId,
-  disabled,
-}: UploadButtonProps) {
+export default function UploadButton({ setFiles, setIsUploading, disabled }: UploadButtonProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const { toastError } = useToast();
@@ -56,10 +50,6 @@ export default function UploadButton({
 
     const formData = new FormData();
     formData.append('file', file);
-
-    if (chatProjectId !== undefined) {
-      formData.append('chatProjectId', chatProjectId);
-    }
 
     try {
       const response = await fetch(`/api/chat-upload/${endpoint}`, {

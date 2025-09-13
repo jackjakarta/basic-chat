@@ -1,5 +1,6 @@
 'use client';
 
+import ContactForm from '@/components/common/contact-form';
 import GithubIcon from '@/components/icons/github';
 import GoogleIcon from '@/components/icons/google';
 import { Button } from '@/components/ui/button';
@@ -151,11 +152,20 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </Button>
         </div>
       </div>
-      <div className="flex items-center justify-center gap-2 text-sm">
-        <span className="text-muted-foreground">{tAuth('no-account')} </span>
-        <Link href="/register" className="hover:opacity-75">
-          {tAuth('register.sign-up')}
-        </Link>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-center gap-2 text-sm">
+          <span className="text-muted-foreground">{tAuth('no-account')} </span>
+          <Link href="/register" className="hover:opacity-75">
+            {tAuth('register.sign-up')}
+          </Link>
+        </div>
+        <ContactForm
+          trigger={
+            <div className="flex cursor-pointer items-center justify-center gap-2 text-sm">
+              <span className="hover:opacity-75">Contact us</span>
+            </div>
+          }
+        />
       </div>
     </form>
   );

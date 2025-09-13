@@ -77,117 +77,76 @@ export async function createInformationMailTemplate(
 ) {
   const baseUrl = getBaseUrlByHeaders();
 
+  async function renderInformationTemplate({
+    header,
+    subject,
+    content,
+  }: {
+    header: string;
+    subject: string;
+    content: string;
+  }) {
+    const [html, text] = await Promise.all([
+      render(<InformationTemplate header={header} content={content} baseUrl={baseUrl} />),
+      render(<InformationTemplate header={header} content={content} baseUrl={baseUrl} />, {
+        plainText: true,
+      }),
+    ]);
+
+    return {
+      success: true,
+      subject: subject,
+      mailTemplate: html,
+      textPart: text,
+    };
+  }
+
   switch (information.type) {
     case 'email-verified-success': {
-      const [html, text] = await Promise.all([
-        render(
-          <InformationTemplate
-            header="Email verified"
-            content={`Your email address has been successfully verified. ${email !== undefined ? `You can now log in with your email address ${email}.` : ''}`}
-            baseUrl={baseUrl}
-          />,
-        ),
-        render(
-          <InformationTemplate
-            header="Email verified"
-            content={`Your email address has been successfully verified. ${email !== undefined ? `You can now log in with your email address ${email}.` : ''}`}
-            baseUrl={baseUrl}
-          />,
-          { plainText: true },
-        ),
-      ]);
-
-      return {
-        success: true,
+      return renderInformationTemplate({
         subject: 'Email verified',
-        mailTemplate: html,
-        textPart: text,
-      };
+        header: 'Email verified',
+        content: `Your email address has been successfully verified. You can now log in with your email address ${email}.`,
+      });
     }
 
     case 'reset-password-success': {
-      const [html, text] = await Promise.all([
-        render(
-          <InformationTemplate
-            header="Password changed"
-            content="Your password has been successfully changed."
-            baseUrl={baseUrl}
-          />,
-        ),
-        render(
-          <InformationTemplate
-            header="Password changed"
-            content="Your password has been successfully changed."
-            baseUrl={baseUrl}
-          />,
-          { plainText: true },
-        ),
-      ]);
-
-      return {
-        success: true,
+      return renderInformationTemplate({
         subject: 'Password changed',
-        mailTemplate: html,
-        textPart: text,
-      };
+        header: 'Password changed',
+        content: 'Your password has been successfully changed.',
+      });
     }
 
     case 'account-delete-success': {
-      const [html, text] = await Promise.all([
-        render(
-          <InformationTemplate
-            header="Account deleted"
-            content="We are sad to see you go. Your account has been successfully deleted."
-            baseUrl={baseUrl}
-          />,
-        ),
-        render(
-          <InformationTemplate
-            header="Account deleted"
-            content="We are sad to see you go. Your account has been successfully deleted."
-            baseUrl={baseUrl}
-          />,
-          { plainText: true },
-        ),
-      ]);
-
-      return {
-        success: true,
+      return renderInformationTemplate({
         subject: 'Account deleted',
-        mailTemplate: html,
-        textPart: text,
-      };
+        header: 'Account deleted',
+        content: 'We are sad to see you go. Your account has been successfully deleted.',
+      });
     }
 
     case 'invoice-paid': {
-      const [html, text] = await Promise.all([
-        render(
-          <InformationTemplate
-            header="Invoice paid"
-            content="Your invoice has been successfully paid. Thank you for your payment!"
-            baseUrl={baseUrl}
-          />,
-        ),
-        render(
-          <InformationTemplate
-            header="Invoice paid"
-            content="Your invoice has been successfully paid. Thank you for your payment!"
-            baseUrl={baseUrl}
-          />,
-          { plainText: true },
-        ),
-      ]);
-
-      return {
-        success: true,
+      return renderInformationTemplate({
         subject: 'Invoice paid',
-        mailTemplate: html,
-        textPart: text,
-      };
+        header: 'Invoice paid',
+        content: 'Your invoice has been successfully paid. Thank you for your payment!',
+      });
     }
 
-    default: {
-      return undefined;
+    case 'contact_form_submission': {
+      return renderInformationTemplate({
+        subject: 'We received your message',
+        header: 'We received your message',
+        content: `Thank you for reaching out to us. We have received your message:
+        
+        "${information.message}"
+        
+        Our team will get back to you as soon as possible.`,
+      });
     }
+
+    default:
+      return undefined;
   }
 }

@@ -1,17 +1,25 @@
+import { useToast } from '@/components/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { type FileRow } from '@/db/schema';
-import { ArchiveIcon, FileIcon, FileTextIcon, ImageIcon, VideoIcon } from 'lucide-react';
+import { ArchiveIcon, FileIcon, FileTextIcon, ImageIcon, Paperclip, VideoIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
-export default function ProjectFilesDisplay({ files }: { files: FileRow[] }) {
+type ProjectFilesDisplayProps = {
+  chatProjectId: string;
+  files: FileRow[];
+};
+
+export default function ProjectFilesDisplay({ chatProjectId, files }: ProjectFilesDisplayProps) {
   if (files.length === 0) {
     return (
-      <div className="py-12 text-center">
-        <FileIcon className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-        <h3 className="text-lg font-medium text-muted-foreground">No files uploaded</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Upload files to see them displayed here
-        </p>
+      <div className="flex flex-col items-center justify-center gap-2 py-4 text-center">
+        <FileIcon className="size-12 text-muted-foreground" />
+        <span className="text-lg font-medium text-muted-foreground">No files uploaded</span>
+        <p className="text-sm text-muted-foreground">Upload files to see them displayed here</p>
+        <UploadButton chatProjectId={chatProjectId} />
       </div>
     );
   }
@@ -23,6 +31,9 @@ export default function ProjectFilesDisplay({ files }: { files: FileRow[] }) {
         {files.map((file) => (
           <FileItem key={file.id} file={file} />
         ))}
+      </div>
+      <div className="self-center">
+        <UploadButton chatProjectId={chatProjectId} />
       </div>
     </div>
   );
@@ -57,6 +68,85 @@ function FileItem({ file }: { file: FileRow }) {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function UploadButton({ chatProjectId }: { chatProjectId: string }) {
+  const router = useRouter();
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
+
+  const { toastSuccess, toastError } = useToast();
+
+  function openFileDialog() {
+    fileInputRef.current?.click();
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+    await handleFileUpload(file);
+    e.target.value = '';
+  }
+
+  async function handleFileUpload(file: File) {
+    setIsUploading(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('chatProjectId', chatProjectId);
+
+    try {
+      const response = await fetch(`/api/chat-upload/file`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.status === 413) {
+        const res = await response.json();
+        toastError(res.error ?? 'File size exceeds the limit');
+        return;
+      }
+
+      if (!response.ok) {
+        const error = await response.json();
+        toastError('An error occurred while uploading the file');
+        console.error({ error });
+        return;
+      }
+
+      toastSuccess('File uploaded successfully');
+    } catch (error) {
+      console.error({ error });
+      toastError('An error occurred while uploading the file');
+    } finally {
+      setIsUploading(false);
+      router.refresh();
+    }
+  }
+
+  return (
+    <div>
+      <Button
+        type="button"
+        className="transition-colors duration-200 ease-in-out"
+        variant="neutral"
+        onClick={openFileDialog}
+        disabled={isUploading}
+      >
+        <Paperclip className="size-4" />
+        {isUploading ? 'Uploading...' : 'Upload to project'}
+      </Button>
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept={'application/pdf'}
+        onChange={handleFileChange}
+      />
+    </div>
   );
 }
 

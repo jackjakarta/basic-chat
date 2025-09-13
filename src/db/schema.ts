@@ -400,3 +400,18 @@ export const chatProjectTable = appSchema.table('chat_project', {
 export type ChatProjectRow = typeof chatProjectTable.$inferSelect;
 export type InsertChatProjectRow = typeof chatProjectTable.$inferInsert;
 export type UpdateChatProjectRow = UpdateDbRow<ChatProjectRow>;
+
+export const contactFormSubmissionTable = appSchema.table('contact_form_submission', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  message: text('message').notNull(),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type ContactFormSubmissionRow = typeof contactFormSubmissionTable.$inferSelect;
+export type InsertContactFormSubmissionRow = typeof contactFormSubmissionTable.$inferInsert;

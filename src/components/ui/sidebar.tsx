@@ -631,9 +631,12 @@ const SidebarMenuSkeleton = React.forwardRef<
   }
 >(({ className, showIcon = false, ...props }, ref) => {
   // Random width between 50 to 90%.
+  const id = React.useId();
+
   const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
-  }, []);
+    const n = hashString(id) % 41;
+    return `${50 + n}%`;
+  }, [id]);
 
   return (
     <div
@@ -734,3 +737,9 @@ export {
   SidebarTrigger,
   useSidebar,
 };
+
+function hashString(str: string) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+  return h >>> 0;
+}

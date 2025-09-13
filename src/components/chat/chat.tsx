@@ -251,7 +251,7 @@ function EmptyChat({
         chatProjectId={chatProject.id}
         currentSystemPrompt={chatProject.systemPrompt}
       />
-      <ProjectFilesDisplay files={chatProjectFiles ?? []} />
+      <ProjectFilesDisplay chatProjectId={chatProject.id} files={chatProjectFiles ?? []} />
       <ConversationsDisplay chatProjectId={chatProject.id} />
     </div>
   );
