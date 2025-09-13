@@ -1,3 +1,4 @@
+import ContactForm from '@/components/common/contact-form';
 import ShortcutsDialog from '@/components/common/shortcuts-dialog';
 import GithubIcon from '@/components/icons/github';
 import {
@@ -7,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { Command } from 'lucide-react';
+import { Command, Mail } from 'lucide-react';
 import Link from 'next/link';
 
 const menuItems = [
@@ -44,6 +45,17 @@ export function NavSecondary({ ...props }: React.ComponentPropsWithoutRef<typeof
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+
+          <SidebarMenuItem>
+            <ContactForm
+              trigger={
+                <SidebarMenuButton className="cursor-pointer" size="sm">
+                  <Mail />
+                  <span>Contact</span>
+                </SidebarMenuButton>
+              }
+            />
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

@@ -8,11 +8,13 @@ export async function mailjetSendEmail({
   subject,
   html,
   text,
+  replyTo,
 }: {
   to: string;
   subject: string;
   html: string;
   text?: string;
+  replyTo?: string;
 }) {
   return await mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -29,6 +31,7 @@ export async function mailjetSendEmail({
         Subject: subject,
         HTMLPart: html,
         TextPart: text,
+        ReplyTo: { Email: replyTo },
       },
     ],
   });
@@ -39,11 +42,13 @@ export async function sendTestEmail({
   subject,
   html,
   text,
+  replyTo,
 }: {
   to: string;
   subject: string;
   html: string;
   text?: string;
+  replyTo?: string;
 }): Promise<EmailActionResult | undefined> {
   const transporter = nodemailer.createTransport({
     host: '127.0.0.1',
@@ -61,6 +66,7 @@ export async function sendTestEmail({
     subject,
     html,
     text: text ?? 'This is a test email. Please ignore it.',
+    replyTo,
   };
 
   try {

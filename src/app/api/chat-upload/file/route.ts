@@ -29,9 +29,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const maybeChatProjectId = z.string().optional().parse(chatProjectId);
+  const maybeChatProjectId = z.string().nullable().parse(chatProjectId);
 
-  if (maybeChatProjectId !== undefined) {
+  if (maybeChatProjectId !== null) {
     const chatProject = await dbGetChatProjectById({
       chatProjectId: maybeChatProjectId,
       userId: user.id,

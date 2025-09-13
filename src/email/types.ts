@@ -10,6 +10,10 @@ export type InformationEmailMetadata =
     }
   | {
       type: 'invoice-paid';
+    }
+  | {
+      type: 'contact_form_submission';
+      message: string;
     };
 
 export type MailTemplateResult = {
