@@ -14,20 +14,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { contactFormSchema } from '@/utils/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Mail, MessageSquare, Send, User } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-const contactFormSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  message: z
-    .string()
-    .min(10, 'Message must be at least 10 characters long')
-    .max(1500, 'Message must be at most 1500 characters long'),
-});
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
 

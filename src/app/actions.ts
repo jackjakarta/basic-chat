@@ -3,9 +3,11 @@
 import { dbInsertContactFormSubmission } from '@/db/functions/contact-form-submission';
 import { type InsertContactFormSubmissionRow } from '@/db/schema';
 import { sendUserActionInformationEmail } from '@/email/send';
+import { contactFormSchema } from '@/utils/schemas';
 
-export async function insertContactFormSubmissionAction(data: InsertContactFormSubmissionRow) {
-  const newFormSubmission = await dbInsertContactFormSubmission(data);
+export async function insertContactFormSubmissionAction(body: InsertContactFormSubmissionRow) {
+  const parseResult = contactFormSchema.parse(body);
+  const newFormSubmission = await dbInsertContactFormSubmission(parseResult);
 
   if (newFormSubmission === undefined) {
     throw new Error('Failed to save contact form submission');
