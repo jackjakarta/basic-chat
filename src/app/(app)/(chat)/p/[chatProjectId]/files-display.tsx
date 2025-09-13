@@ -94,14 +94,12 @@ function UploadButton({ chatProjectId }: { chatProjectId: string }) {
   async function handleFileUpload(file: File) {
     setIsUploading(true);
 
-    const endpoint = file.type.startsWith('image/') ? 'image' : 'file';
-
     const formData = new FormData();
     formData.append('file', file);
     formData.append('chatProjectId', chatProjectId);
 
     try {
-      const response = await fetch(`/api/chat-upload/${endpoint}`, {
+      const response = await fetch(`/api/chat-upload/file`, {
         method: 'POST',
         body: formData,
       });

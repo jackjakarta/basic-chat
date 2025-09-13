@@ -107,7 +107,7 @@ export async function sendUserActionInformationEmail({
         subject,
         html: mailTemplate,
         text: textPart,
-        replyTo: subject.includes('We received your message') ? to : undefined,
+        replyTo: information.type === 'contact_form_submission' ? to : undefined,
       });
 
       console.info('Email successfully sent:', result);
@@ -120,7 +120,7 @@ export async function sendUserActionInformationEmail({
       subject,
       html: mailTemplate,
       text: textPart,
-      replyTo: subject.includes('We received your message') ? to : undefined,
+      replyTo: information.type === 'contact_form_submission' ? to : undefined,
     });
 
     console.info('Email successfully sent:', request.body);
