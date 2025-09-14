@@ -4,19 +4,19 @@ import { z } from 'zod';
 import { db } from '..';
 import { conversationUsageTrackingTable, type InsertConversationUsageTrackingRow } from '../schema';
 
+export const tokenUsageSchema = z.object({
+  promptTokens: z.number().min(0),
+  completionTokens: z.number().min(0),
+  totalTokens: z.number().min(0),
+});
+
+export type AmountOfTokensUsed = z.infer<typeof tokenUsageSchema>;
+
 export async function dbInsertConversationUsage(value: InsertConversationUsageTrackingRow) {
   const [insertedUsage] = await db.insert(conversationUsageTrackingTable).values(value).returning();
 
   return insertedUsage;
 }
-
-const amountSchema = z.object({
-  promptTokens: z.number().default(0),
-  completionTokens: z.number().default(0),
-  totalTokens: z.number().default(0),
-});
-
-export type AmountOfTokensUsed = z.infer<typeof amountSchema>;
 
 export async function dbGetAmountOfTokensUsedByUserId({ userId }: { userId: string }) {
   const [amount] = await db
@@ -34,7 +34,7 @@ export async function dbGetAmountOfTokensUsedByUserId({ userId }: { userId: stri
       ),
     );
 
-  const parsedNumber = amountSchema.safeParse({
+  const parsedNumber = tokenUsageSchema.safeParse({
     promptTokens: Number(amount?.promptTokens),
     completionTokens: Number(amount?.completionTokens),
     totalTokens: Number(amount?.totalTokens),

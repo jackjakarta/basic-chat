@@ -29,7 +29,6 @@ export function getBarcaMatchesTool() {
     execute: async (): Promise<BarcaMatchesToolResponse> => {
       try {
         const matches = await getBarcaMatches();
-        console.info({ matches });
 
         if (matches.length === 0) {
           return {

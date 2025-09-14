@@ -32,7 +32,6 @@ export function getProjectFilesSearchTool({
     execute: async ({ searchQuery }): Promise<ProjectSearchToolResponse> => {
       try {
         const toolResults = await filesSearch({ searchQuery, userId, chatProjectId });
-        console.info({ toolResults });
 
         if (toolResults.length === 0) {
           return {

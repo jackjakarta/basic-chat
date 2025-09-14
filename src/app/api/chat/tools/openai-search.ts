@@ -12,7 +12,6 @@ export function getWebSearchTool() {
     execute: async ({ searchQuery }) => {
       try {
         const toolResults = await openaiSearch({ searchQuery });
-        console.debug({ toolResults });
 
         if (!toolResults) {
           return `I could not find any relevant information about '${searchQuery}'.`;

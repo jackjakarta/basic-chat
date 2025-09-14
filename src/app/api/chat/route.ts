@@ -2,20 +2,23 @@ import { dbGetEnabledImageModels, dbGetEnabledModelById } from '@/db/functions/a
 import { dbGetAssistantById } from '@/db/functions/assistant';
 import {
   dbGetOrCreateConversation,
-  dbInsertChatContentWithUsage,
+  dbInsertChatContent,
   dbUpdateConversation,
 } from '@/db/functions/chat';
 import { dbGetChatProjectById } from '@/db/functions/chat-project';
 import { dbGetAllActiveDataSourcesByUserId } from '@/db/functions/data-source-integrations';
 import { dbGetChatProjectFiles } from '@/db/functions/file';
-import { dbGetAmountOfTokensUsedByUserId } from '@/db/functions/usage';
+import {
+  dbGetAmountOfTokensUsedByUserId,
+  dbInsertConversationUsage,
+  tokenUsageSchema,
+} from '@/db/functions/usage';
 import { summarizeConversationTitle } from '@/openai/text';
 import { getSubscriptionPlanBySubscriptionState } from '@/stripe/subscription';
 import { getUser } from '@/utils/auth';
 import { getUserMessage, getUserMessageAttachments } from '@/utils/chat';
 import { smoothStream, streamText, type LanguageModelUsage, type Message, type ToolSet } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 
 import { getModel, getXAiProviderOptions } from './models';
 import { getFullSystemPrompt } from './system-prompt';
@@ -25,14 +28,6 @@ import { getBarcaMatchesTool } from './tools/get-barca-matches';
 import { getActiveNotionIntegration, getSearchNotionTool } from './tools/notion-search';
 import { getWebSearchTool } from './tools/openai-search';
 import { getProjectFilesSearchTool } from './tools/project-files-search';
-
-// import { getExecuteCodeTool } from './tools/code-execution';
-
-const tokenUsageSchema = z.object({
-  promptTokens: z.number().min(0),
-  completionTokens: z.number().min(0),
-  totalTokens: z.number().min(0),
-});
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
@@ -105,7 +100,7 @@ export async function POST(request: NextRequest) {
     const chatProjectFileNames = chatProjectFiles.map((f) => f.name);
 
     const conversation = await dbGetOrCreateConversation({
-      conversationId: chatId,
+      id: chatId,
       userId: user.id,
       assistantId: maybeAssistant?.id,
       chatProjectId: maybeChatProject?.id,
@@ -118,15 +113,13 @@ export async function POST(request: NextRequest) {
     const userMessage = getUserMessage(messages);
     const userMessageAttachments = getUserMessageAttachments(messages);
 
-    await dbInsertChatContentWithUsage({
-      chatContent: {
-        conversationId: conversation.id,
-        content: userMessage ?? '',
-        role: 'user',
-        userId: user.id,
-        attachments: userMessageAttachments,
-        orderNumber: messages.length,
-      },
+    await dbInsertChatContent({
+      conversationId: conversation.id,
+      content: userMessage ?? '',
+      role: 'user',
+      userId: user.id,
+      attachments: userMessageAttachments,
+      orderNumber: messages.length,
     });
 
     const activeDataSources = await dbGetAllActiveDataSourcesByUserId({ userId: user.id });
@@ -163,7 +156,6 @@ export async function POST(request: NextRequest) {
         notionDataSource !== undefined && {
           searchNotion: await getSearchNotionTool({ notionDataSource }),
         }),
-      // ...(!imageGenerationActive && { executeCode: getExecuteCodeTool() }),
     };
 
     const availableToolNames = Object.keys(tools);
@@ -190,16 +182,20 @@ export async function POST(request: NextRequest) {
         xai: getXAiProviderOptions(),
       },
       async onFinish({ text: assistantMessage, usage }) {
-        await dbInsertChatContentWithUsage({
-          chatContent: {
-            conversationId: conversation.id,
-            content: assistantMessage,
-            role: 'assistant',
-            userId: user.id,
-            orderNumber: messages.length + 1,
-            metadata: { modelId: model.id },
-          },
-          usage: safeParseUsage(usage),
+        await dbInsertChatContent({
+          conversationId: conversation.id,
+          content: assistantMessage,
+          role: 'assistant',
+          userId: user.id,
+          orderNumber: messages.length + 1,
+          metadata: { modelId: model.id, activeTools: availableToolNames },
+        });
+
+        await dbInsertConversationUsage({
+          conversationId: conversation.id,
+          userId: user.id,
+          modelId: model.id,
+          ...safeParseUsage(usage),
         });
 
         if (messages.length <= 2 || conversation.name === null) {
@@ -236,7 +232,7 @@ function safeParseUsage(data: unknown): LanguageModelUsage {
   const parsedUsage = tokenUsageSchema.safeParse(data);
 
   if (!parsedUsage.success) {
-    console.error('Failed to parse token usage', parsedUsage.error);
+    console.error('Failed to parse token usage:', parsedUsage.error);
     return { promptTokens: 0, completionTokens: 0, totalTokens: 0 };
   }
 

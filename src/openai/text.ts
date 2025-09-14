@@ -8,7 +8,7 @@ export async function summarizeConversationTitle({
   assistantMessage: string;
 }) {
   const response = await openai.chat.completions.create({
-    model: 'gpt-5-nano',
+    model: 'gpt-4.1-nano',
     messages: [
       {
         role: 'system',

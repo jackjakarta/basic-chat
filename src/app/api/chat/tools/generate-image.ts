@@ -29,6 +29,7 @@ export function getGenerateImageTool({
           userId,
           model,
         });
+
         return imageUrl;
       } catch {
         return 'An error occurred while generating the image.';
