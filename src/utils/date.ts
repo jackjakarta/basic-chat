@@ -29,6 +29,19 @@ export function formatDateToDayMonthYearTime(date: Date | undefined): string | u
   return new Intl.DateTimeFormat('en-UK', options).format(date);
 }
 
+export function formatDateToDayMonthYearWithNoTimeZone(
+  dateLike: Date | string | number,
+  intl: string = 'de-DE',
+): string {
+  const d = dateLike instanceof Date ? dateLike : new Date(dateLike);
+
+  return new Intl.DateTimeFormat(intl, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(d);
+}
+
 export function getTimeSince(pastDate: Date): string {
   const now = new Date();
   const monthsSince = differenceInMonths(now, pastDate);

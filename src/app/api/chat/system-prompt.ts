@@ -1,4 +1,4 @@
-import { formatDateToDayMonthYear } from '@/utils/date';
+import { formatDateToDayMonthYearWithNoTimeZone } from '@/utils/date';
 
 export function getFullSystemPrompt({
   assistantInstructions,
@@ -103,7 +103,7 @@ ${chatProjectName !== undefined ? getChatProjectPrompt({ chatProjectName, chatPr
 `;
 
   return defaultSystemPrompt
-    .replaceAll('$CURRENT_DATE', formatDateToDayMonthYear(new Date()))
+    .replaceAll('$CURRENT_DATE', formatDateToDayMonthYearWithNoTimeZone(new Date()))
     .trim();
 }
 

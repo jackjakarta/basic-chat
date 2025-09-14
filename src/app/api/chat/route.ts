@@ -232,6 +232,7 @@ function safeParseUsage(data: unknown): LanguageModelUsage {
   const parsedUsage = tokenUsageSchema.safeParse(data);
 
   if (!parsedUsage.success) {
+    console.error('Failed to parse token usage:', parsedUsage.error);
     return { promptTokens: 0, completionTokens: 0, totalTokens: 0 };
   }
 
