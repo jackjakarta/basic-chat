@@ -1,32 +1,21 @@
-import { type LanguageModelUsage } from 'ai';
 import { and, desc, eq, ilike, sql } from 'drizzle-orm';
 
 import { db } from '..';
 import {
   conversationMessageTable,
   conversationTable,
-  conversationUsageTrackingTable,
   type InsertConversationMessageRow,
+  type InsertConversationRow,
   type UpdateConversationRow,
 } from '../schema';
 
-export async function dbGetOrCreateConversation({
-  conversationId,
-  userId,
-  assistantId,
-  chatProjectId,
-}: {
-  conversationId: string;
-  userId: string;
-  assistantId?: string;
-  chatProjectId?: string;
-}) {
+export async function dbGetOrCreateConversation(data: InsertConversationRow) {
   const [conversation] = await db
     .insert(conversationTable)
-    .values({ id: conversationId, userId, assistantId, chatProjectId })
+    .values(data)
     .onConflictDoUpdate({
       target: conversationTable.id,
-      set: { id: conversationId },
+      set: { id: data.id },
     })
     .returning();
 
@@ -54,36 +43,13 @@ export async function dbGetCoversationMessages({
   return messages.map((message) => message.conversation_message);
 }
 
-export async function dbInsertChatContentWithUsage({
-  chatContent,
-  usage,
-}: {
-  chatContent: InsertConversationMessageRow;
-  usage?: LanguageModelUsage;
-}) {
-  const _chatContent = await db.transaction(async (tx) => {
-    const [newChatContent] = await tx
-      .insert(conversationMessageTable)
-      .values(chatContent)
-      .returning();
+export async function dbInsertChatContent(chatContent: InsertConversationMessageRow) {
+  const [newChatContent] = await db
+    .insert(conversationMessageTable)
+    .values(chatContent)
+    .returning();
 
-    if (newChatContent !== undefined && newChatContent.userId !== null && usage !== undefined) {
-      await tx
-        .insert(conversationUsageTrackingTable)
-        .values({
-          promptTokens: usage.promptTokens,
-          completionTokens: usage.completionTokens,
-          userId: newChatContent.userId,
-          conversationId: newChatContent.conversationId,
-          modelId: newChatContent.metadata?.modelId ?? '',
-        })
-        .returning();
-    }
-
-    return newChatContent;
-  });
-
-  return _chatContent;
+  return newChatContent;
 }
 
 export async function dbGetConversations({ userId, limit }: { userId: string; limit?: number }) {

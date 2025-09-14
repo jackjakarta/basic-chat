@@ -14,7 +14,6 @@ export function getAssistantFileSearchTool({ vectorStoreId }: { vectorStoreId: s
     execute: async ({ searchQuery }) => {
       try {
         const toolResults = await searchVectorStore({ searchQuery, vectorStoreId });
-        console.debug({ toolResults });
 
         if (!toolResults) {
           return `I could not find any relevant information about '${searchQuery}'.`;
