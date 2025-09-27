@@ -84,12 +84,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build application
-        run: pnpm build
-
-      - name: Install playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-
       - name: Wait for postgres to be ready
         run: |
           until pg_isready -h 127.0.0.1 -p 5432 -U postgres; do
@@ -99,6 +93,12 @@ jobs:
 
       - name: Seed database
         run: pnpm e2e:migrate && pnpm e2e:seed
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Install playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright tests
         run: pnpm exec playwright test
