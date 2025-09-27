@@ -32,6 +32,7 @@ export async function createVectorStore({ assistantId }: { assistantId: string }
     if (vs.status === 'expired') {
       throw new Error(`Vector store ${vsId} expired before it could complete.`);
     }
+
     if (++tries > maxRetries) {
       throw new Error(`Timed out waiting for vector store ${vsId} to complete.`);
     }

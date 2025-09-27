@@ -15,6 +15,8 @@
     "dev:email": "email dev --dir src/email/emails --port 3001",
     "dev:turbo": "pnpm dev --turbo",
     "e2e": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- playwright test",
+    "e2e:migrate": "tsx ./src/db/migrate.ts",
+    "e2e:seed": "tsx ./src/db/seed/index.ts",
     "e2e:ui": "ENVIRONMENT=development op run --env-file=\".env.op\" --no-masking -- playwright test --ui",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -1,10 +1,16 @@
 import { db } from '@/db';
+import { createCustomerByEmailStripe } from '@/stripe/customer';
+import { eq } from 'drizzle-orm';
 
+import { MOCK_USER } from '../../../e2e/utils';
+import { hashPassword } from '../crypto';
 import {
   aiModelTable,
   conversationTable,
   dataSourceIntegrationTable,
   subscriptionPlanTable,
+  userTable,
+  type InsertUserRow,
 } from '../schema';
 import { conversations } from './conversations';
 import { dataSourceIntegrations } from './data-source-integrations';
@@ -15,6 +21,7 @@ Promise.all([
   seedAIModels({ skip: false }),
   seedSubscriptionPlans({ skip: false }),
   seedDataSourceIntegrations({ skip: false }),
+  seedMockE2EUser({ skip: false }),
   seedConversations({ skip: true }),
 ])
   .then(() => {
@@ -88,4 +95,45 @@ async function seedConversations({ skip = true }: { skip: boolean }) {
 
     console.info({ insertedConversation });
   }
+}
+
+async function seedMockE2EUser({ skip = true }: { skip: boolean }) {
+  if (skip) {
+    console.info({ info: 'Skipping mock E2E user seeding' });
+    return;
+  }
+
+  const fullUser: InsertUserRow = {
+    id: '3078f3c5-d14c-4f40-bb0f-723c953cd69c',
+    email: MOCK_USER.email,
+    passwordHash: await hashPassword(MOCK_USER.password),
+    firstName: 'E2E',
+    lastName: 'Test',
+    emailVerified: true,
+    authProvider: 'credentials',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const [insertedUser] = await db
+    .insert(userTable)
+    .values(fullUser)
+    .onConflictDoNothing({ target: userTable.id })
+    .returning();
+
+  if (insertedUser === undefined) {
+    return;
+  }
+
+  const stripeCustomer = await createCustomerByEmailStripe({
+    email: insertedUser.email,
+    userId: insertedUser.id,
+  });
+
+  await db
+    .update(userTable)
+    .set({ customerId: stripeCustomer.id })
+    .where(eq(userTable.id, insertedUser.id));
+
+  console.info({ insertedUser });
 }

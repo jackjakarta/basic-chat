@@ -12,6 +12,24 @@ jobs:
     if: ${{ github.event.pull_request.draft == false }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      CI: true
+
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.0-pg16
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: h4yuasd6
+          POSTGRES_DB: local-nextjs
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Load 1password secrets
         uses: 1password/load-secrets-action@v1
@@ -19,14 +37,14 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          NEXTAUTH_SECRET: 'op://chat-app/.env.staging/NEXTAUTH_SECRET'
-          NEXTAUTH_URL: 'op://chat-app/.env.staging/NEXTAUTH_URL'
-          DATABASE_URL: 'op://chat-app/.env.staging/DATABASE_URL'
+          NEXTAUTH_SECRET: 'op://chat-app/.env.development/NEXTAUTH_SECRET'
+          NEXTAUTH_URL: 'op://chat-app/.env.development/NEXTAUTH_URL'
+          DATABASE_URL: 'op://chat-app/.env.development/DATABASE_URL'
           MAILJET_API_KEY: 'op://chat-app/.env.shared/MAILJET_API_KEY'
           MAILJET_API_SECRET: 'op://chat-app/.env.shared/MAILJET_API_SECRET'
-          DEV_MODE: 'op://chat-app/.env.staging/DEV_MODE'
-          GITHUB_CLIENT_ID: 'op://chat-app/.env.staging/GITHUB_CLIENT_ID'
-          GITHUB_CLIENT_SECRET: 'op://chat-app/.env.staging/GITHUB_CLIENT_SECRET'
+          DEV_MODE: 'op://chat-app/.env.development/DEV_MODE'
+          GITHUB_CLIENT_ID: 'op://chat-app/.env.development/GITHUB_CLIENT_ID'
+          GITHUB_CLIENT_SECRET: 'op://chat-app/.env.development/GITHUB_CLIENT_SECRET'
           AWS_ACCESS_KEY_ID: 'op://chat-app/.env.shared/AWS_ACCESS_KEY_ID'
           AWS_SECRET_ACCESS_KEY: 'op://chat-app/.env.shared/AWS_SECRET_ACCESS_KEY'
           AWS_S3_ENDPOINT_URL: 'op://chat-app/.env.shared/AWS_S3_ENDPOINT_URL'
@@ -34,7 +52,7 @@ jobs:
           UTILS_API_KEY: 'op://chat-app/.env.shared/UTILS_API_KEY'
           GOOGLE_CLIENT_ID: 'op://chat-app/.env.shared/GOOGLE_CLIENT_ID'
           GOOGLE_CLIENT_SECRET: 'op://chat-app/.env.shared/GOOGLE_CLIENT_SECRET'
-          JWT_SECRET: 'op://chat-app/.env.staging/JWT_SECRET'
+          JWT_SECRET: 'op://chat-app/.env.development/JWT_SECRET'
           OPENAI_API_KEY: 'op://chat-app/.env.shared/OPENAI_API_KEY'
           ELEVENLABS_API_KEY: 'op://chat-app/.env.shared/ELEVENLABS_API_KEY'
           BRAVE_API_KEY: 'op://chat-app/.env.shared/BRAVE_API_KEY'
@@ -44,10 +62,10 @@ jobs:
           XAI_API_KEY: 'op://chat-app/.env.shared/XAI_API_KEY'
           NOTION_CLIENT_ID: 'op://chat-app/.env.shared/NOTION_CLIENT_ID'
           NOTION_CLIENT_SECRET: 'op://chat-app/.env.shared/NOTION_CLIENT_SECRET'
-          NOTION_REDIRECT_URI: 'op://chat-app/.env.staging/NOTION_REDIRECT_URI'
-          STRIPE_WEBHOOK_SECRET: 'op://chat-app/.env.staging/STRIPE_WEBHOOK_SECRET'
-          STRIPE_SECRET_KEY: 'op://chat-app/.env.staging/STRIPE_SECRET_KEY'
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: 'op://chat-app/.env.staging/NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'
+          NOTION_REDIRECT_URI: 'op://chat-app/.env.development/NOTION_REDIRECT_URI'
+          STRIPE_WEBHOOK_SECRET: 'op://chat-app/.env.development/STRIPE_WEBHOOK_SECRET'
+          STRIPE_SECRET_KEY: 'op://chat-app/.env.development/STRIPE_SECRET_KEY'
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: 'op://chat-app/.env.development/NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'
           GITHUB_ACCESS_TOKEN: 'op://chat-app/.env.shared/GITHUB_ACCESS_TOKEN'
           E2E_USER_EMAIL: 'op://chat-app/.env.e2e/E2E_USER_EMAIL'
           E2E_USER_PASSWORD: 'op://chat-app/.env.e2e/E2E_USER_PASSWORD'
@@ -55,18 +73,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Use node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
 
+      - name: Install pnpm
+        run: npm install -g pnpm@9.15.3
+
       - name: Install dependencies
-        run: npm install -g pnpm@9.15.3 && pnpm install
+        run: pnpm install
+
+      - name: Wait for postgres to be ready
+        run: |
+          until pg_isready -h 127.0.0.1 -p 5432 -U postgres; do
+            echo "$(date) - waiting for database to start"
+            sleep 2
+          done
+
+      - name: Seed database
+        run: pnpm e2e:migrate && pnpm e2e:seed
 
       - name: Build application
         run: pnpm build
 
-      - name: Install Playwright Browsers
+      - name: Install playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright tests
