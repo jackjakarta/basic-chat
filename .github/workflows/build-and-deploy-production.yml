@@ -94,5 +94,4 @@ jobs:
 
             export $(grep -v '^#' .env | xargs) && \
             envsubst < docker-compose.production.yml | docker stack deploy --with-registry-auth -c - el-chat && \
-            docker system prune -f && \
-            curl -d "Deployment El Chat ${{ env.TAG_VERSION }} successful." https://notify.jackjakarta.xyz/deployments"
+            docker system prune -f
