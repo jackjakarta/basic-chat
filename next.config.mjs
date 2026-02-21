@@ -2,7 +2,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // output: 'standalone',
   typescript: {
     ignoreBuildErrors: true,
   },

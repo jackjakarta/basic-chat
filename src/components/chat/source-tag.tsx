@@ -9,6 +9,9 @@ type SourceTagProps = {
 };
 
 export function SourceTag({ url, title }: SourceTagProps) {
+  const domain = extractDomain(url);
+  const faviconURL = `https://www.google.com/s2/favicons?domain=${domain}`;
+
   return (
     <Badge
       variant="secondary"
@@ -21,7 +24,10 @@ export function SourceTag({ url, title }: SourceTagProps) {
         rel="noopener noreferrer"
       >
         <div className="flex w-full min-w-0 flex-col">
-          <span className="truncate font-medium text-muted-foreground">{extractDomain(url)}</span>
+          <div className="flex items-center gap-2">
+            <img src={faviconURL} alt={`${domain} favicon`} className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate font-medium text-muted-foreground">{domain}</span>
+          </div>
           <span className="truncate text-primary-foreground/80">{title}</span>
         </div>
       </Link>
